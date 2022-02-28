@@ -1,0 +1,95 @@
+/*
+--- FONT SIZES (px)
+10 / 12 / 14 / 16 / 18 / 20 / 24 / 30 / 36 / 44 / 52 / 62 / 74 / 86 / 98 
+--- SHADOWS
+0 2.4rem 4.8rem rgba(0, 0, 0, 0.075);
+--- BORDER-RADIUS
+Default: 9px
+Medium: 11px
+--- WHITESPACE
+- Spacing system (px)
+2 / 4 / 8 / 12 / 16 / 24 / 32 / 48 / 64 / 80 / 96 / 128
+*/
+
+/**************************/
+/* GENERAL */
+/**************************/
+
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+html {
+  /* font-size: 10px; */
+  /* 10px / 16px = 0.625 = 62.5% */
+  /* Percentage of user's browser font-size setting */
+  font-size: 62.5%;
+  overflow-x: hidden;
+}
+
+body {
+  font-family: "Inter", sans-serif;
+  line-height: 1;
+  font-weight: 400;
+  color: #555;
+  overflow-x: hidden;
+}
+
+.container {
+  height: 100vh;
+  background-color: aqua;
+
+  display: flex;
+  justify-content: end;
+  align-items: flex-end;
+}
+
+.chatbot-box {
+  background-color: brown;
+  width: 25%;
+  height: 70%;
+}
+
+.chatbot-header {
+  height: 15%;
+  background-color: yellowgreen;
+
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+.logo--header {
+  height: 70%;
+}
+
+.chatbot-title {
+  font-size: 2.4rem;
+}
+
+.chatbot-chat {
+  height: 75%;
+  background-color: coral;
+
+  display: flex;
+}
+
+.chatbot-msg {
+  align-self: baseline;
+  width: 100%;
+  background-color: springgreen;
+
+  display: flex;
+  align-items: flex-end;
+}
+
+.logo--chat {
+  width: 10%;
+}
+
+.chatbot-search {
+  height: 10%;
+  background-color: yellow;
+}
