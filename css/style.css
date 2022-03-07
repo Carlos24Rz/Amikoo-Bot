@@ -55,6 +55,19 @@ body {
   position: relative;
 }
 
+.hidden {
+  display: none;
+}
+
+.chatbot-face {
+  width: 10rem;
+  position: absolute;
+  bottom: 2%;
+  right: 2%;
+
+  cursor: pointer;
+}
+
 .button-bot {
   position: absolute;
   top: 50%;
@@ -114,7 +127,9 @@ body {
   background-color: var(--main-bg-color);
   height: 78%;
   width: 100%;
-  overflow: hidden;
+
+  overflow: scroll;
+  /* scroll-behavior: smooth; */
 
   display: flex;
   flex-direction: column;

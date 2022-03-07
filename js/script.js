@@ -28,3 +28,11 @@ btnAdd.addEventListener("click", function () {
     counter++;
   }
 });
+
+const chatbotContainer = document.querySelector(".chatbot-box");
+const chatbotFace = document.querySelector(".chatbot-face");
+
+chatbotFace.addEventListener("click", function () {
+  chatbotContainer.classList.toggle("hidden");
+  chatbotFace.classList.toggle("hidden");
+});
