@@ -1,6 +1,6 @@
 /*
 --- FONT SIZES (px)
-10 / 12 / 14 / 16 / 18 / 20 / 24 / 30 / 36 / 44 / 52 / 62 / 74 / 86 / 98 
+10 / 12 / 14 / 16 / 18 / 20 / 24 / 30 / 36 / 44 / 52 / 62 / 74 / 86 / 98
 
 --- SHADOWS
 0 2.4rem 4.8rem rgba(0, 0, 0, 0.075);
@@ -120,6 +120,24 @@ body {
 .chatbot-title {
   font-size: 2rem;
   font-weight: 500;
+}
+
+.chatbot-close-button {
+  width: 3rem;
+  height: 3rem;
+  font-size: 2.5rem;
+
+  color: #f3f3f3;
+  background-color: inherit;
+  border-style: solid;
+  margin-left: 13rem;
+  border-radius: 50%;
+  border-color: #004b66;
+  margin-top: .2rem;
+}
+
+.chatbot-close-button:hover {
+  background-color: red;
 }
 
 .chatbot-chat {
