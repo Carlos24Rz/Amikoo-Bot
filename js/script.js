@@ -1,5 +1,5 @@
-chatbotChat = document.querySelector(".chatbot-chat");
-btnAdd = document.querySelector(".button-bot");
+const chatbotChat = document.querySelector(".chatbot-chat");
+const btnAdd = document.querySelector(".button-bot");
 
 const html1 = `<div class="chatbot-msg">
 <img class="logo--chat" src="./img/Logo-header.svg" alt="" />
@@ -23,9 +23,11 @@ btnAdd.addEventListener("click", function () {
   if (counter % 2 == 0) {
     chatbotChat.insertAdjacentHTML("beforeend", html2);
     counter++;
+    chatbotChat.scrollTo(0, chatbotChat.scrollHeight);
   } else {
     chatbotChat.insertAdjacentHTML("beforeend", html1);
     counter++;
+    chatbotChat.scrollTo(0, chatbotChat.scrollHeight);
   }
 });
 
@@ -42,4 +44,10 @@ const chatbotExit = document.querySelector(".chatbot-close-button");
 chatbotExit.addEventListener("click", function () {
   chatbotContainer.classList.toggle("hidden");
   chatbotFace.classList.toggle("hidden");
+});
+
+chatbotChat.scrollIntoView({
+  behavior: "smooth",
+  block: "end",
+  inline: "end",
 });
