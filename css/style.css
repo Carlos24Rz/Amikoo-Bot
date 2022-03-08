@@ -146,13 +146,18 @@ body {
   height: 78%;
   width: 100%;
 
-  overflow: scroll;
+  /* height: 780px;
+  width: 500px; */
+
+  overflow-y: scroll;
   /* scroll-behavior: smooth; */
 
-  display: flex;
+  padding-top: 100px;
+
+  /* display: flex;
   flex-direction: column;
   justify-content: end;
-  align-items: center;
+  align-items: center; */
 }
 
 .chatbot-msg {
