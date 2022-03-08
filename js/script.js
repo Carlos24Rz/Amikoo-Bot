@@ -36,3 +36,10 @@ chatbotFace.addEventListener("click", function () {
   chatbotContainer.classList.toggle("hidden");
   chatbotFace.classList.toggle("hidden");
 });
+
+const chatbotExit = document.querySelector(".chatbot-close-button");
+
+chatbotExit.addEventListener("click", function () {
+  chatbotContainer.classList.toggle("hidden");
+  chatbotFace.classList.toggle("hidden");
+});
