@@ -18,16 +18,19 @@ const html2 = `<div class="chatbot-msg">
 </div>`;
 
 let counter = 1;
+let check = false;
 
 btnAdd.addEventListener("click", function () {
-  if (counter % 2 == 0) {
-    chatbotChat.insertAdjacentHTML("beforeend", html2);
-    counter++;
-    chatbotChat.scrollTo(0, chatbotChat.scrollHeight);
-  } else {
-    chatbotChat.insertAdjacentHTML("beforeend", html1);
-    counter++;
-    chatbotChat.scrollTo(0, chatbotChat.scrollHeight);
+  if (check) {
+    if (counter % 2 == 0) {
+      chatbotChat.insertAdjacentHTML("beforeend", html2);
+      counter++;
+      chatbotChat.scrollTo(0, chatbotChat.scrollHeight);
+    } else {
+      chatbotChat.insertAdjacentHTML("beforeend", html1);
+      counter++;
+      chatbotChat.scrollTo(0, chatbotChat.scrollHeight);
+    }
   }
 });
 
@@ -37,6 +40,7 @@ const chatbotFace = document.querySelector(".chatbot-face");
 chatbotFace.addEventListener("click", function () {
   chatbotContainer.classList.toggle("hidden");
   chatbotFace.classList.toggle("hidden");
+  check = true;
 });
 
 const chatbotExit = document.querySelector(".chatbot-close-button");
@@ -44,6 +48,7 @@ const chatbotExit = document.querySelector(".chatbot-close-button");
 chatbotExit.addEventListener("click", function () {
   chatbotContainer.classList.toggle("hidden");
   chatbotFace.classList.toggle("hidden");
+  check = false;
 });
 
 chatbotChat.scrollIntoView({
