@@ -9,12 +9,9 @@ const html1 = `<div class="chatbot-msg">
 </p>
 </div>`;
 
-const html2 = `<div class="chatbot-msg">
-<p class="chatbot-text">
-  Lorem ipsum dolor sit amet consectetur adipisicing elit. Ipsum
-  libero, sit eum voluptates natus voluptatem dolorum. Beatae sit.
-</p>
+const html2 = `<div class="chatbot-msg chatbot-msg-user">
 <img class="logo--chat" src="./img/Logo-header.svg" alt="" />
+<p class="chatbot-text">Lorem ipsum dolor sit amet.</p>
 </div>`;
 
 let counter = 1;
