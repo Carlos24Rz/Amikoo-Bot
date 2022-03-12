@@ -26,9 +26,12 @@
     <div class="container">
       <button class="button-bot">Add box-text</button>
 
+      <!-- This shows the chatbot face -->
       <img class="chatbot-face" src="./img/Logo-header.svg" alt="" />
 
+      <!-- This is the box for the chat. (It's hidden by the first time) -->
       <div class="chatbot-box hidden">
+        <!-- Header -->
         <div class="chatbot-header">
           <img class="logo--header" src="./img/Logo-header.svg" alt="" />
           <p class="chatbot-title">Amikoo-bot</p>
@@ -36,7 +39,46 @@
             <span>&times;</span>
           </button>
         </div>
+        <!-- Chat -->
         <div class="chatbot-chat">
+          <!-- Message -->
+          <div class="chatbot-msg chatbot-msg-no-face">
+            <img class="logo--chat" src="./img/Logo-header.svg" alt="" />
+
+            <div class="chatbot-msg-content">
+              <p class="chatbot-text">
+                Podrías evaluar el servicio que te acabamos de brindar
+              </p>
+            </div>
+          </div>
+
+          <!-- Message -->
+          <div class="chatbot-msg">
+            <img class="logo--chat" src="./img/Logo-header.svg" alt="" />
+
+            <div class="container-stars chatbot-msg-content">
+              <div class="star-widget">
+                <input type="radio" name="rate" id="rate-5" />
+                <label for="rate-5" class="fa-solid fa-star"></label>
+                <input type="radio" name="rate" id="rate-4" />
+                <label for="rate-4" class="fa-solid fa-star"></label>
+                <input type="radio" name="rate" id="rate-3" />
+                <label for="rate-3" class="fa-solid fa-star"></label>
+                <input type="radio" name="rate" id="rate-2" />
+                <label for="rate-2" class="fa-solid fa-star"></label>
+                <input type="radio" name="rate" id="rate-1" />
+                <label for="rate-1" class="fa-solid fa-star"></label>
+                <form action="#">
+                  <header class="title-star">&nbsp;</header>
+                  <div class="submit-box">
+                    <button type="submit">Post</button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+
+          <!-- Message -->
           <div class="chatbot-msg">
             <img class="logo--chat" src="./img/Logo-header.svg" alt="" />
 
@@ -47,6 +89,7 @@
             </div>
           </div>
 
+          <!-- Message -->
           <div class="chatbot-msg">
             <img class="logo--chat" src="./img/Logo-header.svg" alt="" />
 
@@ -58,6 +101,7 @@
             </div>
           </div>
 
+          <!-- Message -->
           <div class="chatbot-msg">
             <img class="logo--chat" src="./img/Logo-header.svg" alt="" />
             <div class="chatbot-msg-content">
@@ -74,6 +118,7 @@
             </div>
           </div>
 
+          <!-- Message -->
           <div class="chatbot-msg chatbot-msg-user">
             <img class="logo--chat" src="./img/Logo-header.svg" alt="" />
             <div class="chatbot-msg-content">
