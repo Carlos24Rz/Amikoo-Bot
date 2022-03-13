@@ -43,6 +43,28 @@ const btnChatbotLoading = document.querySelector(".btn-chatbot-loading");
 const btnChatbotOptions = document.querySelector(".btn-chatbot-options");
 const btnChatbotUser = document.querySelector(".btn-chatbot-user");
 
+let optionsBox = [...document.querySelectorAll(".chatbot-options")].at(-1);
+
+// SELECTING AN OPTION
+// Event delegation
+// 1. Add event listener to common parent element
+// 2. Determine what element originated the event
+
+const selectOptionHandler = function () {
+  optionsBox.addEventListener("click", function (e) {
+    // const optionSelected = optionsBox.closest(".chatbot-option");
+    if (e.target.classList.contains("chatbot-option")) {
+      chatbotChat.insertAdjacentHTML(
+        "beforeend",
+        htmlUserInput(e.target.textContent)
+      );
+      updateScrollBar();
+    }
+  });
+};
+
+selectOptionHandler();
+
 const htmlChatbotText = (text) => {
   return `
   <div class="chatbot-msg">
@@ -174,6 +196,8 @@ btnChatbotOptions.addEventListener("click", function () {
     "beforeend",
     htmlChatbotOptions(someText, 1, 2, 3, 4)
   );
+  optionsBox = [...document.querySelectorAll(".chatbot-options")].at(-1);
+  selectOptionHandler();
   updateScrollBar();
 });
 
