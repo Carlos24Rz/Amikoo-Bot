@@ -19,12 +19,26 @@
     ></script>
 
     <link rel="stylesheet" href="./css/style.css" />
+    <link rel="stylesheet" href="./css/media-queries.css" />
 
     <script defer src="./js/script.js"></script>
   </head>
   <body>
     <div class="container">
-      <button class="button-bot">Add box-text</button>
+      <!-- <button class="button-bot">Add box-text</button> -->
+
+      <div class="add-options-box">
+        <button class="btn-option btn-chatbot-text-face">
+          Chatbot text (face)
+        </button>
+        <button class="btn-option btn-chatbot-text-no-face">
+          Chatbot text (no face)
+        </button>
+        <button class="btn-option btn-chatbot-review">Chatbot review</button>
+        <button class="btn-option btn-chatbot-loading">Chatbot loading</button>
+        <button class="btn-option btn-chatbot-options">Chatbot options</button>
+        <button class="btn-option btn-chatbot-user">User input</button>
+      </div>
 
       <!-- This shows the chatbot face -->
       <!-- <img class="chatbot-face" src="./img/Logo-chat-hand.svg" alt="" /> -->
@@ -213,7 +227,7 @@
       <div class="chatbot-box hidden">
         <!-- Header -->
         <div class="chatbot-header">
-          <img class="logo--header" src="./img/Logo-header.svg" alt="" />
+          <img class="logo--header" src="./img/Logo-chat-hand.svg" alt="" />
           <p class="chatbot-title">Amikoo-bot</p>
           <button class="chatbot-close-button" type="button">
             <span>&times;</span>

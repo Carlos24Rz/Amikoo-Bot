@@ -54,10 +54,63 @@ body {
   position: relative;
 }
 
+.add-options-box {
+  width: 100%;
+  padding-top: 1%;
+
+  position: absolute;
+
+  display: flex;
+  justify-content: space-around;
+  align-self: start;
+  flex-wrap: wrap;
+}
+
+.btn-option {
+  background-color: #004b66;
+  width: 30%;
+  color: #f3f3f3;
+  font-weight: 400;
+  padding: 1rem 2rem;
+  margin: 1rem 0;
+  border-radius: 1.2rem;
+  cursor: pointer;
+  border: none;
+
+  transition: all 200ms ease-in;
+}
+
+.btn-option:hover {
+  background-color: #0abeff;
+}
+
+/* .button-bot {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+
+  font-size: 2.8rem;
+  width: 25rem;
+  height: 10rem;
+
+  border-radius: 1.2rem;
+  cursor: pointer;
+  border: none;
+
+  transition: all 200ms;
+}
+
+.button-bot:hover {
+  color: #fff;
+  background-color: #000074;
+} */
+
 .hidden {
   display: none;
 }
 
+/* Chabot face icon */
 .chatbot-face {
   width: 15rem;
   position: absolute;
@@ -98,28 +151,6 @@ body {
   100% {
     transform: rotate(0deg) translateX(0px);
   }
-}
-
-.button-bot {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-
-  font-size: 2.8rem;
-  width: 25rem;
-  height: 10rem;
-
-  border-radius: 1.2rem;
-  cursor: pointer;
-  border: none;
-
-  transition: all 200ms;
-}
-
-.button-bot:hover {
-  color: #fff;
-  background-color: #000074;
 }
 
 .chatbot-box {
@@ -264,8 +295,8 @@ body {
 }
 
 .chatbot-msg-user .chatbot-msg-content {
-  /* background: linear-gradient(151.38deg, #e0e5ea 0%, #e7ecf0 100%); */
-  background: linear-gradient(151.38deg, #e4e41d 0%, #fbff00 100%);
+  background: linear-gradient(151.38deg, #e0e5ea 0%, #e7ecf0 100%);
+  /* background: linear-gradient(151.38deg, #e4e41d 0%, #fbff00 100%); */
 }
 
 .chatbot-msg-user .chatbot-text {
@@ -457,7 +488,12 @@ form .title-star {
   font-size: 1.4rem;
   font-family: inherit;
   color: inherit;
-  border: none;
+  border: 0;
   border-radius: 1.2rem;
   box-shadow: 0 2.4rem 4.8rem rgba(0, 0, 0, 0.4);
+}
+
+.search-bar:focus {
+  outline: none;
+  border: none;
 }
