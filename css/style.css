@@ -59,12 +59,45 @@ body {
 }
 
 .chatbot-face {
-  width: 10rem;
+  width: 15rem;
   position: absolute;
   bottom: 2%;
   right: 2%;
 
   cursor: pointer;
+}
+
+#Eye-right,
+#Eye-left {
+  /* transition: all 75ms ease-in-out; */
+  animation: closeEyes 4s infinite alternate;
+}
+
+@keyframes closeEyes {
+  0% {
+    height: 0rem;
+  }
+
+  10%,
+  100% {
+    height: 0.75rem;
+  }
+}
+
+#Hand_right {
+  transition: all 5s ease-in-out;
+  animation: moveHand 2.5s infinite alternate;
+}
+
+@keyframes moveHand {
+  0% {
+    transform: rotate(4deg) translateX(5px);
+  }
+
+  20%,
+  100% {
+    transform: rotate(0deg) translateX(0px);
+  }
 }
 
 .button-bot {
@@ -197,6 +230,12 @@ body {
   width: 15%;
   background-color: transparent;
   box-shadow: 0 2.4rem 4.8rem rgba(0, 0, 0, 0.075);
+
+  /* background-color: yellow; */
+}
+
+.logo--chat:hover .right-eye {
+  height: 0.2rem;
 }
 
 /* Content of the message */
@@ -391,6 +430,8 @@ form .title-star {
 .submit-box button {
   height: 80%;
   width: 70%;
+
+  cursor: pointer;
   border-radius: 0.8rem;
   border: none;
   outline: none;

@@ -58,3 +58,11 @@ chatbotChat.scrollIntoView({
   block: "end",
   inline: "end",
 });
+
+// ANIMATION CHATBOT
+
+// chatbotFace.addEventListener("mouseover", function () {
+//   const rightEye = document.querySelector("#Eye-right");
+//   console.log(rightEye);
+//   // rightEye.x = "1.2rem";
+// });
