@@ -38,6 +38,7 @@
         <button class="btn-option btn-chatbot-loading">Chatbot loading</button>
         <button class="btn-option btn-chatbot-options">Chatbot options</button>
         <button class="btn-option btn-chatbot-user">User input</button>
+        <button class="btn-option btn-form">Form</button>
       </div>
 
       <!-- This shows the chatbot face -->
@@ -252,17 +253,42 @@
 
             <div class="container-stars chatbot-msg-content">
               <div class="star-widget">
-                <input type="radio" name="rate" id="rate-5" />
+                <input
+                  class="input-star"
+                  type="radio"
+                  name="rate"
+                  id="rate-5"
+                />
                 <label for="rate-5" class="fa-solid fa-star"></label>
-                <input type="radio" name="rate" id="rate-4" />
+                <input
+                  class="input-star"
+                  type="radio"
+                  name="rate"
+                  id="rate-4"
+                />
                 <label for="rate-4" class="fa-solid fa-star"></label>
-                <input type="radio" name="rate" id="rate-3" />
+                <input
+                  class="input-star"
+                  type="radio"
+                  name="rate"
+                  id="rate-3"
+                />
                 <label for="rate-3" class="fa-solid fa-star"></label>
-                <input type="radio" name="rate" id="rate-2" />
+                <input
+                  class="input-star"
+                  type="radio"
+                  name="rate"
+                  id="rate-2"
+                />
                 <label for="rate-2" class="fa-solid fa-star"></label>
-                <input type="radio" name="rate" id="rate-1" />
+                <input
+                  class="input-star"
+                  type="radio"
+                  name="rate"
+                  id="rate-1"
+                />
                 <label for="rate-1" class="fa-solid fa-star"></label>
-                <form action="#">
+                <form class="form-stars" action="#">
                   <header class="title-star">&nbsp;</header>
                   <div class="submit-box">
                     <button type="submit">Post</button>
@@ -319,6 +345,30 @@
               <p class="chatbot-text">Lorem ipsum dolor sit amet.</p>
             </div>
           </div>
+
+          <!-- Formulario -->
+          <div class="chatbot-msg">
+            <img class="logo--chat" src="./img/Logo-header.svg" alt="" />
+
+            <div class="chatbot-msg-content">
+              <form class="form-to-mail" action="#">
+                <label for="name">Ingresa tu nombre</label>
+                <input id="name" type="text" />
+
+                <label for="email">Ingresa tu correo electrónico</label>
+                <input id="email" type="text" />
+
+                <label for="msg">Ingresa tu pregunta/mensaje</label>
+                <input id="msg" type="text" />
+
+                <button class="btn-submit-form-email" type="submit">
+                  Enviar
+                </button>
+              </form>
+            </div>
+          </div>
+
+          <!--  -->
         </div>
         <div class="chatbot-search">
           <!-- <div class="search-bar"></div> -->

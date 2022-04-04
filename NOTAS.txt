@@ -1,0 +1,5 @@
+* Hacer formulario
+* Corregir para que la cabeza y el chatbot box sea sticky
+* Hacer la base de datos
+
+* Motor de procesamiento de lenguaje natural

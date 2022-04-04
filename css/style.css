@@ -381,7 +381,7 @@ body {
   flex-direction: column;
 }
 
-.container-stars .star-widget input {
+.container-stars .star-widget .input-star {
   display: none;
 }
 
@@ -406,40 +406,40 @@ body {
   transition: all 0.2s ease;
 }
 
-input:not(:checked) ~ label:hover,
-input:not(:checked) ~ label:hover ~ label {
+.input-star:not(:checked) ~ label:hover,
+.input-star:not(:checked) ~ label:hover ~ label {
   color: #fd4;
 }
 
-input:checked ~ label {
+.input-star:checked ~ label {
   color: #fd4;
 }
 
-form {
+.form-stars {
   width: 100%;
 }
 
-#rate-1:checked ~ form .title-star:before {
+#rate-1:checked ~ .form-stars .title-star:before {
   content: " I just hate it";
 }
 
-#rate-2:checked ~ form .title-star:before {
+#rate-2:checked ~ .form-stars .title-star:before {
   content: " I don't like it";
 }
 
-#rate-3:checked ~ form .title-star:before {
+#rate-3:checked ~ .form-stars .title-star:before {
   content: " It is awesome";
 }
 
-#rate-4:checked ~ form .title-star:before {
+#rate-4:checked ~ .form-stars .title-star:before {
   content: " I just like it";
 }
 
-#rate-5:checked ~ form .title-star:before {
+#rate-5:checked ~ .form-stars .title-star:before {
   content: " I just love it";
 }
 
-form .title-star {
+.form-stars .title-star {
   width: 100%;
   font-style: 2.5rem;
   padding-top: 0.4rem;
@@ -495,5 +495,51 @@ form .title-star {
 
 .search-bar:focus {
   outline: none;
+  border: none;
+}
+
+/**************************/
+/* CHATBOT FORM to EMAIL */
+/**************************/
+
+.error-option {
+  margin-top: 0.5rem;
+  font-weight: 600;
+}
+
+.form-to-mail {
+  display: flex;
+  flex-direction: column;
+  /* padding-left: 1.2rem; */
+}
+
+.form-to-mail label,
+.form-to-mail input {
+  width: 100%;
+}
+
+.form-to-mail label {
+  margin-top: 1.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.form-to-mail input {
+  border-radius: 1rem;
+  border: none;
+  height: 2.5rem;
+}
+
+.form-to-mail input:active {
+  border: none;
+}
+
+.btn-submit-form-email {
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+  width: 50%;
+  height: 3rem;
+  align-self: center;
+
+  border-radius: 1.2rem;
   border: none;
 }

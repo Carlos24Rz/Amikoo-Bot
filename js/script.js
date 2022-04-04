@@ -100,17 +100,42 @@ const htmlChatbotReview = () => {
 
     <div class="container-stars chatbot-msg-content">
       <div class="star-widget">
-        <input type="radio" name="rate" id="rate-5" />
+        <input
+          class="input-star"
+          type="radio"
+          name="rate"
+          id="rate-5"
+        />
         <label for="rate-5" class="fa-solid fa-star"></label>
-        <input type="radio" name="rate" id="rate-4" />
+        <input
+          class="input-star"
+          type="radio"
+          name="rate"
+          id="rate-4"
+        />
         <label for="rate-4" class="fa-solid fa-star"></label>
-        <input type="radio" name="rate" id="rate-3" />
+        <input
+          class="input-star"
+          type="radio"
+          name="rate"
+          id="rate-3"
+        />
         <label for="rate-3" class="fa-solid fa-star"></label>
-        <input type="radio" name="rate" id="rate-2" />
+        <input
+          class="input-star"
+          type="radio"
+          name="rate"
+          id="rate-2"
+        />
         <label for="rate-2" class="fa-solid fa-star"></label>
-        <input type="radio" name="rate" id="rate-1" />
+        <input
+          class="input-star"
+          type="radio"
+          name="rate"
+          id="rate-1"
+        />
         <label for="rate-1" class="fa-solid fa-star"></label>
-        <form action="#">
+        <form class="form-stars" action="#">
           <header class="title-star">&nbsp;</header>
           <div class="submit-box">
             <button type="submit">Post</button>
@@ -118,7 +143,8 @@ const htmlChatbotReview = () => {
         </form>
       </div>
     </div>
-  </div>`;
+  </div>
+  `;
 };
 
 const htmlChatbotLoading = () => {
@@ -206,6 +232,9 @@ btnChatbotUser.addEventListener("click", function () {
   updateScrollBar();
 });
 
+// FORM
+// const btnForm = document.querySelector(".btn-form");
+
 // SEARCH BAR
 const searchBarEl = document.querySelector(".search-bar");
 
@@ -222,5 +251,110 @@ searchBarEl.addEventListener("keyup", function (e) {
     searchBarEl.value = "";
     // chatbotChat.scrollTo(0, chatbotChat.scrollHeight);
     updateScrollBar();
+  }
+});
+
+const htmlFormEmail = () => {
+  return `
+<div class="chatbot-msg">
+  <img class="logo--chat" src="./img/Logo-header.svg" alt="" />
+
+  <div class="chatbot-msg-content">
+    <form class="form-to-mail" action="#">
+      <label for="name">Ingresa tu nombre</label>
+      <input id="name" type="text" />
+
+      <label for="email">Ingresa tu correo electrónico</label>
+      <input id="email" type="text" />
+
+      <label for="msg">Ingresa tu pregunta/mensaje</label>
+      <input id="msg" type="text" />
+
+      <button class="btn-submit-form-email" type="submit">
+        Enviar
+      </button>
+    </form>
+  </div>
+</div>`;
+};
+
+const htmlChatbotErrorForm = (text) => {
+  return `
+  <div class="chatbot-msg">
+    <img class="logo--chat" src="./img/Logo-header.svg" alt="" />
+
+    <div class="chatbot-msg-content">
+      <p class="chatbot-text">
+        Ha ocurrido un error al enviar el formulario en los siguientes campos:
+
+        ${text.map((err) => `<p class="error-option">${err}</p>`)}
+
+        <br>
+        <p>Intenta de nuevo...</p>
+      </p>
+    </div>
+  </div>
+`;
+};
+
+// Formulario
+
+// Functions to check each input
+
+const checkName = (string) => {
+  const re = new RegExp(/^[a-zA-Z ]+$/);
+
+  return re.test(string);
+};
+
+const checkEmail = (string) => {
+  const re = new RegExp(
+    /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+  );
+
+  return re.test(string);
+};
+
+const checkMessage = (string) => {
+  const maxWords = 50;
+  const numWords = string.trim().split(" ").length;
+
+  if (numWords < maxWords && numWords > 1) {
+    return true;
+  } else {
+    return false;
+  }
+};
+
+let formToMail = [...document.querySelectorAll(".form-to-mail")].at(-1);
+
+const errorName = "Error al ingresar el nombre";
+const errorEmail = "Error al ingresar mail";
+const errorMsg = "Error al ingresa el mensaje";
+
+// chatbotChat.insertAdjacentHTML("beforeend", htmlUserInput(someText));
+
+formToMail.addEventListener("submit", function (e) {
+  e.preventDefault();
+
+  const name = e.target[0].value;
+  const email = e.target[1].value;
+  const msg = e.target[2].value;
+
+  const errors = [];
+
+  checkName(name) ? "" : errors.push(errorName);
+  checkEmail(email) ? "" : errors.push(errorEmail);
+  checkMessage(msg) ? "" : errors.push(errorMsg);
+
+  console.log(errors);
+
+  if (errors.length > 0) {
+    chatbotChat.insertAdjacentHTML("beforeend", htmlChatbotErrorForm(errors));
+    updateScrollBar();
+
+    chatbotChat.insertAdjacentHTML("beforeend", htmlFormEmail());
+    updateScrollBar();
+    formToMail = [...document.querySelectorAll(".form-to-mail")].at(-1);
   }
 });
