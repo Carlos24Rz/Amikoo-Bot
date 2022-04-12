@@ -6,12 +6,6 @@ const chatbotExit = document.querySelector(".chatbot-close-button");
 
 // Function that put down the scroll bar
 const updateScrollBar = function () {
-  // chatbotChat.scrollIntoView({
-  //   behavior: "smooth",
-  //   block: "end",
-  //   inline: "end",
-  // });
-
   chatbotChat.scrollTo(0, chatbotChat.scrollHeight);
 };
 
@@ -28,9 +22,7 @@ const handleShowChatbot = function () {
   });
 
   updateScrollBar();
-  // chatbotChat.scrollTo(0, chatbotChat.scrollHeight);
 };
-
 handleShowChatbot();
 
 // Menu to add texts box in the chatbot
@@ -43,12 +35,11 @@ const btnChatbotLoading = document.querySelector(".btn-chatbot-loading");
 const btnChatbotOptions = document.querySelector(".btn-chatbot-options");
 const btnChatbotUser = document.querySelector(".btn-chatbot-user");
 
-let optionsBox = [...document.querySelectorAll(".chatbot-options")].at(-1);
-
 // SELECTING AN OPTION
 // Event delegation
 // 1. Add event listener to common parent element
 // 2. Determine what element originated the event
+let optionsBox = [...document.querySelectorAll(".chatbot-options")].at(-1);
 
 const selectOptionHandler = function () {
   optionsBox.addEventListener("click", function (e) {
@@ -58,6 +49,7 @@ const selectOptionHandler = function () {
         "beforeend",
         htmlUserInput(e.target.textContent)
       );
+
       updateScrollBar();
     }
   });
@@ -166,7 +158,7 @@ const htmlChatbotOptions = (text, ...options) => {
     .map((option) => `<p class="chatbot-option">${option}</p>`)
     .join("");
 
-  console.log(htmlOptions);
+  // console.log(htmlOptions);
 
   return `
           <div class="chatbot-msg">
@@ -222,6 +214,7 @@ btnChatbotOptions.addEventListener("click", function () {
     "beforeend",
     htmlChatbotOptions(someText, 1, 2, 3, 4)
   );
+  optionsBox.classList.add("block-chatbot-options");
   optionsBox = [...document.querySelectorAll(".chatbot-options")].at(-1);
   selectOptionHandler();
   updateScrollBar();

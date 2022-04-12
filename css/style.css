@@ -318,6 +318,11 @@ body {
   gap: 1rem;
 }
 
+/* This allows to only accept inputs from the last chatbot-options */
+.block-chatbot-options {
+  pointer-events: none;
+}
+
 .chatbot-option {
   background-color: #f3f3f3;
   height: 3rem;
