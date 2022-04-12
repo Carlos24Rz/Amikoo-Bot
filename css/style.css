@@ -112,8 +112,9 @@ body {
 
 /* Chabot face icon */
 .chatbot-face {
+  z-index: 11;
   width: 15rem;
-  position: absolute;
+  position: fixed;
   bottom: 2%;
   right: 2%;
 
@@ -154,6 +155,10 @@ body {
 }
 
 .chatbot-box {
+  z-index: 11;
+  position: fixed;
+  right: 0%;
+  bottom: 0%;
   background-color: var(--main-bg-color);
   width: 24%;
   height: 80%;
