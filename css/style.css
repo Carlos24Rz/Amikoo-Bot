@@ -277,7 +277,7 @@ body {
 /* Content of the message */
 .chatbot-msg-content {
   background: linear-gradient(151.38deg, #0078a3 0%, #0abeff 100%);
-  width: 85%;
+  width: 80%;
   color: #f3f3f3;
   font-size: 1.6rem;
   line-height: 1.4;
@@ -343,13 +343,17 @@ body {
 
 /**************************/
 /* CHATBOT LOADER*/
+
 .loader {
   width: 40%;
+  /* width: 85%; */
   height: 5rem;
   display: flex;
   display: flex;
   justify-content: center;
   align-items: flex-end;
+
+  /* margin-right: 45%; */
 }
 
 .loader > span {
