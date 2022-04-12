@@ -491,6 +491,7 @@ body {
 }
 
 .search-bar {
+  pointer-events: none;
   background-color: #e7ecf0;
   width: 90%;
   height: 65%;
