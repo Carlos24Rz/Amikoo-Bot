@@ -57,6 +57,12 @@ const selectOptionHandler = function () {
 
 selectOptionHandler();
 
+const hideLoader = function (sec) {
+  return new Promise(function (resolve) {
+    setTimeout(resolve, seconds * 1000);
+  });
+};
+
 const htmlChatbotText = (text) => {
   return `
   <div class="chatbot-msg">
@@ -141,7 +147,7 @@ const htmlChatbotReview = () => {
 
 const htmlChatbotLoading = () => {
   return `
-  <div class="chatbot-msg">
+  <div class="chatbot-msg chatbot-loader">
     <img class="logo--chat" src="./img/Logo-header.svg" alt="" />
 
     <div class="chatbot-msg-content loader">
@@ -204,9 +210,13 @@ btnChatbotReview.addEventListener("click", function () {
   updateScrollBar();
 });
 
+// btnChatbotLoading.addEventListener("click", function () {
+//   chatbotChat.insertAdjacentHTML("beforeend", htmlChatbotLoading());
+//   updateScrollBar();
+// });
+
 btnChatbotLoading.addEventListener("click", function () {
-  chatbotChat.insertAdjacentHTML("beforeend", htmlChatbotLoading());
-  updateScrollBar();
+  showLoader(2.5);
 });
 
 btnChatbotOptions.addEventListener("click", function () {
@@ -226,7 +236,6 @@ btnChatbotUser.addEventListener("click", function () {
 });
 
 // FORM
-// const btnForm = document.querySelector(".btn-form");
 
 // SEARCH BAR
 const searchBarEl = document.querySelector(".search-bar");
@@ -279,6 +288,34 @@ const htmlFormEmail = () => {
   </div>
 </div>`;
 };
+
+// mostrar loader
+const wait = function (seconds) {
+  return new Promise(function (resolve) {
+    setTimeout(resolve, seconds * 1000);
+  });
+};
+
+const showLoader = function (sec) {
+  return new Promise(function (resolve) {
+    chatbotChat.insertAdjacentHTML("beforeend", htmlChatbotLoading());
+    updateScrollBar();
+
+    setTimeout(resolve, 1000 * sec);
+  });
+};
+
+const removeLoader = function () {
+  lastLoaderElement = [...document.querySelectorAll(".chatbot-loader")].at(-1);
+  lastLoaderElement.remove();
+  updateScrollBar();
+};
+
+// lastLoaderElement = [...document.querySelectorAll(".chatbot-loader")].at(
+//   -1
+// );
+// lastLoaderElement.remove();
+// updateScrollBar();
 
 // Formulario
 // Functions to check each input
@@ -350,7 +387,23 @@ formToMail.addEventListener("submit", function (e) {
 
   if (!isError) {
     // En caso de que no haya errores
-    console.log("Todo CHIDOOO");
-    formToMail.style.pointerEvents = "none";
+    // console.log("Todo CHIDOOO");
+    formToMail.style.pointerEvents = "none"; // Se bloquea el formulario para no aceptar más información
+    showLoader(2.5).then(() => {
+      removeLoader();
+
+      // Change this to a function that inserts the html
+      chatbotChat.insertAdjacentHTML(
+        "beforeend",
+        htmlChatbotText("Hemos recibido tus datos, muchas gracias.")
+      );
+      updateScrollBar();
+    });
+
+    // chatbotChat.insertAdjacentHTML(
+    //   "beforeend",
+    //   htmlChatbotText("Hemos recibido tus datos, muchas gracias.")
+    // );
+    // updateScrollBar();
   }
 });
