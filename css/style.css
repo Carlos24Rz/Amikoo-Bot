@@ -558,6 +558,7 @@ body {
 }
 
 .form-to-mail textarea {
+  font-family: "Inter", sans-serif;
   border: none;
   outline: none;
   resize: none;

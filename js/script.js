@@ -280,27 +280,7 @@ const htmlFormEmail = () => {
 </div>`;
 };
 
-const htmlChatbotErrorForm = (text) => {
-  return `
-  <div class="chatbot-msg">
-    <img class="logo--chat" src="./img/Logo-header.svg" alt="" />
-
-    <div class="chatbot-msg-content">
-      <p class="chatbot-text">
-        Ha ocurrido un error al enviar el formulario en los siguientes campos:
-
-        ${text.map((err) => `<p class="error-option">${err}</p>`)}
-
-        <br>
-        <p>Intenta de nuevo...</p>
-      </p>
-    </div>
-  </div>
-`;
-};
-
 // Formulario
-
 // Functions to check each input
 
 const checkName = (string) => {
@@ -318,10 +298,14 @@ const checkEmail = (string) => {
 };
 
 const checkMessage = (string) => {
-  const maxWords = 50;
+  const maxWords = 100;
   const numWords = string.trim().split(" ").length;
 
-  if (numWords < maxWords && numWords > 1) {
+  if (
+    numWords < maxWords &&
+    numWords >= 1 &&
+    string.trim().split(" ")[0] !== ""
+  ) {
     return true;
   } else {
     return false;
@@ -330,39 +314,43 @@ const checkMessage = (string) => {
 
 let formToMail = [...document.querySelectorAll(".form-to-mail")].at(-1);
 
-const errorName = "Error al ingresar el nombre";
-const errorEmail = "Error al ingresar mail";
-const errorMsg = "Error al ingresa el mensaje";
-
-// chatbotChat.insertAdjacentHTML("beforeend", htmlUserInput(someText));
-
 formToMail.addEventListener("submit", function (e) {
   e.preventDefault();
+
+  const errorName = "Error al ingresar el nombre. Intenta de nuevo";
+  const errorEmail = "Error al ingresar mail. Intenta de nuevo";
+  const errorMsg = "Error al ingresa el mensaje. Intenta de nuevo";
 
   const name = e.target[0].value;
   const email = e.target[1].value;
   const msg = e.target[2].value;
 
-  const errors = [];
+  let isError = false;
 
-  checkName(name) ? "" : errors.push(errorName);
-  checkEmail(email) ? "" : errors.push(errorEmail);
-  checkMessage(msg) ? "" : errors.push(errorMsg);
+  if (!checkName(name)) {
+    placeholderName = document.querySelector("#input-name");
+    placeholderName.placeholder = errorName;
+    placeholderName.classList.add("error-input-form");
+    isError = true;
+  }
 
-  console.log(errors);
+  if (!checkEmail(email)) {
+    placeholderEmail = document.querySelector("#input-email");
+    placeholderEmail.placeholder = errorEmail;
+    placeholderEmail.classList.add("error-input-form");
+    isError = true;
+  }
 
-  if (errors.length > 0) {
-    chatbotChat.insertAdjacentHTML("beforeend", htmlChatbotErrorForm(errors));
-    updateScrollBar();
+  if (!checkMessage(msg)) {
+    placeholderMsg = document.querySelector("#input-msg");
+    placeholderMsg.placeholder = errorMsg;
+    placeholderMsg.classList.add("error-input-form");
+    isError = true;
+  }
 
-    chatbotChat.insertAdjacentHTML("beforeend", htmlFormEmail());
-    updateScrollBar();
-    formToMail = [...document.querySelectorAll(".form-to-mail")].at(-1);
+  if (!isError) {
+    // En caso de que no haya errores
+    console.log("Todo CHIDOOO");
+    formToMail.style.pointerEvents = "none";
   }
 });
-
-// Formulario placeholders
-// place1 = document.querySelector("#name");
-// place1.placeholder = "Error";
-// place1.classList.add("error-input-form");
-// console.log(place1.placeholder);

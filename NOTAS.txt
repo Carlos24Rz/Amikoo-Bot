@@ -2,8 +2,9 @@ POR HACER
 - Componer cara del chatbot principal (Verificar animaciones en cada view size)
 - Agregar más animaciones
 - Agregar animaciones dentro del chatbot-box
-- Manejo de errores del formulario
 - Checar el chatbot-review
+- Generar la entrada del chatbot (Hacer que salga el mensaje de bienvenida)
+- Mostrar respuesta en el chabtot cuando los datos recibidos del form son correctos
 
 LISTO
 - Chatbot sticky
@@ -13,6 +14,7 @@ LISTO
 - Verificar boton de cierre de chatbot (no esta centrado)
 - Se ve feo el header del chatbot-box
 - Se ve feo el formulario
+- Manejo de errores del formulario
 
 EXTRA
 * Motor de procesamiento de lenguaje natural
