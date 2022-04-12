@@ -20,6 +20,8 @@ Medium: 11px
 :root {
   --main-bg-color: #f3f3f3;
   --red-color: #ff0022;
+  --secundary-color: #004b66;
+  --secundary-color-light: #006e96;
 }
 
 * {
@@ -68,7 +70,7 @@ body {
 }
 
 .btn-option {
-  background-color: #004b66;
+  background-color: var(--secundary-color);
   width: 30%;
   color: #f3f3f3;
   font-weight: 400;
@@ -171,7 +173,7 @@ body {
 /**************************/
 
 .chatbot-header {
-  background-color: #004b66;
+  background-color: var(--secundary-color);
   color: #f3f3f3;
   height: 10%;
   border-radius: 1.2rem 1.2rem 0 0;
@@ -550,19 +552,53 @@ body {
   border-radius: 1rem;
   border: none;
   height: 2.5rem;
+
+  padding: 0.2rem 1rem;
+  font-size: 1.1rem;
 }
 
-.form-to-mail input:active {
+.form-to-mail textarea {
   border: none;
+  outline: none;
+  resize: none;
+  /* background-color: yellow; */
+  border-radius: 1rem;
+
+  padding: 0.2rem 1rem;
+  font-size: 1.1rem;
+
+  height: 10em;
+}
+
+.form-to-mail input:focus {
+  outline: none;
 }
 
 .btn-submit-form-email {
+  color: #f3f3f3;
+  background-color: var(--secundary-color);
+  font-weight: 600;
+  width: 35%;
+  height: 3rem;
+
+  cursor: pointer;
   margin-top: 2rem;
   margin-bottom: 1rem;
-  width: 50%;
-  height: 3rem;
+
   align-self: center;
 
   border-radius: 1.2rem;
   border: none;
+
+  transition: all 0.2s;
+}
+
+.btn-submit-form-email:hover {
+  background-color: var(--secundary-color-light);
+}
+
+/* Error en el placeholder */
+
+.error-input-form::placeholder {
+  color: red;
 }

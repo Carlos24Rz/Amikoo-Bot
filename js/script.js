@@ -249,19 +249,28 @@ searchBarEl.addEventListener("keyup", function (e) {
 
 const htmlFormEmail = () => {
   return `
-<div class="chatbot-msg">
+  <div class="chatbot-msg">
   <img class="logo--chat" src="./img/Logo-header.svg" alt="" />
 
   <div class="chatbot-msg-content">
     <form class="form-to-mail" action="#">
-      <label for="name">Ingresa tu nombre</label>
-      <input id="name" type="text" />
+      <label for="name">Nombre</label>
+      <input id="name" type="text" placeholder="Angel Gonzalez" />
 
-      <label for="email">Ingresa tu correo electrónico</label>
-      <input id="email" type="text" />
+      <label for="email">Correo electrónico</label>
+      <input
+        id="email"
+        type="text"
+        placeholder="angelGlez@hotmail.com"
+      />
 
-      <label for="msg">Ingresa tu pregunta/mensaje</label>
-      <input id="msg" type="text" />
+      <label for="msg">Pregunta/mensaje</label>
+      <textarea
+        class="input-msg"
+        id="msg"
+        placeholder="(Menos de 100 palabras)"
+      ></textarea>
+      <!-- <input class="input-msg" id="msg" type="text" /> -->
 
       <button class="btn-submit-form-email" type="submit">
         Enviar
@@ -351,3 +360,9 @@ formToMail.addEventListener("submit", function (e) {
     formToMail = [...document.querySelectorAll(".form-to-mail")].at(-1);
   }
 });
+
+// Formulario placeholders
+// place1 = document.querySelector("#name");
+// place1.placeholder = "Error";
+// place1.classList.add("error-input-form");
+// console.log(place1.placeholder);

@@ -1,6 +1,5 @@
 POR HACER
-- Se ve feo el formulario
-- Componer cara del chatbot
+- Componer cara del chatbot principal (Verificar animaciones en cada view size)
 - Agregar más animaciones
 - Agregar animaciones dentro del chatbot-box
 - Manejo de errores del formulario
@@ -13,5 +12,7 @@ LISTO
 - La cara del bot es más grande en la animación de pensar
 - Verificar boton de cierre de chatbot (no esta centrado)
 - Se ve feo el header del chatbot-box
+- Se ve feo el formulario
 
+EXTRA
 * Motor de procesamiento de lenguaje natural
