@@ -249,6 +249,20 @@ body {
 }
 
 /* Message */
+
+@keyframes append-animate {
+  from {
+    /* transform: scale(0); */
+    transform: translateY(-8%);
+    opacity: 0;
+  }
+  to {
+    /* transform: scale(1); */
+    transform: translateY(0%);
+    opacity: 1;
+  }
+}
+
 .chatbot-msg {
   /* background-color: springgreen; */
   align-self: baseline;
@@ -261,6 +275,8 @@ body {
   display: flex;
   gap: 5%;
   align-items: flex-end;
+
+  animation: append-animate 0.3s linear;
 }
 
 /* Message without face */
