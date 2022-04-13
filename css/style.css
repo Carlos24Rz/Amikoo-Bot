@@ -441,25 +441,26 @@ body {
 
 .form-stars {
   width: 100%;
+  /* background-color: #004b66; */
 }
 
-#rate-1:checked ~ .form-stars .title-star:before {
+#rate-1:checked ~ .title-star:before {
   content: " I just hate it";
 }
 
-#rate-2:checked ~ .form-stars .title-star:before {
+#rate-2:checked ~ .title-star:before {
   content: " I don't like it";
 }
 
-#rate-3:checked ~ .form-stars .title-star:before {
+#rate-3:checked ~ .title-star:before {
   content: " It is awesome";
 }
 
-#rate-4:checked ~ .form-stars .title-star:before {
+#rate-4:checked ~ .title-star:before {
   content: " I just like it";
 }
 
-#rate-5:checked ~ .form-stars .title-star:before {
+#rate-5:checked ~ .title-star:before {
   content: " I just love it";
 }
 
@@ -482,14 +483,24 @@ body {
   align-items: center;
 }
 
-.submit-box button {
+.submit-box .btn-submit-form-stars {
   height: 80%;
-  width: 70%;
+  width: 40%;
+
+  color: #f3f3f3;
+  background-color: var(--secundary-color);
+  font-weight: 600;
 
   cursor: pointer;
   border-radius: 0.8rem;
   border: none;
   outline: none;
+
+  transition: all 0.2s;
+}
+
+.submit-box .btn-submit-form-stars:hover {
+  background-color: var(--secundary-color-light);
 }
 
 /**************************/

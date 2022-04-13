@@ -97,49 +97,57 @@ const htmlChatbotReview = () => {
     <img class="logo--chat" src="./img/Logo-header.svg" alt="" />
 
     <div class="container-stars chatbot-msg-content">
-      <div class="star-widget">
-        <input
-          class="input-star"
-          type="radio"
-          name="rate"
-          id="rate-5"
-        />
-        <label for="rate-5" class="fa-solid fa-star"></label>
-        <input
-          class="input-star"
-          type="radio"
-          name="rate"
-          id="rate-4"
-        />
-        <label for="rate-4" class="fa-solid fa-star"></label>
-        <input
-          class="input-star"
-          type="radio"
-          name="rate"
-          id="rate-3"
-        />
-        <label for="rate-3" class="fa-solid fa-star"></label>
-        <input
-          class="input-star"
-          type="radio"
-          name="rate"
-          id="rate-2"
-        />
-        <label for="rate-2" class="fa-solid fa-star"></label>
-        <input
-          class="input-star"
-          type="radio"
-          name="rate"
-          id="rate-1"
-        />
-        <label for="rate-1" class="fa-solid fa-star"></label>
-        <form class="form-stars" action="#">
-          <header class="title-star">&nbsp;</header>
-          <div class="submit-box">
-            <button type="submit">Post</button>
-          </div>
-        </form>
-      </div>
+      <form class="form-stars" action="#">
+        <div class="star-widget">
+          <input
+            class="input-star"
+            type="radio"
+            name="rate"
+            id="rate-5"
+            value="5"
+          />
+          <label for="rate-5" class="fa-solid fa-star"></label>
+          <input
+            class="input-star"
+            type="radio"
+            name="rate"
+            id="rate-4"
+            value="4"
+          />
+          <label for="rate-4" class="fa-solid fa-star"></label>
+          <input
+            class="input-star"
+            type="radio"
+            name="rate"
+            id="rate-3"
+            value="3"
+          />
+          <label for="rate-3" class="fa-solid fa-star"></label>
+          <input
+            class="input-star"
+            type="radio"
+            name="rate"
+            id="rate-2"
+            value="2"
+          />
+          <label for="rate-2" class="fa-solid fa-star"></label>
+          <input
+            class="input-star"
+            type="radio"
+            name="rate"
+            id="rate-1"
+            value="1"
+          />
+          <label for="rate-1" class="fa-solid fa-star"></label>
+          <header class="title-star">&nbsp;</header>  
+        </div>
+
+        <div class="submit-box">
+          <button class="btn-submit-form-stars" type="submit">
+            Post
+          </button>
+        </div>
+      </form>
     </div>
   </div>
   `;
@@ -349,10 +357,21 @@ const checkMessage = (string) => {
   }
 };
 
+// Formulario stars
+let formStars = [...document.querySelectorAll(".form-stars")].at(-1);
+
+formStars.addEventListener("submit", function (e) {
+  e.preventDefault();
+  const answer = document.querySelector('input[name="rate"]:checked').value;
+  // console.log(answer);
+  formStars.style.pointerEvents = "none"; // Se bloquea el formulario para no aceptar más inputs
+});
+
 let formToMail = [...document.querySelectorAll(".form-to-mail")].at(-1);
 
 formToMail.addEventListener("submit", function (e) {
   e.preventDefault();
+  // console.log(e.target[0].value);
 
   const errorName = "Error al ingresar el nombre. Intenta de nuevo";
   const errorEmail = "Error al ingresar mail. Intenta de nuevo";
@@ -400,10 +419,6 @@ formToMail.addEventListener("submit", function (e) {
       updateScrollBar();
     });
 
-    // chatbotChat.insertAdjacentHTML(
-    //   "beforeend",
-    //   htmlChatbotText("Hemos recibido tus datos, muchas gracias.")
-    // );
-    // updateScrollBar();
+    // console.log("Juaaa");
   }
 });

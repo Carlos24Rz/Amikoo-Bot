@@ -1,10 +1,8 @@
 POR HACER
+- Generar la entrada del chatbot (Hacer que salga el mensaje de bienvenida)
 - Componer cara del chatbot principal (Verificar animaciones en cada view size)
 - Agregar más animaciones
 - Agregar animaciones dentro del chatbot-box
-- Checar el chatbot-review
-- Generar la entrada del chatbot (Hacer que salga el mensaje de bienvenida)
-- Mostrar respuesta en el chabtot cuando los datos recibidos del form son correctos
 
 LISTO
 - Chatbot sticky
@@ -15,6 +13,8 @@ LISTO
 - Se ve feo el header del chatbot-box
 - Se ve feo el formulario
 - Manejo de errores del formulario
+- Mostrar respuesta en el chabtot cuando los datos recibidos del form son correctos
+- Componer el chatbot-review y recibir la informacion de la opcion seleccionada
 
 EXTRA
 * Motor de procesamiento de lenguaje natural
