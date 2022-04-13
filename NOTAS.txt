@@ -16,6 +16,7 @@ LISTO
 - Mostrar respuesta en el chabtot cuando los datos recibidos del form son correctos
 - Componer el chatbot-review y recibir la informacion de la opcion seleccionada
 - Verificar error inputs del formulario de datos
+- Componer para que funcione los forms una vez al darle click al boton del menu
 
 EXTRA
 * Motor de procesamiento de lenguaje natural

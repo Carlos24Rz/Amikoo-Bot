@@ -34,6 +34,7 @@ const btnChatbotReview = document.querySelector(".btn-chatbot-review");
 const btnChatbotLoading = document.querySelector(".btn-chatbot-loading");
 const btnChatbotOptions = document.querySelector(".btn-chatbot-options");
 const btnChatbotUser = document.querySelector(".btn-chatbot-user");
+const btnChatbotForm = document.querySelector(".btn-form");
 
 // SELECTING AN OPTION
 // Event delegation
@@ -199,6 +200,108 @@ const htmlUserInput = (text) => {
   </div>`;
 };
 
+const htmlFormEmail = () => {
+  return `
+  <div class="chatbot-msg">
+    <img class="logo--chat" src="./img/Logo-header.svg" alt="" />
+
+    <div class="chatbot-msg-content">
+      <form class="form-to-mail" action="#">
+        <label for="name">Nombre</label>
+        <input id="input-name" type="text" placeholder="Angel Gonzalez" />
+
+        <label for="email">Correo electrónico</label>
+        <input
+          id="input-email"
+          type="text"
+          placeholder="angelGlez@hotmail.com"
+        />
+
+        <label for="msg">Pregunta/mensaje</label>
+        <textarea
+          id="input-msg"
+          placeholder="(Menos de 100 palabras)"
+        ></textarea>
+
+        <button class="btn-submit-form-email" type="submit">
+          Enviar
+        </button>
+      </form>
+    </div>
+  </div>`;
+};
+
+// Formulario stars
+let formStars = [...document.querySelectorAll(".form-stars")].at(-1);
+const activeFormStars = function () {
+  // Formulario de las estrelalas
+  formStars.addEventListener("submit", function (e) {
+    e.preventDefault();
+    const answer = document.querySelector('input[name="rate"]:checked').value;
+    // console.log(answer);
+    formStars.style.pointerEvents = "none"; // Se bloquea el formulario para no aceptar más inputs
+  });
+};
+
+// Formulario datos
+let formToMail = [...document.querySelectorAll(".form-to-mail")].at(-1);
+const activeFormData = function () {
+  // Formulario de los datos
+  formToMail.addEventListener("submit", function (e) {
+    e.preventDefault();
+
+    const errorName = "Error al ingresar el nombre. Intenta de nuevo";
+    const errorEmail = "Error al ingresar mail. Intenta de nuevo";
+    const errorMsg = "Error al ingresa el mensaje. Intenta de nuevo";
+
+    const name = e.target[0].value;
+    const email = e.target[1].value;
+    const msg = e.target[2].value;
+
+    let isError = false;
+
+    if (!checkName(name)) {
+      placeholderName = document.querySelector("#input-name");
+      placeholderName.placeholder = errorName;
+      placeholderName.classList.add("error-input-form");
+      isError = true;
+      e.target[0].value = "";
+    }
+
+    if (!checkEmail(email)) {
+      placeholderEmail = document.querySelector("#input-email");
+      placeholderEmail.placeholder = errorEmail;
+      placeholderEmail.classList.add("error-input-form");
+      isError = true;
+      e.target[1].value = "";
+    }
+
+    if (!checkMessage(msg)) {
+      placeholderMsg = document.querySelector("#input-msg");
+      placeholderMsg.placeholder = errorMsg;
+      placeholderMsg.classList.add("error-input-form");
+      isError = true;
+      e.target[2].value = "";
+    }
+
+    if (!isError) {
+      // En caso de que no haya errores
+      // console.log("Todo CHIDOOO");
+      formToMail.style.pointerEvents = "none"; // Se bloquea el formulario para no aceptar más información
+      showLoader(2.5).then(() => {
+        removeLoader();
+
+        // Change this to a function that inserts the html
+        chatbotChat.insertAdjacentHTML(
+          "beforeend",
+          htmlChatbotText("Hemos recibido tus datos, muchas gracias.")
+        );
+        updateScrollBar();
+      });
+    }
+  });
+};
+
 const someText =
   "Lorem ipsum dolor sit amet consectetur adipisicing elit. Ipsum libero, sit eum voluptates natus voluptatem dolorum. Beatae sit.";
 
@@ -210,11 +313,6 @@ btnChatbotText.addEventListener("click", function () {
 
 btnChatbotTextNoface.addEventListener("click", function () {
   chatbotChat.insertAdjacentHTML("beforeend", htmlChatbotTextNoface(someText));
-  updateScrollBar();
-});
-
-btnChatbotReview.addEventListener("click", function () {
-  chatbotChat.insertAdjacentHTML("beforeend", htmlChatbotReview());
   updateScrollBar();
 });
 
@@ -243,6 +341,22 @@ btnChatbotUser.addEventListener("click", function () {
   updateScrollBar();
 });
 
+btnChatbotReview.addEventListener("click", function () {
+  chatbotChat.insertAdjacentHTML("beforeend", htmlChatbotReview());
+  updateScrollBar();
+
+  formStars = [...document.querySelectorAll(".form-stars")].at(-1);
+  activeFormStars();
+});
+
+btnChatbotForm.addEventListener("click", function () {
+  chatbotChat.insertAdjacentHTML("beforeend", htmlFormEmail());
+  updateScrollBar();
+
+  formToMail = [...document.querySelectorAll(".form-to-mail")].at(-1);
+  activeFormData();
+});
+
 // FORM
 
 // SEARCH BAR
@@ -263,39 +377,6 @@ searchBarEl.addEventListener("keyup", function (e) {
     updateScrollBar();
   }
 });
-
-const htmlFormEmail = () => {
-  return `
-  <div class="chatbot-msg">
-  <img class="logo--chat" src="./img/Logo-header.svg" alt="" />
-
-  <div class="chatbot-msg-content">
-    <form class="form-to-mail" action="#">
-      <label for="name">Nombre</label>
-      <input id="name" type="text" placeholder="Angel Gonzalez" />
-
-      <label for="email">Correo electrónico</label>
-      <input
-        id="email"
-        type="text"
-        placeholder="angelGlez@hotmail.com"
-      />
-
-      <label for="msg">Pregunta/mensaje</label>
-      <textarea
-        class="input-msg"
-        id="msg"
-        placeholder="(Menos de 100 palabras)"
-      ></textarea>
-      <!-- <input class="input-msg" id="msg" type="text" /> -->
-
-      <button class="btn-submit-form-email" type="submit">
-        Enviar
-      </button>
-    </form>
-  </div>
-</div>`;
-};
 
 // mostrar loader
 const wait = function (seconds) {
@@ -358,71 +439,14 @@ const checkMessage = (string) => {
   }
 };
 
-// Formulario stars
-let formStars = [...document.querySelectorAll(".form-stars")].at(-1);
+// // Formulario stars
+// let formStars = [...document.querySelectorAll(".form-stars")].at(-1);
 
-formStars.addEventListener("submit", function (e) {
-  e.preventDefault();
-  const answer = document.querySelector('input[name="rate"]:checked').value;
-  // console.log(answer);
-  formStars.style.pointerEvents = "none"; // Se bloquea el formulario para no aceptar más inputs
-});
-
-let formToMail = [...document.querySelectorAll(".form-to-mail")].at(-1);
-
-formToMail.addEventListener("submit", function (e) {
-  e.preventDefault();
-  // console.log(e.target[0].value);
-
-  const errorName = "Error al ingresar el nombre. Intenta de nuevo";
-  const errorEmail = "Error al ingresar mail. Intenta de nuevo";
-  const errorMsg = "Error al ingresa el mensaje. Intenta de nuevo";
-
-  const name = e.target[0].value;
-  const email = e.target[1].value;
-  const msg = e.target[2].value;
-
-  let isError = false;
-
-  if (!checkName(name)) {
-    placeholderName = document.querySelector("#input-name");
-    placeholderName.placeholder = errorName;
-    placeholderName.classList.add("error-input-form");
-    isError = true;
-    e.target[0].value = "";
-  }
-
-  if (!checkEmail(email)) {
-    placeholderEmail = document.querySelector("#input-email");
-    placeholderEmail.placeholder = errorEmail;
-    placeholderEmail.classList.add("error-input-form");
-    isError = true;
-    e.target[1].value = "";
-  }
-
-  if (!checkMessage(msg)) {
-    placeholderMsg = document.querySelector("#input-msg");
-    placeholderMsg.placeholder = errorMsg;
-    placeholderMsg.classList.add("error-input-form");
-    isError = true;
-    e.target[2].value = "";
-  }
-
-  if (!isError) {
-    // En caso de que no haya errores
-    // console.log("Todo CHIDOOO");
-    formToMail.style.pointerEvents = "none"; // Se bloquea el formulario para no aceptar más información
-    showLoader(2.5).then(() => {
-      removeLoader();
-
-      // Change this to a function that inserts the html
-      chatbotChat.insertAdjacentHTML(
-        "beforeend",
-        htmlChatbotText("Hemos recibido tus datos, muchas gracias.")
-      );
-      updateScrollBar();
-    });
-
-    // console.log("Juaaa");
-  }
-});
+// const activeForms = function () {
+//   formStars.addEventListener("submit", function (e) {
+//     e.preventDefault();
+//     const answer = document.querySelector('input[name="rate"]:checked').value;
+//     // console.log(answer);
+//     formStars.style.pointerEvents = "none"; // Se bloquea el formulario para no aceptar más inputs
+//   });
+// };
