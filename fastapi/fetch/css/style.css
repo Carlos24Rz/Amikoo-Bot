@@ -1,0 +1,42 @@
+.request {
+  margin-top: 10px;
+  display: flex;
+  border-style: solid;
+  border-width: thin;
+  flex-direction: column;
+  box-sizing: content-box;
+  width: 200px;
+  border-radius: 5px;
+  background-color: rgb(249, 248, 149);
+}
+
+.request > p {
+  display: flex;
+  justify-content: center;
+}
+
+.fastapi {
+  display: flex;
+}
+
+.inputFast {
+  width: 80%;
+  display: flex;
+  justify-content: center;
+  align-self: center;
+  margin: auto;
+  margin: 1px auto 10px;
+}
+
+.btn.btn-warning {
+  /* background-color: blue; */
+  display: flex;
+  width: 80%;
+  justify-content: center;
+  align-content: center;
+  align-self: center;
+  align-items: center;
+  margin: 10px auto 10px;
+  padding: 5px 5px;
+  text-align: center;
+}
