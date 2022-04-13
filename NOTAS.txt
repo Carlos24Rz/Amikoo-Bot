@@ -3,6 +3,8 @@ POR HACER
 - Componer cara del chatbot principal (Verificar animaciones en cada view size)
 - Agregar más animaciones
 - Agregar animaciones dentro del chatbot-box
+- SEPARAR EL CODIGO EN ARCHIVOS PARA FACILITAR LECTURA (MODEL-VIEW_CONTROLLER)
+- Implementar la funcion wait????????????????
 
 LISTO
 - Chatbot sticky
@@ -20,3 +22,7 @@ LISTO
 
 EXTRA
 * Motor de procesamiento de lenguaje natural
+
+
+Comentarios:
+- No funciona el chatbot-options si lo ponemos directo en el html   

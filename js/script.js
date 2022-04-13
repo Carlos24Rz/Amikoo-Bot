@@ -1,69 +1,3 @@
-const chatbotBox = document.querySelector(".chatbot-box");
-const chatbotChat = document.querySelector(".chatbot-chat");
-const chatbotFace = document.querySelector(".chatbot-face");
-
-const chatbotExit = document.querySelector(".chatbot-close-button");
-
-// Function that put down the scroll bar
-const updateScrollBar = function () {
-  chatbotChat.scrollTo(0, chatbotChat.scrollHeight);
-};
-
-// Function to hide and show the chatbot box
-const handleShowChatbot = function () {
-  chatbotFace.addEventListener("click", function () {
-    chatbotBox.classList.toggle("hidden");
-    chatbotFace.classList.toggle("hidden");
-  });
-
-  chatbotExit.addEventListener("click", function () {
-    chatbotBox.classList.toggle("hidden");
-    chatbotFace.classList.toggle("hidden");
-  });
-
-  updateScrollBar();
-};
-handleShowChatbot();
-
-// Menu to add texts box in the chatbot
-const btnChatbotText = document.querySelector(".btn-chatbot-text-face");
-const btnChatbotTextNoface = document.querySelector(
-  ".btn-chatbot-text-no-face"
-);
-const btnChatbotReview = document.querySelector(".btn-chatbot-review");
-const btnChatbotLoading = document.querySelector(".btn-chatbot-loading");
-const btnChatbotOptions = document.querySelector(".btn-chatbot-options");
-const btnChatbotUser = document.querySelector(".btn-chatbot-user");
-const btnChatbotForm = document.querySelector(".btn-form");
-
-// SELECTING AN OPTION
-// Event delegation
-// 1. Add event listener to common parent element
-// 2. Determine what element originated the event
-let optionsBox = [...document.querySelectorAll(".chatbot-options")].at(-1);
-
-const selectOptionHandler = function () {
-  optionsBox.addEventListener("click", function (e) {
-    // const optionSelected = optionsBox.closest(".chatbot-option");
-    if (e.target.classList.contains("chatbot-option")) {
-      chatbotChat.insertAdjacentHTML(
-        "beforeend",
-        htmlUserInput(e.target.textContent)
-      );
-
-      updateScrollBar();
-    }
-  });
-};
-
-selectOptionHandler();
-
-const hideLoader = function (sec) {
-  return new Promise(function (resolve) {
-    setTimeout(resolve, seconds * 1000);
-  });
-};
-
 const htmlChatbotText = (text) => {
   return `
   <div class="chatbot-msg">
@@ -231,6 +165,104 @@ const htmlFormEmail = () => {
   </div>`;
 };
 
+///////////////////////
+///////////////////////
+///////////////////////
+
+const chatbotBox = document.querySelector(".chatbot-box");
+const chatbotChat = document.querySelector(".chatbot-chat");
+const chatbotFace = document.querySelector(".chatbot-face");
+const chatbotExit = document.querySelector(".chatbot-close-button");
+
+let flagChatbotOpen = false;
+
+// Function that put down the scroll bar
+const updateScrollBar = function () {
+  chatbotChat.scrollTo(0, chatbotChat.scrollHeight);
+};
+
+// Function to hide and show the chatbot box
+const handleShowChatbot = function () {
+  chatbotFace.addEventListener("click", function () {
+    chatbotBox.classList.toggle("hidden");
+    chatbotFace.classList.toggle("hidden");
+
+    // Solo entra a este if cuando se abre por primera vez el chatbot
+    if (!flagChatbotOpen) {
+      showLoader(2.5).then(() => {
+        removeLoader();
+
+        // Change this to a function that inserts the html
+        chatbotChat.insertAdjacentHTML(
+          "beforeend",
+          htmlChatbotText("Hola, este mensaje es de bienvenida")
+        );
+        updateScrollBar();
+        flagChatbotOpen = true;
+
+        //
+        // PARA MOSTRAR LAS OPCIONES
+        if (optionsBox !== undefined) {
+          optionsBox.classList.add("block-chatbot-options");
+        }
+
+        chatbotChat.insertAdjacentHTML(
+          "beforeend",
+          htmlChatbotOptions(someText, 1, 2, 3, 4)
+        );
+        optionsBox = [...document.querySelectorAll(".chatbot-options")].at(-1);
+        selectOptionHandler();
+        // optionsBox.classList.add("block-chatbot-options");
+        updateScrollBar();
+      });
+    }
+  });
+
+  chatbotExit.addEventListener("click", function () {
+    chatbotBox.classList.toggle("hidden");
+    chatbotFace.classList.toggle("hidden");
+  });
+
+  updateScrollBar();
+};
+handleShowChatbot();
+
+// Menu to add texts box in the chatbot
+const btnChatbotText = document.querySelector(".btn-chatbot-text-face");
+const btnChatbotTextNoface = document.querySelector(
+  ".btn-chatbot-text-no-face"
+);
+const btnChatbotReview = document.querySelector(".btn-chatbot-review");
+const btnChatbotLoading = document.querySelector(".btn-chatbot-loading");
+const btnChatbotOptions = document.querySelector(".btn-chatbot-options");
+const btnChatbotUser = document.querySelector(".btn-chatbot-user");
+const btnChatbotForm = document.querySelector(".btn-form");
+
+// SELECTING AN OPTION
+// Event delegation
+// 1. Add event listener to common parent element
+// 2. Determine what element originated the event
+let optionsBox = [...document.querySelectorAll(".chatbot-options")].at(-1);
+const selectOptionHandler = function () {
+  optionsBox.addEventListener("click", function (e) {
+    // const optionSelected = optionsBox.closest(".chatbot-option");
+    if (e.target.classList.contains("chatbot-option")) {
+      chatbotChat.insertAdjacentHTML(
+        "beforeend",
+        htmlUserInput(e.target.textContent)
+      );
+
+      updateScrollBar();
+    }
+  });
+};
+
+const hideLoader = function (sec) {
+  return new Promise(function (resolve) {
+    setTimeout(resolve, seconds * 1000);
+  });
+};
+
 // Formulario stars
 let formStars = [...document.querySelectorAll(".form-stars")].at(-1);
 const activeFormStars = function () {
@@ -239,7 +271,18 @@ const activeFormStars = function () {
     e.preventDefault();
     const answer = document.querySelector('input[name="rate"]:checked').value;
     // console.log(answer);
+
     formStars.style.pointerEvents = "none"; // Se bloquea el formulario para no aceptar más inputs
+    showLoader(2.5).then(() => {
+      removeLoader();
+
+      // Change this to a function that inserts the html
+      chatbotChat.insertAdjacentHTML(
+        "beforeend",
+        htmlChatbotText("Hemos recibido tus datos, muchas gracias.")
+      );
+      updateScrollBar();
+    });
   });
 };
 
@@ -316,23 +359,23 @@ btnChatbotTextNoface.addEventListener("click", function () {
   updateScrollBar();
 });
 
-// btnChatbotLoading.addEventListener("click", function () {
-//   chatbotChat.insertAdjacentHTML("beforeend", htmlChatbotLoading());
-//   updateScrollBar();
-// });
-
 btnChatbotLoading.addEventListener("click", function () {
-  showLoader(2.5);
+  chatbotChat.insertAdjacentHTML("beforeend", htmlChatbotLoading());
+  updateScrollBar();
 });
 
 btnChatbotOptions.addEventListener("click", function () {
+  if (optionsBox !== undefined) {
+    optionsBox.classList.add("block-chatbot-options");
+  }
+
   chatbotChat.insertAdjacentHTML(
     "beforeend",
     htmlChatbotOptions(someText, 1, 2, 3, 4)
   );
-  optionsBox.classList.add("block-chatbot-options");
   optionsBox = [...document.querySelectorAll(".chatbot-options")].at(-1);
   selectOptionHandler();
+  // optionsBox.classList.add("block-chatbot-options");
   updateScrollBar();
 });
 
@@ -365,25 +408,14 @@ const searchBarEl = document.querySelector(".search-bar");
 searchBarEl.addEventListener("keyup", function (e) {
   e.preventDefault();
   if (e.key === "Enter" || e.keyCode === 13) {
-    const html3 = `<div class="chatbot-msg chatbot-msg-user">
-                    <img class="logo--chat" src="./img/Logo-header.svg" alt="" />
-                    <div class="chatbot-msg-content">
-                      <p class="chatbot-text">${searchBarEl.value}</p>
-                    </div>
-                  </div>`;
+    const html3 = htmlUserInput(searchBarEl.value);
     chatbotChat.insertAdjacentHTML("beforeend", html3);
     searchBarEl.value = "";
-    // chatbotChat.scrollTo(0, chatbotChat.scrollHeight);
     updateScrollBar();
   }
 });
 
 // mostrar loader
-const wait = function (seconds) {
-  return new Promise(function (resolve) {
-    setTimeout(resolve, seconds * 1000);
-  });
-};
 
 const showLoader = function (sec) {
   return new Promise(function (resolve) {
@@ -399,12 +431,6 @@ const removeLoader = function () {
   lastLoaderElement.remove();
   updateScrollBar();
 };
-
-// lastLoaderElement = [...document.querySelectorAll(".chatbot-loader")].at(
-//   -1
-// );
-// lastLoaderElement.remove();
-// updateScrollBar();
 
 // Formulario
 // Functions to check each input
@@ -438,15 +464,3 @@ const checkMessage = (string) => {
     return false;
   }
 };
-
-// // Formulario stars
-// let formStars = [...document.querySelectorAll(".form-stars")].at(-1);
-
-// const activeForms = function () {
-//   formStars.addEventListener("submit", function (e) {
-//     e.preventDefault();
-//     const answer = document.querySelector('input[name="rate"]:checked').value;
-//     // console.log(answer);
-//     formStars.style.pointerEvents = "none"; // Se bloquea el formulario para no aceptar más inputs
-//   });
-// };

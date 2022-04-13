@@ -237,9 +237,10 @@ body {
   overflow-y: scroll;
   /* scroll-behavior: smooth;  */
 
-  padding-top: 180px;
+  /* padding-top: 180px; */
 
-  /* padding-top: auto; */
+  padding-top: 50%;
+  /* padding-bottom: 50%; */
 
   /* display: flex;
   flex-direction: column;
@@ -516,7 +517,7 @@ body {
 }
 
 .search-bar {
-  pointer-events: none;
+  /* pointer-events: none; */
   background-color: #e7ecf0;
   width: 90%;
   height: 65%;
