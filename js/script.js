@@ -339,6 +339,7 @@ const checkEmail = (string) => {
     /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
   );
 
+  // console.log(re.test(string));
   return re.test(string);
 };
 
@@ -388,6 +389,7 @@ formToMail.addEventListener("submit", function (e) {
     placeholderName.placeholder = errorName;
     placeholderName.classList.add("error-input-form");
     isError = true;
+    e.target[0].value = "";
   }
 
   if (!checkEmail(email)) {
@@ -395,6 +397,7 @@ formToMail.addEventListener("submit", function (e) {
     placeholderEmail.placeholder = errorEmail;
     placeholderEmail.classList.add("error-input-form");
     isError = true;
+    e.target[1].value = "";
   }
 
   if (!checkMessage(msg)) {
@@ -402,6 +405,7 @@ formToMail.addEventListener("submit", function (e) {
     placeholderMsg.placeholder = errorMsg;
     placeholderMsg.classList.add("error-input-form");
     isError = true;
+    e.target[2].value = "";
   }
 
   if (!isError) {

@@ -15,6 +15,7 @@ LISTO
 - Manejo de errores del formulario
 - Mostrar respuesta en el chabtot cuando los datos recibidos del form son correctos
 - Componer el chatbot-review y recibir la informacion de la opcion seleccionada
+- Verificar error inputs del formulario de datos
 
 EXTRA
 * Motor de procesamiento de lenguaje natural
