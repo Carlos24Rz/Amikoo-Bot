@@ -3,7 +3,7 @@ node_modules/
 package-lock.json 
 
 # fastapi
-fastapi/log.txt
-fastapi/__pycache/
-fastapi/venv/
+./fastapi/log.txt
+./fastapi/__pycache/
+./fastapi/venv/
 
