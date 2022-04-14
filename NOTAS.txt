@@ -1,10 +1,10 @@
 POR HACER
-- Generar la entrada del chatbot (Hacer que salga el mensaje de bienvenida)
 - Componer cara del chatbot principal (Verificar animaciones en cada view size)
 - Agregar más animaciones
 - Agregar animaciones dentro del chatbot-box
 - SEPARAR EL CODIGO EN ARCHIVOS PARA FACILITAR LECTURA (MODEL-VIEW_CONTROLLER)
 - Implementar la funcion wait????????????????
+
 
 LISTO
 - Chatbot sticky
@@ -20,6 +20,8 @@ LISTO
 - Verificar error inputs del formulario de datos
 - Componer para que funcione los forms una vez al darle click al boton del menu
 - Agregar animacion cuando aparezca un chabtot-msg
+- COMPONER EL formStars cuando no se seleciona nada
+- Generar la entrada del chatbot (Hacer que salga el mensaje de bienvenida)
 
 EXTRA
 * Motor de procesamiento de lenguaje natural
