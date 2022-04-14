@@ -9,3 +9,4 @@ fastapi/venv/
 fastapi/.tern-project
 fastapi/test.py
 fastapi/todo.MD
+fastapi/venv/
