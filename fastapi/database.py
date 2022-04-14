@@ -1,11 +1,11 @@
 from peewee import *
 from datetime import datetime
-
+from config import password
 
 database = MySQLDatabase(
     'chatbot',
     user='Tec',
-    password='tecPass',
+    password=password,
     host='localhost',
     port=3306,
     charset='utf8mb4'
