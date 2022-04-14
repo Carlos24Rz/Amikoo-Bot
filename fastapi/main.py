@@ -123,21 +123,20 @@ async def show_pregunta(
 @app.post("/pregunta/create")
 async def create_pregunta(pregunta: PreguntaIn):
     arrayCat = []
-    indexCat: int = 0
     query = (Categoria.select(Categoria.id)
-            .where(Categoria.nombre == pregunta.nombre))
+            .where(Categoria.nombre == pregunta.categoria))
     for category in query:
         arrayCat.append(category.id)
-    indexCat = 3
-
-    newPregunta = Pregunta.create(
-        categoria_id = indexCat,
-        nombre = pregunta.nombre,
-        emoji = pregunta.emoji,
-        visitas = 0
-    )
-    return pregunta
-
+    if (arrayCat != []):
+        newPregunta = Pregunta.create(
+            categoria_id = arrayCat[0],
+            nombre = pregunta.nombre,
+            emoji = pregunta.emoji,
+            visitas = 0
+        )
+        return pregunta
+    else:
+        return "No se pudo crear la pregunta"
 
 # PERSONAS
 @app.get("/persona/show", status_code = status.HTTP_200_OK)
@@ -197,11 +196,11 @@ async def show_calificacion(
         example = getFecha()
     )
 ):
-    if (dateBegin > dateEnd):
-        return "Invalid dates"
-    elif (dateBegin and dateEnd):
-        query = (Calificacion.select()
-                .where(Calificacion.fecha.between(dateBegin, dateEnd)))
+    if (dateBegin and dateEnd):
+        if (dateBegin > dateEnd):
+            return "Invalid dates"
+        else:
+            query = (Calificacion.select().where(Calificacion.fecha.between(dateBegin, dateEnd)))
     elif (dateBegin):
         query = (Calificacion.select()
         .where(Calificacion.fecha >= dateBegin))
@@ -209,7 +208,7 @@ async def show_calificacion(
         query = (Calificacion.select()
         .where(Calificacion.fecha <= dateEnd))
     else:
-        query = (Calificacion.select())
+        query = Calificacion.select()
 
     result = [model_to_dict(item) for item in query]
     return result
