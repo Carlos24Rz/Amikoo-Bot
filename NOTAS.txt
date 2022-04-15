@@ -1,4 +1,5 @@
 POR HACER
+- Cuando se haga click a una opcion, mostrar las demas
 - Componer cara del chatbot principal (Verificar animaciones en cada view size)
 - Agregar más animaciones
 - Agregar animaciones dentro del chatbot-box
