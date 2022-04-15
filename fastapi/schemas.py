@@ -22,8 +22,8 @@ class PreguntaIn(BaseModel):
     nombre: str = Field(
         ...,
         min_length = 1,
-        max_length = 30
-        # regex = "^[A-Za-z][A-Za-z0-9,. ]+$"
+        max_length = 30,
+        regex = "^[A-Za-z][A-Za-z0-9,. ]+$"
     )
     emoji: str = Field(
         ...,
@@ -31,12 +31,12 @@ class PreguntaIn(BaseModel):
         max_length = 3
     )
 
-
 class Persona(BaseModel):
     nombre: str = Field(
         ...,
         min_length = 1,
         max_length = 50,
+        regex = "^[A-Za-z][A-Za-z0-9 ]+$"
     )
 
 class PersonaIn(Persona):
@@ -52,7 +52,6 @@ class PersonaIn(Persona):
 
 class PersonaOut(Persona):
     pass
-
 
 
 class CalificacionIn(BaseModel):
