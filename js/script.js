@@ -1,29 +1,4 @@
-const getPromiseDB = async function () {
-  return fetch("http://127.0.0.1:8000/pregunta/show?categoria=inicio")
-    .then((response) => response.json())
-    .then((data) => {
-      return data;
-    });
-};
-
-const getDataDB = async function () {
-  const data = await getPromiseDB();
-
-  // We need to return something so we dont get an undefined
-  console.log(data);
-  htmlOptions = data.map((option) => `${option.nombre} ${option.emoji}`);
-  console.log(...htmlOptions);
-
-  chatbotChat.insertAdjacentHTML(
-    "beforeend",
-    htmlChatbotOptions(someText, ...htmlOptions)
-  );
-
-  optionsBox.classList.add("block-chatbot-options");
-  optionsBox = [...document.querySelectorAll(".chatbot-options")].at(-1);
-  selectOptionHandler();
-  updateScrollBar();
-};
+const timeLoader = 1;
 
 // getDataDB()
 
@@ -233,10 +208,20 @@ const insertHtmlChatbotOptions = function (text, ...options) {
     optionsBox.classList.add("block-chatbot-options");
   }
 
+  // Formar normal
   chatbotChat.insertAdjacentHTML(
     "beforeend",
     htmlChatbotOptions(text, ...options)
   );
+
+  // Forma base de datos
+  // chatbotChat.insertAdjacentHTML(
+  //   "beforeend",
+  //   htmlChatbotOptions(text, getOptionsDB())
+  // );
+
+  // console.log(getOptionsDB());
+
   optionsBox = [...document.querySelectorAll(".chatbot-options")].at(-1);
   selectOptionHandler();
   updateScrollBar();
@@ -277,7 +262,7 @@ const handleShowChatbot = function () {
 
     // Solo entra a este if cuando se abre por primera vez el chatbot
     if (!flagChatbotOpen) {
-      showLoader(2.5).then(() => {
+      showLoader(timeLoader).then(() => {
         removeLoader();
         insertHtmlChatbotTex("Hola, este es un mensaje de bienvenida");
         flagChatbotOpen = true;
@@ -334,7 +319,7 @@ btnChatbotLoading.addEventListener("click", function () {
 
 btnChatbotOptions.addEventListener("click", function () {
   // Insertamos las nuevas opciones
-  showLoader(0.5).then(() => {
+  showLoader(timeLoader).then(() => {
     removeLoader();
     insertHtmlChatbotOptions(someText, 1, 2, 3, 4);
   });
@@ -384,7 +369,7 @@ const activeFormStars = function () {
     }
 
     formStars.style.pointerEvents = "none"; // Se bloquea el formulario para no aceptar más inputs
-    showLoader(2.5).then(() => {
+    showLoader(timeLoader).then(() => {
       removeLoader();
       insertHtmlChatbotTex("Hemos recibido tus datos, muchas gracias.");
     });
@@ -435,7 +420,7 @@ const activeFormData = function () {
     if (!isError) {
       // En caso de que no haya errores
       formToMail.style.pointerEvents = "none"; // Se bloquea el formulario para no aceptar más información
-      showLoader(2.5).then(() => {
+      showLoader(timeLoader).then(() => {
         removeLoader();
         insertHtmlChatbotTex("Hemos recibido tus datos, muchas gracias.");
       });
@@ -505,4 +490,63 @@ const checkMessage = (string) => {
   } else {
     return false;
   }
+};
+
+// https://dev.to/ramonak/javascript-how-to-access-the-return-value-of-a-promise-object-1bck
+
+const getDataDB = async function () {
+  return await fetch("http://127.0.0.1:8000/pregunta/show?categoria=inicio")
+    .then((response) => response.json())
+    .then((data) => data);
+
+  // console.log(data);
+};
+
+// getDataDB().then((inf)=>inf)
+
+const siu = function () {
+  return 1;
+};
+
+// getOptionsDB();
+// console.log(getOptionsDB());
+const getOptionsDB = async function () {
+  console.log("antes");
+  const data = await getDataDB();
+  console.log(data);
+  // console.log("despues");
+
+  // We need to return something so we dont get an undefined
+  // console.log(data);
+  htmlOptions = data.map((option) => `${option.nombre} ${option.emoji}`);
+  // console.log(htmlOptions);
+
+  // return htmlOptions;
+
+  // const htmlT = htmlChatbotOptions("pruebaaa", ...htmlOptions);
+  // console.log(htmlT);
+
+  // return htmlT;
+
+  // console.log(htmlChatbotOptions("pruebaaa", ...htmlOptions));
+  // return htmlChatbotOptions("pruebaaa", ...htmlOptions);
+
+  // return 1;
+
+  // console.log(getOptionsDB());
+
+  //
+  //
+  insertHtmlChatbotOptions(someText, ...htmlOptions);
+  // return;
+
+  // chatbotChat.insertAdjacentHTML(
+  //   "beforeend",
+  //   htmlChatbotOptions(someText, ...htmlOptions)
+  // );
+
+  // optionsBox.classList.add("block-chatbot-options");
+  // optionsBox = [...document.querySelectorAll(".chatbot-options")].at(-1);
+  // selectOptionHandler();
+  // updateScrollBar();
 };
