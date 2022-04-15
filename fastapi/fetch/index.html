@@ -13,20 +13,22 @@
   <div>
     <div class="examples">
       <button type="button" class="btn btn-primary mr-4" id="clearText">Clear</button>
-      <button type="button" class="btn btn-success mr-4" id="getText">Get Text</button>
+      <button type="button" class="btn btn-danger mr-4" id="getText">Get Text</button>
       <button type="button" class="btn btn-danger mr-4" id="getUsers">Get JSON</buton>
-        <button type="button" class="btn btn-info mr-4" id="getPosts">Get Post</buton>
+        <button type="button" class="btn btn-danger mr-4" id="getPosts">Get Post</buton>
     </div>
     <div class="fastapi">
-      <div class="request">
+      <div class="request" id="Preguntas">
         <p>Get FastAPI Test</p>
         <input type="text" class="inputFast" id="categoria" placeholder="Categoria" value="Inicio">
-        <button type="button" class="btn btn-warning" id="getFast">Get Preguntas</buton>
+        <button type="button" class="btn btn-warning" id="getPreguntas">Get Preguntas</buton>
       </div>
-      <div class="request">
+      <div class="request" id="Formulario">
         <p>Get FastAPI Test</p>
-        <input type="text" class="inputFast" id="categoria" placeholder="Categoria" value="Inicio">
-        <button type="button" class="btn btn-warning" id="getFast">Get Preguntas</buton>
+        <input type="text" class="formFast" id="nombreFormulario" placeholder="Nombre" value="Nombre">
+        <input type="text" class="formFast" id="correoFormulario" placeholder="Correo" value="Correo">
+        <input type="text" class="formFast" id="descripcionFormulario" placeholder="Descripcion" value="Descripcion">
+        <button type="button" class="btn btn-success" id="getFormulario">Send Formulario</buton>
       </div>
 
     </div>
