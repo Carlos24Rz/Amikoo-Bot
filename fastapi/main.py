@@ -1,9 +1,18 @@
 # uvicorn main:app --reload
 # http://127.0.0.1:8000
 # FASTAPI
-from fastapi import FastAPI, status
+# Core
+from fastapi import FastAPI
+from fastapi import Request, status
 from fastapi import Query, Path
+from fastapi import HTTPException
+
+# Others
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.encoders import jsonable_encoder
+from fastapi.exceptions import RequestValidationError
+from fastapi.responses import PlainTextResponse
+from fastapi.responses import JSONResponse
 
 # EXTRAS
 from playhouse.shortcuts import model_to_dict
@@ -38,9 +47,9 @@ origins = [
 app.add_middleware(
     CORSMiddleware,
     allow_origins=['*'],
-    allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
+    allow_credentials=True,
 )
 
 def getFecha():
@@ -49,6 +58,7 @@ def getFecha():
 def create_tables():
     with connection:
         connection.create_tables([Categoria, Pregunta, Persona, Calificacion])
+
 
 # EVENTS
 @app.on_event('startup')
@@ -67,9 +77,40 @@ async def shutdown():
     if not connection.is_closed():
         connection.close()
 
+
 @app.get("/")
 async def home():
     return [{"Hello": "World"}]
+
+
+@app.exception_handler(RequestValidationError)
+async def validation_exception_handler(request: Request, exc: RequestValidationError):
+    return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST, content="Couldnt perform action")
+
+
+    # return PlainTextResponse(str(exc), status_code=400)
+    # return JSONResponse(
+    #     status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+    #     content=jsonable_encoder({
+    #             # 'code': "status_code=400"
+    #             "detail": exc.errors(),
+    #             "body": exc.body,
+    # #             "your_additional_errors": {"Will be": "Inside", "This":" Error message"}
+    #              }),
+    # )
+
+# app.add_exception_handler(PersonaException, persona_exception_handler)
+
+
+
+
+
+
+
+
+
+
+
 
 
 # CATEGORIA
@@ -170,14 +211,20 @@ async def show_persona(
     result = [model_to_dict(item) for item in query]
     return result
 
-@app.post("/persona/create", response_model = PersonaOut, status_code = status.HTTP_201_CREATED)
+# NOTE: Responder con un mensaje o con alguna variable del objeto
+# @app.post("/persona/create", response_model = PersonaOut, status_code = status.HTTP_201_CREATED)
+@app.post("/persona/create", status_code = status.HTTP_201_CREATED)
 def create_persona(persona: PersonaIn):
     newPerson = Persona.create(
         nombre=persona.nombre,
         correo=persona.correo,
         descripcion=persona.descripcion
     )
-    return persona
+    # return persona
+    return "Gracias por contactarnos"
+
+# @app.put("/persona/update", status_code = status.HTTP_200_OK)
+# def update_persona(persona: PersonaIn):
 
 
 # CALIFICACIONES
