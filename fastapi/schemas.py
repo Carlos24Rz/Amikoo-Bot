@@ -1,4 +1,6 @@
 from pydantic import BaseModel, Field
+from pydantic import ValidationError, validator
+
 
 # Path Operation Schemas
 class CategoriaIn(BaseModel):
@@ -36,7 +38,7 @@ class Persona(BaseModel):
         ...,
         min_length = 1,
         max_length = 50,
-        regex = "^[A-Za-z][A-Za-z0-9 ]+$"
+        regex = "^[A-Za-z][A-Za-z ]+$"
     )
 
 class PersonaIn(Persona):
@@ -44,6 +46,7 @@ class PersonaIn(Persona):
         ...,
         min_length = 1,
         max_length = 50,
+        regex = "(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)"
     )
     descripcion: str = Field(
         min_length = 1,
