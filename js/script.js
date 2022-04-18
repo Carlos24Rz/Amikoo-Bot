@@ -1,3 +1,57 @@
+const timeLoader = 1;
+
+// https://dev.to/ramonak/javascript-how-to-access-the-return-value-of-a-promise-object-1bck
+
+const getDataDB = async function () {
+  const data = await fetch(
+    "http://127.0.0.1:8000/pregunta/show?categoria=inicio"
+  )
+    .then((response) => response.json())
+    .then((data) => data);
+
+  // console.log("before data");
+  // console.log("primera funcion", data);
+  // console.log("after data");
+
+  return data;
+};
+
+// getDataDB().then((inf)=>inf)
+
+// getOptionsDB();
+// console.log(getOptionsDB());
+const getOptionsDB = async function () {
+  // console.log("antes");
+  const data = await getDataDB();
+  // console.log("segunda funcion", data);
+  // console.log("despues");
+
+  // console.log(data);
+  htmlOptions = data.map((option) => `${option.nombre} ${option.emoji}`);
+
+  insertHtmlChatbotOptions(someText, ...htmlOptions);
+};
+
+const siu = function () {
+  x = 2 + 1;
+};
+
+const todoEnUnaFuncion = async function () {
+  await fetch("http://127.0.0.1:8000/pregunta/show?categoria=inicio")
+    .then((response) => response.json())
+    .then((data) => {
+      htmlOptions = data.map((option) => `${option.nombre} ${option.emoji}`);
+
+      insertHtmlChatbotOptions(someText, ...htmlOptions);
+    });
+};
+
+// getDataDB()
+
+//////////////////////////////
+// HTML TEMPLATES
+//////////////////////////////
+
 const htmlChatbotText = (text) => {
   return `
   <div class="chatbot-msg">
@@ -165,16 +219,67 @@ const htmlFormEmail = () => {
   </div>`;
 };
 
-///////////////////////
-///////////////////////
-///////////////////////
-
+//////////////////////////////
+// HTML INSERT TEMPLATES
+//////////////////////////////
 const chatbotBox = document.querySelector(".chatbot-box");
 const chatbotChat = document.querySelector(".chatbot-chat");
-const chatbotFace = document.querySelector(".chatbot-face");
-const chatbotExit = document.querySelector(".chatbot-close-button");
 
-let flagChatbotOpen = false;
+const insertHtmlChatbotTex = function (text) {
+  chatbotChat.insertAdjacentHTML("beforeend", htmlChatbotText(text));
+  updateScrollBar();
+};
+
+const insertHtmlChatbotTextNoFace = function (text) {
+  chatbotChat.insertAdjacentHTML("beforeend", htmlChatbotTextNoface(text));
+  updateScrollBar();
+};
+
+const insertHtmlChatbotReview = function () {
+  chatbotChat.insertAdjacentHTML("beforeend", htmlChatbotReview());
+  updateScrollBar();
+
+  formStars = [...document.querySelectorAll(".form-stars")].at(-1);
+  activeFormStars();
+};
+
+const insertHtmlChatbotLoading = function () {
+  chatbotChat.insertAdjacentHTML("beforeend", htmlChatbotLoading());
+  updateScrollBar();
+};
+
+const insertHtmlChatbotOptions = function (text, ...options) {
+  // Cuando ya hay mas de un chatbotOptions, bloqueamos el ultimo chatbotOptions
+  if (optionsBox !== undefined) {
+    optionsBox.classList.add("block-chatbot-options");
+  }
+
+  // Formar normal
+  chatbotChat.insertAdjacentHTML(
+    "beforeend",
+    htmlChatbotOptions(text, ...options)
+  );
+  optionsBox = [...document.querySelectorAll(".chatbot-options")].at(-1);
+  selectOptionHandler();
+  updateScrollBar();
+};
+
+const insertHtmlUserInput = function (text) {
+  chatbotChat.insertAdjacentHTML("beforeend", htmlUserInput(text));
+  updateScrollBar();
+};
+
+const insertHtmlFormEmail = function () {
+  chatbotChat.insertAdjacentHTML("beforeend", htmlFormEmail());
+  updateScrollBar();
+
+  formToMail = [...document.querySelectorAll(".form-to-mail")].at(-1);
+  activeFormData();
+};
+
+///////////////////////
+///////////////////////
+///////////////////////
 
 // Function that put down the scroll bar
 const updateScrollBar = function () {
@@ -182,42 +287,35 @@ const updateScrollBar = function () {
 };
 
 // Function to hide and show the chatbot box
+const chatbotFace = document.querySelector(".chatbot-face");
+const chatbotExit = document.querySelector(".chatbot-close-button");
+let flagChatbotOpen = false;
+
 const handleShowChatbot = function () {
+  // Para abrir el chabtotChat al hacer click en la cara
   chatbotFace.addEventListener("click", function () {
     chatbotBox.classList.toggle("hidden");
     chatbotFace.classList.toggle("hidden");
 
     // Solo entra a este if cuando se abre por primera vez el chatbot
     if (!flagChatbotOpen) {
-      showLoader(2.5).then(() => {
+      showLoader(timeLoader).then(() => {
         removeLoader();
-
-        // Change this to a function that inserts the html
-        chatbotChat.insertAdjacentHTML(
-          "beforeend",
-          htmlChatbotText("Hola, este mensaje es de bienvenida")
-        );
-        updateScrollBar();
+        insertHtmlChatbotTex("Hola, este es un mensaje de bienvenida");
         flagChatbotOpen = true;
 
-        //
-        // PARA MOSTRAR LAS OPCIONES
+        // PARA MOSTRAR LAS OPCIONES (puede que esto no sirva de nada)
         if (optionsBox !== undefined) {
           optionsBox.classList.add("block-chatbot-options");
         }
 
-        chatbotChat.insertAdjacentHTML(
-          "beforeend",
-          htmlChatbotOptions(someText, 1, 2, 3, 4)
-        );
-        optionsBox = [...document.querySelectorAll(".chatbot-options")].at(-1);
-        selectOptionHandler();
-        // optionsBox.classList.add("block-chatbot-options");
-        updateScrollBar();
+        // Insertamos las primeras opciones
+        insertHtmlChatbotOptions(someText, 1, 2, 3, 4);
       });
     }
   });
 
+  // Para cerrar el chatbotChat al hacer click en la x
   chatbotExit.addEventListener("click", function () {
     chatbotBox.classList.toggle("hidden");
     chatbotFace.classList.toggle("hidden");
@@ -227,7 +325,10 @@ const handleShowChatbot = function () {
 };
 handleShowChatbot();
 
+//////////////////////////////
 // Menu to add texts box in the chatbot
+//////////////////////////////
+
 const btnChatbotText = document.querySelector(".btn-chatbot-text-face");
 const btnChatbotTextNoface = document.querySelector(
   ".btn-chatbot-text-no-face"
@@ -238,50 +339,77 @@ const btnChatbotOptions = document.querySelector(".btn-chatbot-options");
 const btnChatbotUser = document.querySelector(".btn-chatbot-user");
 const btnChatbotForm = document.querySelector(".btn-form");
 
+const someText =
+  "Lorem ipsum dolor sit amet consectetur adipisicing elit. Ipsum libero, sit eum voluptates natus voluptatem dolorum. Beatae sit.";
+
+btnChatbotText.addEventListener("click", function () {
+  insertHtmlChatbotTex(someText);
+});
+
+btnChatbotTextNoface.addEventListener("click", function () {
+  insertHtmlChatbotTextNoFace(someText);
+});
+
+btnChatbotLoading.addEventListener("click", function () {
+  insertHtmlChatbotLoading();
+});
+
+btnChatbotOptions.addEventListener("click", function () {
+  // Insertamos las nuevas opciones
+  showLoader(timeLoader).then(() => {
+    removeLoader();
+    // insertHtmlChatbotOptions(someText, 1, 2, 3, 4);
+    getOptionsDB();
+  });
+});
+
+btnChatbotUser.addEventListener("click", function () {
+  insertHtmlUserInput(someText);
+});
+
+btnChatbotReview.addEventListener("click", function () {
+  insertHtmlChatbotReview();
+});
+
+btnChatbotForm.addEventListener("click", function () {
+  insertHtmlFormEmail();
+});
+
+///////////////////////
+///////////////////////
+///////////////////////
+
 // SELECTING AN OPTION
 // Event delegation
 // 1. Add event listener to common parent element
 // 2. Determine what element originated the event
+
 let optionsBox = [...document.querySelectorAll(".chatbot-options")].at(-1);
 const selectOptionHandler = function () {
   optionsBox.addEventListener("click", function (e) {
-    // const optionSelected = optionsBox.closest(".chatbot-option");
     if (e.target.classList.contains("chatbot-option")) {
-      chatbotChat.insertAdjacentHTML(
-        "beforeend",
-        htmlUserInput(e.target.textContent)
-      );
-
-      updateScrollBar();
+      insertHtmlUserInput(e.target.textContent);
     }
-  });
-};
-
-const hideLoader = function (sec) {
-  return new Promise(function (resolve) {
-    setTimeout(resolve, seconds * 1000);
   });
 };
 
 // Formulario stars
 let formStars = [...document.querySelectorAll(".form-stars")].at(-1);
 const activeFormStars = function () {
-  // Formulario de las estrelalas
   formStars.addEventListener("submit", function (e) {
     e.preventDefault();
-    const answer = document.querySelector('input[name="rate"]:checked').value;
-    // console.log(answer);
+
+    const answer = document.querySelector('input[name="rate"]:checked')?.value;
+
+    // En caso de que no se haya selecionado ninguna estrella
+    if (!answer) {
+      return;
+    }
 
     formStars.style.pointerEvents = "none"; // Se bloquea el formulario para no aceptar más inputs
-    showLoader(2.5).then(() => {
+    showLoader(timeLoader).then(() => {
       removeLoader();
-
-      // Change this to a function that inserts the html
-      chatbotChat.insertAdjacentHTML(
-        "beforeend",
-        htmlChatbotText("Hemos recibido tus datos, muchas gracias.")
-      );
-      updateScrollBar();
+      insertHtmlChatbotTex("Hemos recibido tus datos, muchas gracias.");
     });
   });
 };
@@ -329,78 +457,18 @@ const activeFormData = function () {
 
     if (!isError) {
       // En caso de que no haya errores
-      // console.log("Todo CHIDOOO");
       formToMail.style.pointerEvents = "none"; // Se bloquea el formulario para no aceptar más información
-      showLoader(2.5).then(() => {
+      showLoader(timeLoader).then(() => {
         removeLoader();
-
-        // Change this to a function that inserts the html
-        chatbotChat.insertAdjacentHTML(
-          "beforeend",
-          htmlChatbotText("Hemos recibido tus datos, muchas gracias.")
-        );
-        updateScrollBar();
+        insertHtmlChatbotTex("Hemos recibido tus datos, muchas gracias.");
       });
     }
   });
 };
 
-const someText =
-  "Lorem ipsum dolor sit amet consectetur adipisicing elit. Ipsum libero, sit eum voluptates natus voluptatem dolorum. Beatae sit.";
-
-btnChatbotText.addEventListener("click", function () {
-  chatbotChat.insertAdjacentHTML("beforeend", htmlChatbotText(someText));
-
-  updateScrollBar();
-});
-
-btnChatbotTextNoface.addEventListener("click", function () {
-  chatbotChat.insertAdjacentHTML("beforeend", htmlChatbotTextNoface(someText));
-  updateScrollBar();
-});
-
-btnChatbotLoading.addEventListener("click", function () {
-  chatbotChat.insertAdjacentHTML("beforeend", htmlChatbotLoading());
-  updateScrollBar();
-});
-
-btnChatbotOptions.addEventListener("click", function () {
-  if (optionsBox !== undefined) {
-    optionsBox.classList.add("block-chatbot-options");
-  }
-
-  chatbotChat.insertAdjacentHTML(
-    "beforeend",
-    htmlChatbotOptions(someText, 1, 2, 3, 4)
-  );
-  optionsBox = [...document.querySelectorAll(".chatbot-options")].at(-1);
-  selectOptionHandler();
-  // optionsBox.classList.add("block-chatbot-options");
-  updateScrollBar();
-});
-
-btnChatbotUser.addEventListener("click", function () {
-  chatbotChat.insertAdjacentHTML("beforeend", htmlUserInput(someText));
-  updateScrollBar();
-});
-
-btnChatbotReview.addEventListener("click", function () {
-  chatbotChat.insertAdjacentHTML("beforeend", htmlChatbotReview());
-  updateScrollBar();
-
-  formStars = [...document.querySelectorAll(".form-stars")].at(-1);
-  activeFormStars();
-});
-
-btnChatbotForm.addEventListener("click", function () {
-  chatbotChat.insertAdjacentHTML("beforeend", htmlFormEmail());
-  updateScrollBar();
-
-  formToMail = [...document.querySelectorAll(".form-to-mail")].at(-1);
-  activeFormData();
-});
-
-// FORM
+///////////////////////
+///////////////////////
+///////////////////////
 
 // SEARCH BAR
 const searchBarEl = document.querySelector(".search-bar");
@@ -408,15 +476,12 @@ const searchBarEl = document.querySelector(".search-bar");
 searchBarEl.addEventListener("keyup", function (e) {
   e.preventDefault();
   if (e.key === "Enter" || e.keyCode === 13) {
-    const html3 = htmlUserInput(searchBarEl.value);
-    chatbotChat.insertAdjacentHTML("beforeend", html3);
+    insertHtmlUserInput(searchBarEl.value);
     searchBarEl.value = "";
-    updateScrollBar();
   }
 });
 
-// mostrar loader
-
+// MOSTRAR LOADER
 const showLoader = function (sec) {
   return new Promise(function (resolve) {
     chatbotChat.insertAdjacentHTML("beforeend", htmlChatbotLoading());
