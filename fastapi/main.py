@@ -4,7 +4,7 @@
 # Core
 from fastapi import FastAPI
 from fastapi import Request, status
-from fastapi import Query, Path
+from fastapi import Query, Path, Body
 from fastapi import HTTPException
 
 # Others
@@ -32,11 +32,14 @@ from schemas import CategoriaIn
 from schemas import PreguntaIn
 from schemas import PersonaIn
 from schemas import PersonaOut
+from schemas import PersonaUpdate
 from schemas import CalificacionIn
 
 
 app = FastAPI()
 
+# TODO: Checar selects de cada path
+# TODO: Path VALIDATIONS
 
 origins = [
     "http://localhost",
@@ -53,7 +56,7 @@ app.add_middleware(
 )
 
 def getFecha():
-    return datetime.today().strftime('%Y-%m-%d')
+    return datetime.today().strftime('%Y-%m-%d %H:%M:%S')
 
 def create_tables():
     with connection:
@@ -77,39 +80,14 @@ async def shutdown():
     if not connection.is_closed():
         connection.close()
 
+# Eror Handling
+# @app.exception_handler(RequestValidationError)
+# async def validation_exception_handler(request: Request, exc: RequestValidationError):
+#     return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST, content="Couldnt perform action")
 
 @app.get("/")
 async def home():
-    return [{"Hello": "World"}]
-
-
-@app.exception_handler(RequestValidationError)
-async def validation_exception_handler(request: Request, exc: RequestValidationError):
-    return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST, content="Couldnt perform action")
-
-
-    # return PlainTextResponse(str(exc), status_code=400)
-    # return JSONResponse(
-    #     status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
-    #     content=jsonable_encoder({
-    #             # 'code': "status_code=400"
-    #             "detail": exc.errors(),
-    #             "body": exc.body,
-    # #             "your_additional_errors": {"Will be": "Inside", "This":" Error message"}
-    #              }),
-    # )
-
-# app.add_exception_handler(PersonaException, persona_exception_handler)
-
-
-
-
-
-
-
-
-
-
+    return "Bienvenido"
 
 
 
@@ -130,13 +108,31 @@ async def show_categoria(
     result = [model_to_dict(item) for item in query]
     return result
 
+# TODO: Check Response Model
 @app.post("/categoria/create", status_code = status.HTTP_201_CREATED)
-def create_categoria(categoria: CategoriaIn):
+async def create_categoria(categoria: CategoriaIn):
     newCategoria = Categoria.create(
         nombre=categoria.nombre,
         texto=categoria.texto
     )
     return "Categoria creada"
+
+@app.put("/categoria/{id}/visit", status_code = status.HTTP_200_OK)
+async def visit_categoria(
+    nombre: str = Query(
+        ...,
+        min_length = 1,
+        max_length = 20,
+        example = "Inicio"
+    )
+):
+    query = (Categoria
+            .update({Categoria.visitas: Categoria.visitas + 1})
+            .where(Categoria.nombre == nombre))
+    query.execute()
+    return "Updated"
+
+@app.delete()
 
 
 # PREGUNTAS
@@ -161,6 +157,7 @@ async def show_pregunta(
     result = [model_to_dict(item) for item in query]
     return result
 
+# TODO: Check Response Model
 @app.post("/pregunta/create")
 async def create_pregunta(pregunta: PreguntaIn):
     arrayCat = []
@@ -179,7 +176,10 @@ async def create_pregunta(pregunta: PreguntaIn):
     else:
         return "No se pudo crear la pregunta"
 
+
+
 # PERSONAS
+# TODO: Check Response Model
 @app.get("/persona/show", status_code = status.HTTP_200_OK)
 async def show_persona(
     name: Optional[str] = Query(
@@ -211,7 +211,7 @@ async def show_persona(
     result = [model_to_dict(item) for item in query]
     return result
 
-# NOTE: Responder con un mensaje o con alguna variable del objeto
+# TODO: Check Response Model
 # @app.post("/persona/create", response_model = PersonaOut, status_code = status.HTTP_201_CREATED)
 @app.post("/persona/create", status_code = status.HTTP_201_CREATED)
 def create_persona(persona: PersonaIn):
@@ -223,8 +223,41 @@ def create_persona(persona: PersonaIn):
     # return persona
     return "Gracias por contactarnos"
 
-# @app.put("/persona/update", status_code = status.HTTP_200_OK)
-# def update_persona(persona: PersonaIn):
+# TODO: Is this a right way to update?
+# TODO: Check Response Model
+@app.put("/persona/update/{id}", status_code = status.HTTP_200_OK)
+async def update_persona(
+    id: int = Path,
+    personaUpdate: PersonaUpdate = Body(...)
+):
+    if (personaUpdate.nombre):
+        query = (Persona
+                 .update({Persona.nombre: personaUpdate.nombre})
+                 .where(Persona.id == id))
+        query.execute()
+    if (personaUpdate.correo):
+        query = (Persona
+                .update({Persona.correo: personaUpdate.correo})
+                .where(Persona.id == id))
+        query.execute()
+    if (personaUpdate.descripcion):
+        query = (Persona
+                .update({Persona.descripcion: personaUpdate.descripcion})
+                .where(Persona.id == id))
+        query.execute()
+    # result = [model_to_dict(item) for item in query]
+    return "Updated"
+
+# TODO: Check Response Model
+@app.delete("/persona/delete/{id}", status_code = status.HTTP_200_OK)
+async def delete_persona(
+    id: int = Path
+):
+    query = (Persona.delete()
+            .where(Persona.id == id))
+    query.execute()
+    return "Deleted"
+
 
 
 # CALIFICACIONES
@@ -260,6 +293,7 @@ async def show_calificacion(
     result = [model_to_dict(item) for item in query]
     return result
 
+# TODO: Check Response Model
 @app.post("/calificacion/create", status_code = status.HTTP_201_CREATED)
 def calificar_chatbot(userCal: CalificacionIn):
     newCal = Calificacion.create(
@@ -267,3 +301,27 @@ def calificar_chatbot(userCal: CalificacionIn):
         fecha = getFecha()
     )
     return "Gracias por calificarnos"
+
+@app.delete("/calificacion/delete/{id}", status_code = status.HTTP_200_OK)
+async def delete_calificacion(
+    id: int = Path
+):
+    query = (Calificacion.delete()
+            .where(Calificacion.id == id))
+    query.execute()
+    return "Deleted"
+
+
+# @app.exception_handler(RequestValidationError)
+# return PlainTextResponse(str(exc), status_code=400)
+# return JSONResponse(
+#     status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+#     content=jsonable_encoder({
+#             # 'code': "status_code=400"
+#             "detail": exc.errors(),
+#             "body": exc.body,
+# #             "your_additional_errors": {"Will be": "Inside", "This":" Error message"}
+#              }),
+# )
+
+# app.add_exception_handler(PersonaException, persona_exception_handler)
