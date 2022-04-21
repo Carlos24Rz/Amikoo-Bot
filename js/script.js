@@ -1,39 +1,24 @@
 const timeLoader = 1;
+const URL = "http://127.0.0.1:8000/pregunta/show?categoria_id=";
 
-// https://dev.to/ramonak/javascript-how-to-access-the-return-value-of-a-promise-object-1bck
-
-const getDataDB = async function () {
-  const data = await fetch(
-    "http://127.0.0.1:8000/pregunta/show?categoria=inicio"
-  )
+const getDataDB = async function (query) {
+  const data = await fetch(`${URL}${query}`)
     .then((response) => response.json())
     .then((data) => data);
 
   // console.log("before data");
-  // console.log("primera funcion", data);
+  console.log("primera funcion", data);
   // console.log("after data");
 
   return data;
 };
 
-// getDataDB().then((inf)=>inf)
+const insertHtmlOptionsDB = async function (query = 1) {
+  const data = await getDataDB(query);
 
-// getOptionsDB();
-// console.log(getOptionsDB());
-const getOptionsDB = async function () {
-  // console.log("antes");
-  const data = await getDataDB();
-  // console.log("segunda funcion", data);
-  // console.log("despues");
-
-  // console.log(data);
   htmlOptions = data.map((option) => `${option.nombre} ${option.emoji}`);
 
   insertHtmlChatbotOptions(someText, ...htmlOptions);
-};
-
-const siu = function () {
-  x = 2 + 1;
 };
 
 const todoEnUnaFuncion = async function () {
@@ -359,7 +344,7 @@ btnChatbotOptions.addEventListener("click", function () {
   showLoader(timeLoader).then(() => {
     removeLoader();
     // insertHtmlChatbotOptions(someText, 1, 2, 3, 4);
-    getOptionsDB();
+    insertHtmlOptionsDB();
   });
 });
 
@@ -389,6 +374,9 @@ const selectOptionHandler = function () {
   optionsBox.addEventListener("click", function (e) {
     if (e.target.classList.contains("chatbot-option")) {
       insertHtmlUserInput(e.target.textContent);
+      // OJO
+      // Aqui el e.target.textContent es un nombre que se ve en el html, pero necesitamos la categoriaID de ese nombre para mostrarlo
+      insertHtmlOptionsDB();
     }
   });
 };
