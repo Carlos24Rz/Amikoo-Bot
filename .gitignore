@@ -11,3 +11,6 @@ fastapi/test.py
 fastapi/todo.MD
 fastapi/venv/
 fastapi/config.py
+
+# Compilation
+*.o
