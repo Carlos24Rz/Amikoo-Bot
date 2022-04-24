@@ -1,9 +1,67 @@
 
-INSERT INTO categoria (nombre, texto) VALUES
-  ("Inicio", "Estas son las categorias de inicio"),
-  ("Nosotros", "Estos son los apartados de informacion");
+INSERT INTO categoria (nombre, texto, visitas, is_final) VALUES
+  ("Inicio",	"texto inicio",	0,	false),
+  ("Nosotros",	"texto nosotros",	0,	false),
+  ("Lineas de negocio",	"texto lineas de negocio",	0,	false),
+  ("Proyectos y reconocimientos",	"texto proyectos y reconocimientos",	0,	false),
+  ("Aplicaciones",	"texto aplicaciones",	0,	false),
+  ("Oportunidades",	"texto oportunidades", 0,	false),
+  ("Contacto",	"mostrarFormulario()",	0,	true),
+  ("¿Quiénes somos?",	"texto quienes somos",	0,	false),
+  ("Misión",	"texto mision",	0,	true),
+  ("Visión",	"texto vision",	0,	true),
+  ("Valores",	"texto valores",	0,	true),
+  ("Colaboradores",	"texto colaboradores",	0,	false),
+  ("Nombre de la empresa",	"texto nombre empresa",	0	,true),
+  ("¿Qué significa Naatik?",	"texto que significa",	0,	true),
+  ("Historia",	"texto historia",	0,	true),
+  ("Claves de registro nacionales",	"texto claves",	0,	true),
+  ("Socios principales",	"texto socios principales",	0,	true),
+  ("Instituciones",	"texto instituciones",	0,	true),
+  ("Empresas hermanas",	"texto empresas hermanas",	0,	true),
+  ("Desarrollo de sistemas informáticos",	"Linea de negocio 1",	0,	true),
+  ("Vinculación Academia-Industria",	"Linea de negocio 2",	0,	true),
+  ("Atención a convocatorias para desarrollo de proyectos",	"Linea de negocio 3",	0,	true),
+  ("Estancias para tesis o servicio social",	"texto estancias",	0,	false),
+  ("¿Cómo podemos contactarlos?",	"texto como contactar",	0,	true),
+  ("Requisitos",	"texto requisitos",	0,	true),
+  ("Beneficios",	"texto beneficios",	0,	true),
+  ("Documentacion requerida",	"texto documentacion",	0,	true),
+  ("Actividades a realizar",	"texto actividades",	0,	true),
+  ("Cómo aplicar",	"texto como aplicar",	0,	true),
+  ("Proyectos", "texto proyectos", 0, true);
 
-INSERT INTO pregunta (categoria_id, nombre, emoji, visitas) VALUES
-  (1, "Nosotros", "😎", 0),
-  (1, "Lineas de trabajo", "🛒", 0),
-  (2, "Categoria de ejemplo", "🛒", 0);
+
+
+
+INSERT INTO pregunta (categoria_id, nombre, emoji) VALUES
+(1,	"Nosotros",	"😎"),
+(1,	"Lineas de negocio",	"🛒"),
+(1,	"Proyectos y Reconocimientos", "🛒"	),
+(1,	"Aplicaciones",	"💼"),
+(1,	"Proyectos",	"💼"),
+(1,	"Oportunidades",	"🤩"),
+(1,	"Contacto",	"📞"),
+(2,	"¿Quienes somos?",	"❓"),
+(2,	"Misión",	"🎯"),
+(2,	"Visión",	"👀"),
+(2,	"Valores",	"❤"),
+(2,	"Colaboradores",	"🤝"),
+(8,	"Nombre de la empresa",	"🏭"),
+(8,	"¿Qué significa Naatik?",	"🤔"),
+(8,	"Historia",	"🧐"),
+(8,	"Claves de registro nacionales",	"📝"),
+(12,	"Socios principales",	"📝"),
+(12,	"Instituciones",	"📝"),
+(12,	"Empresas hermanas",	"📝"),
+(3,	"Desarrollo de sistemas informáticos",	"📝"),
+(3,	"Vinculación Academia-Industria",	"📝"),
+(3,	"Atención a convocatorias para desarrollo de proyectos",	"📝"),
+(6,	"Estancias para tesis o servicio social",	"📝"),
+(6,	"¿Cómo podemos contactarlos?",	"📝"),
+(23,	"Requisitos",	"📝"),
+(23,	"Beneficios",	"📝"),
+(23,	"Documentacion requerida",	"📝"),
+(23,	"Actividades a realizar",	"📝"),
+(23,	"Cómo aplicar",	"📝");
+

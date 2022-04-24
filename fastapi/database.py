@@ -11,10 +11,13 @@ database = MySQLDatabase(
     charset='utf8mb4'
 )
 
-
+# TODO: FIELD VALIDATIONS % INITIALIZATION ARGUMENTS
+# http://docs.peewee-orm.com/en/latest/peewee/models.html?highlight=table%20generation#field-initialization-arguments
 class Categoria(Model):
     nombre = CharField(max_length=50)
     texto = CharField(max_length=50)
+    visitas = IntegerField()
+    is_final = BooleanField()
 
     def __str__(self):
         return self.nombre
@@ -27,7 +30,6 @@ class Pregunta(Model):
     categoria_id = IntegerField()
     nombre = CharField(max_length=30)
     emoji = CharField()
-    visitas = IntegerField()
 
     def __str__(self):
         return self.nombre
@@ -37,8 +39,10 @@ class Pregunta(Model):
         table_name = 'pregunta'
 
 class Persona(Model):
+    id = IntegerField()
     nombre = CharField(max_length=50)
     correo = CharField(max_length=50)
+    fecha = DateTimeField(default=datetime.today().strftime('%Y-%m-%d %H:%M:%S'))
     descripcion = IntegerField()
 
     def __str__(self):
@@ -49,8 +53,9 @@ class Persona(Model):
         table_name = 'persona'
 
 class Calificacion(Model):
+    id = IntegerField()
     calificacion = IntegerField()
-    fecha = DateTimeField(default=datetime.today().strftime('%Y-%m-%d'))
+    fecha = DateTimeField(default=datetime.today().strftime('%Y-%m-%d %H:%M:%S'))
 
     def __str__(self):
         return self.calificacion
