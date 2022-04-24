@@ -1,3 +1,4 @@
+
 document.getElementById('getPreguntas')
 .addEventListener('click',getPreguntas);
 
@@ -139,7 +140,7 @@ document.getElementById('getPosts')
 
 
 function getText() {
-  fetch('sample.txt')
+  fetch('./files/sample.txt')
   .then((response) => response.text())
   .then((data) => {
     document.getElementById('output').innerHTML = data;
@@ -148,7 +149,7 @@ function getText() {
 }
 
 function getUsers() {
-  fetch('users.json')
+  fetch('./files/users.json')
   .then((response) => response.json())
   .then((data) => {
     let output = '<h2>Users</h2>';
