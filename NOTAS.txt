@@ -1,10 +1,14 @@
 POR HACER
-- Cuando se haga click a una opcion, mostrar las demas
-- Componer cara del chatbot principal (Verificar animaciones en cada view size)
 - Agregar más animaciones
 - Agregar animaciones dentro del chatbot-box
+- Componer algunos estilos del css
+- Mandar los datos del formulario a la base de datos
+- Corregir el show wait animation
+- Componer algunas cosas de la cara del chatbot
+- Mejorar lo del responsive
+- Probar con la información real de Naatik
+- Darle un formato a la información real que viene en forma de lista
 - SEPARAR EL CODIGO EN ARCHIVOS PARA FACILITAR LECTURA (MODEL-VIEW_CONTROLLER)
-- Implementar la funcion wait????????????????
 
 
 LISTO
