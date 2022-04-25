@@ -16,7 +16,7 @@
       src="https://kit.fontawesome.com/96bb550736.js"
       crossorigin="anonymous"
     ></script>
-    <link href="./css/crudCalificaciones.css" rel="stylesheet" />
+    <link href="./css/crudPreguntas.css" rel="stylesheet" />
     <title>Chatbot</title>
   </head>
   <body>
@@ -54,19 +54,16 @@
     <main>
       <section class="section-search">
         <div class="search-box">
-          <!--  -->
-          <div class="container-date">
-            <input type="date" name="" id="date-begin" value="2017-06-01" />
-            <input type="date" name="" id="date-end" value="2030-06-01" />
-            <button id="btn-submit">
+          <div class="btn-search btn-search--user">
+            <input id="user-input" class="" type="text" name=""
+            placeholder="Search by nombre"">
+            <button id="btn-user">
               <i class="fa-solid fa-magnifying-glass"></i>
             </button>
           </div>
 
           <div class="container-btn-extra">
-            <button class="btn-all-calificaciones">
-              Todas las calificaciones
-            </button>
+            <button class="btn-all-users">Todas las preguntas</button>
           </div>
 
           <div class="container-btn-extra">
@@ -79,8 +76,12 @@
         <div class="container-table">
           <div class="grid-row grid-row--header">
             <div class="grid-item grid-item--id">Id</div>
-            <div class="grid-item grid-item--calificacion">Calificacion</div>
-            <div class="grid-item grid-item--fecha">Fecha</div>
+            <div class="grid-item grid-item--padre-id">Padre id</div>
+            <div class="grid-item grid-item--nombre">Nombre</div>
+            <div class="grid-item grid-item--emoji">Emoji</div>
+            <div class="grid-item grid-item--texto">Texto</div>
+            <div class="grid-item grid-item--visitas">Visitas</div>
+            <div class="grid-item grid-item--is-final">Is final</div>
             <div class="grid-item grid-item--botones">Botones</div>
           </div>
           <div class="container-database-info"></div>
@@ -88,6 +89,6 @@
       </section>
     </main>
 
-    <script src="./js/crudCalificaciones.js"></script>
+    <script src="./js/crudPreguntas.js"></script>
   </body>
 </html>
