@@ -4,7 +4,7 @@ from typing import Optional
 
 
 # Path Operation Schemas
-class Pregunta(BaseModel):
+class PreguntaIn(BaseModel):
     padre: str = Field(
         ...,
         min_length = 1,
@@ -26,7 +26,9 @@ class Pregunta(BaseModel):
         min_length = 1,
         max_length = 60
     )
-    is_final: bool = Field()
+    is_final: bool = Field(
+        ...
+    )
 
 class PreguntaText(BaseModel):
     nombre: str = Field(
