@@ -128,17 +128,16 @@ async def get_pregunta(
     )
 ):
     Parent = Pregunta.alias()
-    if (preguntaParent):
+    if (pregunta):
+        query = (Pregunta.select()
+        .where(Pregunta.nombre == pregunta)
+        )
+    elif (preguntaParent):
         query = (Pregunta.select()
                 .join_from(Pregunta, Parent,
                 on=(Pregunta.padre_id == Parent.id))
                 .where(Parent.nombre == preguntaParent)
                 )
-    elif (pregunta):
-        query = (Pregunta.select()
-                .where(Pregunta.nombre == pregunta)
-                )
-
     else:
         query = Pregunta.select()
 
