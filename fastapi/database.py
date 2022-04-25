@@ -11,7 +11,6 @@ database = MySQLDatabase(
     charset='utf8mb4'
 )
 
-# TODO: FIELD VALIDATIONS % INITIALIZATION ARGUMENTS
 # TODO: Constraints
 # http://docs.peewee-orm.com/en/latest/peewee/models.html?highlight=table%20generation#field-initialization-arguments
 # padre_id = ForeignKeyField('self', backref='padre', null=False)
