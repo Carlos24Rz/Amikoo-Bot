@@ -40,7 +40,6 @@ import json
 app = FastAPI()
 
 # TODO: Checar selects de cada path
-# TODO: Path VALIDATIONS
 # TODO: Select count before delete, is it correct?
 # TODO: Function to check if ID exists in a table
 
@@ -111,7 +110,6 @@ async def show_texto(
     result = [model_to_dict(item) for item in query]
     return result
 
-# TODO: Select parent_id name too
 @app.get("/pregunta/show", status_code = status.HTTP_200_OK)
 async def get_pregunta(
     preguntaParent: Optional[str] = Query(
@@ -144,10 +142,39 @@ async def get_pregunta(
     result = [model_to_dict(item) for item in query]
     return result
 
+@app.put("/pregunta/{nombre}/visit", status_code = status.HTTP_200_OK)
+async def visit_pregunta(
+    nombre: str = Path(
+        ...,
+        min_length = 1,
+        max_length = 80,
+        example = "Inicio"
+    )
+):
+    query = (Pregunta
+            .update({Pregunta.visitas: Pregunta.visitas + 1})
+            .where(Pregunta.nombre == nombre))
+    query.execute()
+    return "Updated"
 
-# TODO: Insert by ID? It would be confusing
+@app.put("/pregunta/{id}/update-final", status_code = status.HTTP_200_OK)
+async def update_flag(
+    id: int = Path(
+        ...
+    ),
+    value: bool = Query(
+        ...
+    )
+):
+    query = (Pregunta
+            .update({Pregunta.is_final: value})
+            .where(Pregunta.nombre == nombre))
+    query.execute()
+    return "Updated"
+
 # TODO: Id fetching works, but should be improved
 # TODO: Check if parent is_final is true to make it false
+# FIX: Check if PreguntaIn.nombre exists in DB
 @app.post("/pregunta/create")
 async def create_pregunta(pregunta: PreguntaIn):
     arrayCat = []
@@ -168,38 +195,6 @@ async def create_pregunta(pregunta: PreguntaIn):
     else:
         return "No se pudo crear la pregunta"
 
-@app.put("/pregunta/{nombre}/update-final", status_code = status.HTTP_200_OK)
-async def make_not_final(
-    nombre: str = Path(
-        ...,
-        min_length = 1,
-        max_length = 80,
-        example = "Inicio"
-    ),
-    value: bool = Query(
-        ...
-    )
-):
-    query = (Pregunta
-            .update({Pregunta.is_final: value})
-            .where(Pregunta.nombre == nombre))
-    query.execute()
-    return "Updated"
-
-@app.put("/pregunta/{nombre}/visit", status_code = status.HTTP_200_OK)
-async def visit_pregunta(
-    nombre: str = Path(
-        ...,
-        min_length = 1,
-        max_length = 80,
-        example = "Inicio"
-    )
-):
-    query = (Pregunta
-            .update({Pregunta.visitas: Pregunta.visitas + 1})
-            .where(Pregunta.nombre == nombre))
-    query.execute()
-    return "Updated"
 
 
 
@@ -306,7 +301,9 @@ def create_persona(persona: PersonaIn):
 # TODO: Is this a right way to update?
 @app.put("/persona/update/{id}", status_code = status.HTTP_200_OK)
 async def update_persona(
-    id: int = Path,
+    id: int = Path(
+        ...
+    ),
     personaUpdate: PersonaUpdate = Body(...)
 ):
     if (personaUpdate.nombre):
