@@ -14,9 +14,10 @@ database = MySQLDatabase(
 # TODO: FIELD VALIDATIONS % INITIALIZATION ARGUMENTS
 # TODO: Constraints
 # http://docs.peewee-orm.com/en/latest/peewee/models.html?highlight=table%20generation#field-initialization-arguments
+# padre_id = ForeignKeyField('self', backref='padre', null=False)
 class Pregunta(Model):
     # id = AutoField(primary_key=True)
-    padre_id = ForeignKeyField('self', backref='children', null=False)
+    padre_id = IntegerField()
     nombre = CharField(max_length=80)
     emoji = CharField(max_length=3)
     texto = CharField(max_length=600)
