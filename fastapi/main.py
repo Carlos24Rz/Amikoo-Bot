@@ -120,7 +120,7 @@ async def get_pregunta(
         max_length = 80,
         example = "Inicio"
     ),
-    pregunta: Optional[str] = Query(
+    nombre: Optional[str] = Query(
         None,
         min_length = 1,
         max_length = 80,
@@ -128,9 +128,9 @@ async def get_pregunta(
     )
 ):
     Parent = Pregunta.alias()
-    if (pregunta):
+    if (nombre):
         query = (Pregunta.select()
-        .where(Pregunta.nombre == pregunta)
+        .where(Pregunta.nombre == nombre)
         )
     elif (preguntaParent):
         query = (Pregunta.select()
@@ -175,10 +175,13 @@ async def make_not_final(
         min_length = 1,
         max_length = 80,
         example = "Inicio"
+    ),
+    value: bool = Query(
+        ...
     )
 ):
     query = (Pregunta
-            .update({Pregunta.is_final: False})
+            .update({Pregunta.is_final: value})
             .where(Pregunta.nombre == nombre))
     query.execute()
     return "Updated"
