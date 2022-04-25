@@ -58,8 +58,11 @@ app.add_middleware(
     allow_credentials=True,
 )
 
-def getFecha():
+def getDateTime():
     return datetime.today().strftime('%Y-%m-%d %H:%M:%S')
+
+def getDate():
+    return datetime.today().strftime('%Y-%m-%d')
 
 def create_tables():
     with connection:
@@ -108,6 +111,7 @@ async def show_texto(
     result = [model_to_dict(item) for item in query]
     return result
 
+# TODO: Select parent_id name too
 @app.get("/pregunta/show", status_code = status.HTTP_200_OK)
 async def get_pregunta(
     preguntaParent: Optional[str] = Query(
@@ -117,20 +121,16 @@ async def get_pregunta(
         example = "Inicio"
     )
 ):
-# TODO: Select parent_id name too
-# query = (Pregunta.select(Pregunta.id, Pregunta.nombre, Pregunta.emoji, Parent.nombre)
     Parent = Pregunta.alias()
     if (preguntaParent):
         query = (Pregunta.select()
                 .join_from(Pregunta, Parent,
                 on=(Pregunta.padre_id == Parent.id))
                 .where(Parent.nombre == preguntaParent)
-                .objects())
+                )
     else:
-        query = (Pregunta.select()
-                .join_from(Pregunta, Parent,
-                on=(Pregunta.padre_id == Parent.id))
-                .objects())
+        query = Pregunta.select()
+
     result = [model_to_dict(item) for item in query]
     return result
 
@@ -173,8 +173,6 @@ async def make_not_final(
     query.execute()
     return "Updated"
 
-
-
 @app.put("/pregunta/{nombre}/visit", status_code = status.HTTP_200_OK)
 async def visit_pregunta(
     nombre: str = Path(
@@ -191,7 +189,7 @@ async def visit_pregunta(
     return "Updated"
 
 # @app.delete("/categoria/{id}/delete", status_code = status.HTTP_200_OK)
-# async def delete_categoria(
+# async def delete_pregunta(
 #     id: int = Path(...)
 # ):
 #     count = (Pregunta.select()
@@ -333,13 +331,13 @@ async def get_calificacion(
         None,
         title = "Begin date",
         description = "Lower end date for selection.",
-        example = getFecha()
+        example = getDate()
     ),
     dateEnd: Optional[date] = Query(
         None,
         title = "Ending date",
         description = "Upper end date for selection.",
-        example = getFecha()
+        example = getDate()
     )
 ):
     if (dateBegin and dateEnd):
@@ -361,10 +359,10 @@ async def get_calificacion(
 
 
 @app.post("/calificacion/create", status_code = status.HTTP_201_CREATED)
-def calificar_chatbot(userCal: CalificacionIn):
+async def calificar_chatbot(userCal: CalificacionIn):
     newCal = Calificacion.create(
         calificacion = userCal.calificacion,
-        fecha = getFecha()
+        fecha = getDateTime()
     )
     return "Gracias por calificarnos"
 
