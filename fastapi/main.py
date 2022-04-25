@@ -21,7 +21,7 @@ from database import Persona
 from database import Calificacion
 
 # SCHEMAS
-from schemas import Pregunta as PreguntaIn
+from schemas import PreguntaIn
 from schemas import PreguntaText
 from schemas import PersonaIn
 from schemas import PersonaOut
@@ -92,7 +92,7 @@ async def shutdown():
 # PREGUNTAS
 # TODO: Method returns json with all values, how do I fix it
 # @app.get("/pregunta/show/{pregunta}", response_model = PreguntaText, status_code = status.HTTP_200_OK)
-@app.get("/pregunta/show/{pregunta}", status_code = status.HTTP_200_OK)
+@app.get("/pregunta/{pregunta}/show", status_code = status.HTTP_200_OK)
 async def show_texto(
     pregunta: str = Path(
         ...,
@@ -109,7 +109,7 @@ async def show_texto(
     return result
 
 @app.get("/pregunta/show", status_code = status.HTTP_200_OK)
-async def show_pregunta(
+async def get_pregunta(
     preguntaParent: Optional[str] = Query(
         None,
         min_length = 1,
@@ -135,44 +135,61 @@ async def show_pregunta(
     return result
 
 
+# TODO: Insert by ID? It would be confusing
+# TODO: Id fetching works, but should be improved
+# TODO: Check if parent is_final is true to make it false
+@app.post("/pregunta/create")
+async def create_pregunta(pregunta: PreguntaIn):
+    arrayCat = []
+    query = (Pregunta.select(Pregunta.id)
+            .where(Pregunta.nombre == pregunta.padre))
+    for id in query:
+        arrayCat.append(id)
+    if (arrayCat != []):
+        newPregunta = Pregunta.create(
+            padre_id = [model_to_dict(item) for item in query][0]["id"],
+            nombre = pregunta.nombre,
+            emoji = pregunta.emoji,
+            texto = pregunta.texto,
+            visitas = 0,
+            is_final = True
+        )
+        return pregunta
+    else:
+        return "No se pudo crear la pregunta"
+
+@app.put("/pregunta/{nombre}/update-final", status_code = status.HTTP_200_OK)
+async def make_not_final(
+    nombre: str = Path(
+        ...,
+        min_length = 1,
+        max_length = 80,
+        example = "Inicio"
+    )
+):
+    query = (Pregunta
+            .update({Pregunta.is_final: False})
+            .where(Pregunta.nombre == nombre))
+    query.execute()
+    return "Updated"
 
 
-    # else:
-    # query = (Pregunta.select()
-    #         .join(Pregunta, Parent,
-    #         on=(Pregunta.padre_id == Parent.id)
-    #         )
-    #         )
 
+@app.put("/pregunta/{nombre}/visit", status_code = status.HTTP_200_OK)
+async def visit_pregunta(
+    nombre: str = Path(
+        ...,
+        min_length = 1,
+        max_length = 80,
+        example = "Inicio"
+    )
+):
+    query = (Pregunta
+            .update({Pregunta.visitas: Pregunta.visitas + 1})
+            .where(Pregunta.nombre == nombre))
+    query.execute()
+    return "Updated"
 
-
-
-
-#
-# # TODO: Check Response Model
-# @app.post("/categoria/create", status_code = status.HTTP_201_CREATED)
-# async def create_categoria(categoria: CategoriaIn):
-#     newCategoria = Categoria.create(
-#         nombre=categoria.nombre,
-#         texto=categoria.texto
-#     )
-#     return "Categoria creada"
-#
-# @app.put("/categoria/{id}/visit", status_code = status.HTTP_200_OK)
-# async def visit_categoria(
-#     nombre: str = Path(
-#         ...,
-#         min_length = 1,
-#         max_length = 20,
-#         example = "Inicio"
-#     )
-# ):
-#     query = (Categoria
-#             .update({Categoria.visitas: Categoria.visitas + 1})
-#             .where(Categoria.nombre == nombre))
-#     query.execute()
-#     return "Updated"
-#
 # @app.delete("/categoria/{id}/delete", status_code = status.HTTP_200_OK)
 # async def delete_categoria(
 #     id: int = Path(...)
@@ -187,34 +204,8 @@ async def show_pregunta(
 #                 .where(Categoria.id == id))
 #         query.execute()
 #         return "Deleted"
-#
 
 
-
-
-
-
-
-
-# # TODO: Check Response Model
-# @app.post("/pregunta/create")
-# async def create_pregunta(pregunta: PreguntaIn):
-#     arrayCat = []
-#     query = (Categoria.select(Categoria.id)
-#             .where(Categoria.nombre == pregunta.categoria))
-#     for category in query:
-#         arrayCat.append(category.id)
-#     if (arrayCat != []):
-#         newPregunta = Pregunta.create(
-#             categoria_id = arrayCat[0],
-#             nombre = pregunta.nombre,
-#             emoji = pregunta.emoji,
-#             visitas = 0
-#         )
-#         return pregunta
-#     else:
-#         return "No se pudo crear la pregunta"
-#
 # @app.delete("/pregunta/{id}/delete", status_code = status.HTTP_200_OK)
 # async def delete_pregunta(
 #     id: int = Path(...)
@@ -252,8 +243,8 @@ async def show_pregunta(
 
 # PERSONAS
 # TODO: Buscar por fecha
-@app.get("/persona/show/all", status_code = status.HTTP_200_OK)
-async def show_persona(
+@app.get("/persona/show", status_code = status.HTTP_200_OK)
+async def get_persona(
     name: Optional[str] = Query(
         None,
         title = "Name of person",
@@ -337,7 +328,7 @@ async def delete_persona(
 # CALIFICACIONES
 # TODO: REGEX OF FECHA
 @app.get("/calificacion/show", status_code = status.HTTP_200_OK)
-async def show_calificacion(
+async def get_calificacion(
     dateBegin: Optional[date] = Query(
         None,
         title = "Begin date",
