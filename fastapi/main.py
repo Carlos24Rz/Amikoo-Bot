@@ -91,8 +91,8 @@ async def shutdown():
 
 # PREGUNTAS
 # TODO: Method returns json with all values, how do I fix it
-# @app.get("/pregunta/show/{pregunta}/text", response_model = PreguntaText, status_code = status.HTTP_200_OK)
-@app.get("/pregunta/show/{pregunta}/text", status_code = status.HTTP_200_OK)
+# @app.get("/pregunta/show/{pregunta}", response_model = PreguntaText, status_code = status.HTTP_200_OK)
+@app.get("/pregunta/show/{pregunta}", status_code = status.HTTP_200_OK)
 async def show_texto(
     pregunta: str = Path(
         ...,
