@@ -19,6 +19,7 @@ from playhouse.shortcuts import model_to_dict
 from datetime import datetime
 from datetime import date
 from typing import Optional
+import json
 
 # ORM MODELS
 from database import database as connection
@@ -28,6 +29,7 @@ from database import Calificacion
 
 # SCHEMAS
 from schemas import Pregunta as PreguntaIn
+from schemas import PreguntaText
 from schemas import PersonaIn
 from schemas import PersonaOut
 from schemas import PersonaUpdate
@@ -86,22 +88,64 @@ async def shutdown():
 #     return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST, content="Couldnt perform action")
 
 
-# CATEGORIA
-# @app.get("/categoria/show", status_code = status.HTTP_200_OK)
-# async def show_categoria(
-#     nombre: Optional[str] = Query(
-#         None,
-#         min_length = 1,
-#         max_length = 20,
-#         example = "Inicio"
-#     )
-# ):
-#     if (nombre):
-#         query = Categoria.select().where(Categoria.nombre == nombre)
-#     else:
-#         query = Categoria.select()
-#     result = [model_to_dict(item) for item in query]
-#     return result
+# PREGUNTAS
+# TODO: Method returns json with all values, how do I fix it
+# @app.get("/pregunta/show/{pregunta}/text", response_model = PreguntaText, status_code = status.HTTP_200_OK)
+@app.get("/pregunta/show/{pregunta}/text", status_code = status.HTTP_200_OK)
+async def show_texto(
+    pregunta: str = Path(
+        ...,
+        title = "Name of pregunta",
+        description = "Name of pregunta from which to get it's text",
+        min_length = 1,
+        max_length = 80,
+        example = "Inicio"
+    )
+):
+    query = (Pregunta.select(Pregunta.texto)
+            .where(Pregunta.nombre == pregunta))
+    result = [model_to_dict(item) for item in query]
+    return result
+
+@app.get("/pregunta/show", status_code = status.HTTP_200_OK)
+async def show_pregunta(
+    preguntaParent: Optional[str] = Query(
+        None,
+        min_length = 1,
+        max_length = 80,
+        example = "Inicio"
+    )
+):
+# query = (Pregunta.select(Pregunta.id, Pregunta.nombre, Pregunta.emoji, Parent.nombre)
+    Parent = Pregunta.alias()
+    if (preguntaParent):
+        query = (Pregunta.select()
+                .join_from(Pregunta, Parent,
+                on=(Pregunta.padre_id == Parent.id))
+                .where(Parent.nombre == preguntaParent)
+                .objects())
+    else:
+        query = (Pregunta.select()
+                .join_from(Pregunta, Parent,
+                on=(Pregunta.padre_id == Parent.id))
+                .objects())
+    result = [model_to_dict(item) for item in query]
+    return result
+
+
+
+
+    # else:
+    # query = (Pregunta.select()
+    #         .join(Pregunta, Parent,
+    #         on=(Pregunta.padre_id == Parent.id)
+    #         )
+    #         )
+
+
+
+
+
 #
 # # TODO: Check Response Model
 # @app.post("/categoria/create", status_code = status.HTTP_201_CREATED)
@@ -146,27 +190,10 @@ async def shutdown():
 
 
 
-# # PREGUNTAS
-@app.get("/pregunta/show", status_code = status.HTTP_200_OK)
-async def show_pregunta(
-    parent: Optional[str] = Query(
-        None,
-        title = "Name of category",
-        description = "Name of category selected",
-        min_length = 1,
-        max_length = 20,
-        example = "Inicio"
-    )
-):
-    if (categoria):
-        query = (Pregunta.select()
-                .join_from(Pregunta, Categoria, on=(Pregunta.categoria_id == Categoria.id))
-                .where(Categoria.nombre==categoria))
-    else:
-        query = Pregunta.select()
-    result = [model_to_dict(item) for item in query]
-    return result
-#
+
+
+
+
 # # TODO: Check Response Model
 # @app.post("/pregunta/create")
 # async def create_pregunta(pregunta: PreguntaIn):
@@ -223,7 +250,7 @@ async def show_pregunta(
 
 # PERSONAS
 # TODO: Buscar por fecha
-@app.get("/persona/show", status_code = status.HTTP_200_OK)
+@app.get("/persona/show/all", status_code = status.HTTP_200_OK)
 async def show_persona(
     name: Optional[str] = Query(
         None,
