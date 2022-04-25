@@ -119,6 +119,12 @@ async def get_pregunta(
         min_length = 1,
         max_length = 80,
         example = "Inicio"
+    ),
+    pregunta: Optional[str] = Query(
+        None,
+        min_length = 1,
+        max_length = 80,
+        example = "Inicio"
     )
 ):
     Parent = Pregunta.alias()
@@ -128,6 +134,11 @@ async def get_pregunta(
                 on=(Pregunta.padre_id == Parent.id))
                 .where(Parent.nombre == preguntaParent)
                 )
+    elif (pregunta):
+        query = (Pregunta.select()
+                .where(Pregunta.nombre == pregunta)
+                )
+
     else:
         query = Pregunta.select()
 
@@ -187,6 +198,10 @@ async def visit_pregunta(
             .where(Pregunta.nombre == nombre))
     query.execute()
     return "Updated"
+
+
+
+
 
 # @app.delete("/categoria/{id}/delete", status_code = status.HTTP_200_OK)
 # async def delete_pregunta(
