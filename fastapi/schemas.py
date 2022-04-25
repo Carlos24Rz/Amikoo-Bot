@@ -28,6 +28,23 @@ class Pregunta(BaseModel):
     )
     is_final: bool = Field()
 
+class PreguntaText(BaseModel):
+    nombre: str = Field(
+        ...,
+        min_length = 1,
+        max_length = 80,
+        regex = "^[A-Za-z][A-Za-z0-9,. ]+$"
+    )
+    texto: str = Field(
+        ...,
+        min_length = 1,
+        max_length = 60
+    )
+
+
+
+
+
 
 
 class Persona(BaseModel):
