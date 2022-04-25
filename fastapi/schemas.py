@@ -4,28 +4,16 @@ from typing import Optional
 
 
 # Path Operation Schemas
-class CategoriaIn(BaseModel):
-    nombre: str = Field(
-        ...,
-        min_length = 1,
-        max_length = 20
-    )
-    texto: str = Field(
-        ...,
-        min_length = 1,
-        max_length = 500
-    )
-
 class PreguntaIn(BaseModel):
-    categoria: str = Field(
+    padre: str = Field(
         ...,
         min_length = 1,
-        max_length = 20
+        max_length = 80
     )
     nombre: str = Field(
         ...,
         min_length = 1,
-        max_length = 30,
+        max_length = 80,
         regex = "^[A-Za-z][A-Za-z0-9,. ]+$"
     )
     emoji: str = Field(
@@ -33,6 +21,31 @@ class PreguntaIn(BaseModel):
         min_length = 1,
         max_length = 3
     )
+    texto: str = Field(
+        ...,
+        min_length = 1,
+        max_length = 60
+    )
+    is_final: bool = Field(
+        ...
+    )
+
+class PreguntaText(BaseModel):
+    nombre: str = Field(
+        ...,
+        min_length = 1,
+        max_length = 80,
+        regex = "^[A-Za-z][A-Za-z0-9,. ]+$"
+    )
+    texto: str = Field(
+        ...,
+        min_length = 1,
+        max_length = 60
+    )
+
+
+
+
 
 
 
@@ -40,8 +53,8 @@ class Persona(BaseModel):
     nombre: str = Field(
         ...,
         min_length = 1,
-        max_length = 50,
-        regex = "^[A-Za-z][A-Za-z0-9 ]+$"
+        max_length = 60,
+        regex = "^[A-Za-z][A-Za-z ]+$"
     )
 
 class PersonaIn(Persona):
@@ -52,8 +65,9 @@ class PersonaIn(Persona):
         regex = "(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)"
     )
     descripcion: str = Field(
+        ...,
         min_length = 1,
-        max_length = 255
+        max_length = 600
     )
 
 class PersonaOut(Persona):
@@ -63,7 +77,7 @@ class PersonaUpdate(Persona):
     nombre: Optional[str] = Field(
         None,
         min_length = 1,
-        max_length = 50,
+        max_length = 60,
         regex = "^[A-Za-z][A-Za-z ]+$"
     )
     correo: Optional[str] = Field(
@@ -75,13 +89,14 @@ class PersonaUpdate(Persona):
     descripcion: Optional[str] = Field(
         None,
         min_length = 1,
-        max_length = 255
+        max_length = 600
     )
 
 
-class CalificacionIn(BaseModel):
+
+class Calificacion(BaseModel):
     calificacion: int = Field(
         ...,
-        ge = 0,
+        ge = 1,
         le = 5
     )

@@ -1,7 +1,16 @@
 const timeLoader = 1;
 
-const URLCATEGORIAS = "http://127.0.0.1:8000/categoria/show?nombre=";
-const URLPREGUNTAS = "http://127.0.0.1:8000/pregunta/show?categoria=";
+// const URLCATEGORIAS = "http://127.0.0.1:8000/categoria/show?nombre=";
+// const URLPREGUNTAS = "http://127.0.0.1:8000/pregunta/show?categoria=";
+
+const URL = "http://127.0.0.1:8000/pregunta/show?preguntaParent=";
+
+// const URLTEXTO = "http://127.0.0.1:8000/pregunta/Inicio/show";
+const URLTEXTO = function (query) {
+  const url = `http://127.0.0.1:8000/pregunta/${query}/show`;
+  console.log("PRUEBA URL: ", url);
+  return url;
+};
 
 const getDataDB = async function (url, query) {
   console.log("Query is:", query);
@@ -19,17 +28,20 @@ const getDataDB = async function (url, query) {
 };
 
 const insertHtmlOptionsDB = async function (query = "Inicio") {
-  const dataCategoria = await getDataDB(URLCATEGORIAS, query);
-  const dataOptions = await getDataDB(URLPREGUNTAS, query);
+  const dataOptions = await getDataDB(URL, query);
+  let newURL = URLTEXTO(query);
+
+  const dataText = await getDataDB(newURL, "");
 
   htmlOptions = dataOptions.map((option) => `${option.nombre} ${option.emoji}`);
-  insertHtmlChatbotOptions(dataCategoria[0].texto, ...htmlOptions);
+  insertHtmlChatbotOptions(dataText[0].texto, ...htmlOptions);
 
-  if (dataCategoria[0].texto == "mostrarFormulario()") {
-    console.log("SIUUUUUUUUU");
-    insertHtmlFormEmail();
-    return;
-  }
+  // MOSTRAR EL FORMULARIO DE SATISFACCION SOLO CUANDO SEA NODO HOJA
+  // if (dataCategoria[0].texto == "mostrarFormulario()") {
+  //   console.log("SIUUUUUUUUU");
+  //   insertHtmlFormEmail();
+  //   return;
+  // }
 
   if (dataOptions.length == 0) {
     showLoader(timeLoader).then(() => {
@@ -394,6 +406,23 @@ const selectOptionHandler = function () {
   });
 };
 
+const URLPOSTCALIFICACION = "http://127.0.0.1:8000/calificacion/create";
+
+const postCalificacionDB = async function (cali) {
+  const options = {
+    method: "POST",
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      calificacion: cali,
+    }),
+  };
+
+  return fetch(URLPOSTCALIFICACION, options);
+};
+
 // Formulario stars
 let formStars = [...document.querySelectorAll(".form-stars")].at(-1);
 const activeFormStars = function () {
@@ -411,8 +440,30 @@ const activeFormStars = function () {
     showLoader(timeLoader).then(() => {
       removeLoader();
       insertHtmlChatbotTex("Hemos recibido tus datos, muchas gracias.");
+      postCalificacionDB(answer)
+        .then((response) => response.json())
+        .then((data) => console.log(data));
     });
   });
+};
+
+const URLPOSTPERSONA = "http://127.0.0.1:8000/persona/create";
+
+const postPersonaDB = async function (persona) {
+  const options = {
+    method: "POST",
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      nombre: persona.nombre,
+      correo: persona.correo,
+      descripcion: persona.descripcion,
+    }),
+  };
+
+  return fetch(URLPOSTPERSONA, options);
 };
 
 // Formulario datos
@@ -459,13 +510,40 @@ const activeFormData = function () {
     if (!isError) {
       // En caso de que no haya errores
       formToMail.style.pointerEvents = "none"; // Se bloquea el formulario para no aceptar más información
+      console.log(name, email, msg);
+
+      const newPersona = {
+        nombre: name,
+        correo: email,
+        descripcion: msg,
+      };
+
       showLoader(timeLoader).then(() => {
         removeLoader();
         insertHtmlChatbotTex("Hemos recibido tus datos, muchas gracias.");
+        // TODO REVISAR QUE DEVUELVA ALGO, (EL NOMBRE)
+        postPersonaDB(newPersona)
+          .then((response) => response.json())
+          .then((data) => console.log(data));
       });
     }
   });
 };
+
+// const getDataDB = async function (url, query) {
+//   console.log("Query is:", query);
+
+//   const data = await fetch(`${url}${query}`)
+//     .then((response) => response.json())
+//     .then((data) => data);
+
+//   // console.log("before data");
+//   console.log("primera funcion", data);
+
+//   // console.log("after data");
+
+//   return data;
+// };
 
 ///////////////////////
 ///////////////////////

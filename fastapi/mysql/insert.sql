@@ -32,6 +32,10 @@ INSERT INTO pregunta (padre_id, nombre, emoji, texto, visitas, is_final) VALUES
 
 
 
+
+
+
+
 INSERT INTO categoria (nombre, texto, visitas, is_final) VALUES
   ("Inicio",	"texto inicio",	0,	false),
   ("Nosotros",	"texto nosotros",	0,	false),

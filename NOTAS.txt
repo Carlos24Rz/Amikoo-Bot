@@ -9,7 +9,8 @@ POR HACER
 - Probar con la información real de Naatik
 - Darle un formato a la información real que viene en forma de lista
 - SEPARAR EL CODIGO EN ARCHIVOS PARA FACILITAR LECTURA (MODEL-VIEW_CONTROLLER)
-
+- ATRAPAR TODOS LOS ERRORES DE LAS PROMESAS
+- FALTARIA UN INICIO DE SESION
 
 LISTO
 - Chatbot sticky
