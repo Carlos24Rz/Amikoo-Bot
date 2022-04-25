@@ -14,13 +14,6 @@ from fastapi.exceptions import RequestValidationError
 from fastapi.responses import PlainTextResponse
 from fastapi.responses import JSONResponse
 
-# EXTRAS
-from playhouse.shortcuts import model_to_dict
-from datetime import datetime
-from datetime import date
-from typing import Optional
-import json
-
 # ORM MODELS
 from database import database as connection
 from database import Pregunta
@@ -34,6 +27,14 @@ from schemas import PersonaIn
 from schemas import PersonaOut
 from schemas import PersonaUpdate
 from schemas import Calificacion as CalificacionIn
+
+# EXTRAS
+from playhouse.shortcuts import model_to_dict
+from datetime import datetime
+from datetime import date
+from typing import Optional
+import json
+
 
 
 app = FastAPI()
@@ -116,6 +117,7 @@ async def show_pregunta(
         example = "Inicio"
     )
 ):
+# TODO: Select parent_id name too
 # query = (Pregunta.select(Pregunta.id, Pregunta.nombre, Pregunta.emoji, Parent.nombre)
     Parent = Pregunta.alias()
     if (preguntaParent):
