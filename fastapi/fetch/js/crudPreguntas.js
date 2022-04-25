@@ -1,44 +1,42 @@
 // NEW CODE
 
-const htmlPersonas = function (...personas) {
-  const htmlPersonas = personas
+const htmlPreguntas = function (...preguntas) {
+  const htmlPreguntas = preguntas
     .map(
-      (persona) => `
+      (pregunta) => `
     <div class="grid-row">
-        <div class="grid-item grid-item--id">Id</div>
-        <div class="grid-item grid-item--padre-id">Padre id</div>
-        <div class="grid-item grid-item--nombre">Nombre</div>
-        <div class="grid-item grid-item--emoji">Emoji</div>
-        <div class="grid-item grid-item--texto">Texto</div>
-        <div class="grid-item grid-item--visitas">Visitas</div>
-        <div class="grid-item grid-item--is-final">Is final</div>
+        <div class="grid-item grid-item--id">${pregunta.id}</div>
+        <div class="grid-item grid-item--padre-id">${pregunta.padre_id}</div>
+        <div class="grid-item grid-item--nombre">${pregunta.nombre}</div>
+        <div class="grid-item grid-item--emoji">${pregunta.emoji}</div>
+        <div class="grid-item grid-item--texto">${pregunta.texto}</div>
+        <div class="grid-item grid-item--visitas">${pregunta.visitas}</div>
+        <div class="grid-item grid-item--is-final">${pregunta.is_final}</div>
         <div class="grid-item grid-item--botones">
-            <button type="button" class="btn-update grid-button-update" value="${persona.id}">Update</button>
-            <button type="button" class="btn-delete grid-button-delete" value="${persona.id}">Delete</button>
+            <button type="button" class="btn-update grid-button-update" value="${pregunta.id}">Update</button>
+            <button type="button" class="btn-delete grid-button-delete" value="${pregunta.id}">Delete</button>
         </div>
     </div>`
     )
     .join("");
 
-  return htmlPersonas;
+  return htmlPreguntas;
 };
 
-const htmlNoPersonas = function () {
+const htmlNoPreguntas = function () {
   return `
     <div class="grid-row grid-row-error">
       <div class="grid-item">No hay preguntas</div>
     </div>`;
 };
 
-const URL = "http://127.0.0.1:8000/persona/show?";
-const URLNOMBRE = "http://127.0.0.1:8000/persona/show?name=";
-const URLCORREO = "http://127.0.0.1:8000/persona/show?correo=";
-const inputUser = document.querySelector("#user-input");
-const inputCorreo = document.querySelector("#email-input");
-const btnUser = document.querySelector("#btn-user");
-const btnEmail = document.querySelector("#btn-email");
+const URL = "http://127.0.0.1:8000/pregunta/show?";
+const URLPREGUNTA = "http://127.0.0.1:8000/pregunta/show?pregunta=";
+const inputPregunta = document.querySelector("#nombre-input");
+const btnUser = document.querySelector("#btn-nombre");
 const containerTable = document.querySelector(".container-database-info");
-const btnAllUsers = document.querySelector(".btn-all-users");
+
+const btnAllPreguntas = document.querySelector(".btn-all-preguntas");
 const btnClear = document.querySelector(".btn-clear");
 
 const getDataDB = async function (url, query) {
@@ -49,32 +47,22 @@ const getDataDB = async function (url, query) {
     .then((data) => data)
     .catch((err) => err);
 
-  // console.log(data);
+  console.log(data);
   return data;
 };
 
-const insertHtmlPersonasByUser = async function (url) {
-  const userValue = inputUser.value;
+const insertHtmlPreguntas = async function (url) {
+  const nombreValue = inputPregunta.value;
 
-  await getDataDB(url, userValue).then((personas) => {
+  await getDataDB(url, nombreValue).then((preguntas) => {
     containerTable.innerHTML = "";
-    if (personas.length <= 0) {
-      containerTable.insertAdjacentHTML("beforeend", htmlNoPersonas());
+    if (preguntas.length <= 0) {
+      containerTable.insertAdjacentHTML("beforeend", htmlNoPreguntas());
     } else {
-      containerTable.insertAdjacentHTML("beforeend", htmlPersonas(...personas));
-    }
-  });
-};
-
-const insertHtmlPersonasByCorreo = async function (url) {
-  const userValue = inputCorreo.value;
-
-  containerTable.innerHTML = "";
-  await getDataDB(url, userValue).then((personas) => {
-    if (personas.length <= 0) {
-      containerTable.insertAdjacentHTML("beforeend", htmlNoPersonas());
-    } else {
-      containerTable.insertAdjacentHTML("beforeend", htmlPersonas(...personas));
+      containerTable.insertAdjacentHTML(
+        "beforeend",
+        htmlPreguntas(...preguntas)
+      );
     }
   });
 };
@@ -92,40 +80,24 @@ const initializeButtons = function () {
   });
 };
 
-// Para buscar por usuario
+// Para buscar por nombre pregunta
 btnUser.addEventListener("click", function () {
-  insertHtmlPersonasByUser(URLNOMBRE).then(() => {
+  insertHtmlPreguntas(URLPREGUNTA).then(() => {
     initializeButtons();
   });
 });
 
-// Para buscar por correo
-btnEmail.addEventListener("click", function () {
-  insertHtmlPersonasByCorreo(URLCORREO).then(() => {
-    initializeButtons();
-  });
-});
-
-inputUser.addEventListener("keyup", function (event) {
+inputPregunta.addEventListener("keyup", function (event) {
   // Number 13 is the "Enter" key on the keyboard
   if (event.keyCode === 13) {
-    insertHtmlPersonasByUser(URLNOMBRE).then(() => {
+    insertHtmlPreguntas(URLPREGUNTA).then(() => {
       initializeButtons();
     });
   }
 });
 
-inputCorreo.addEventListener("keyup", function (event) {
-  // Number 13 is the "Enter" key on the keyboard
-  if (event.keyCode === 13) {
-    insertHtmlPersonasByCorreo(URLCORREO).then(() => {
-      initializeButtons();
-    });
-  }
-});
-
-btnAllUsers.addEventListener("click", function () {
-  insertHtmlPersonasByUser(URL).then(() => {
+btnAllPreguntas.addEventListener("click", function () {
+  insertHtmlPreguntas(URL).then(() => {
     initializeButtons();
   });
 });
