@@ -142,11 +142,8 @@ async def get_pregunta(
     else:
         query = Pregunta.select()
 
-    if query.exists():
-        result = [model_to_dict(item) for item in query]
-        return result
-    else:
-        return "Preguta invalida"
+    result = [model_to_dict(item) for item in query]
+    return result
 
 @app.put("/pregunta/{nombre}/visit", status_code = status.HTTP_200_OK)
 async def visit_pregunta(
