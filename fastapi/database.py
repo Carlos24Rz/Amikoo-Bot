@@ -23,8 +23,8 @@ class Pregunta(Model):
     visitas = IntegerField(default=0)
     is_final = BooleanField(default=False)
 
-    def __str__(self):
-        return self.nombre
+    # def __str__(self):
+    #     return self.nombre
 
     class Meta:
         database = database
