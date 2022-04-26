@@ -107,8 +107,11 @@ async def show_texto(
 ):
     query = (Pregunta.select(Pregunta.texto)
             .where(Pregunta.nombre == pregunta))
-    result = [model_to_dict(item) for item in query]
-    return result
+    if query.exists():
+        result = [model_to_dict(item) for item in query]
+        return result
+    else:
+        return "Preguta invalida"
 
 @app.get("/pregunta/show", status_code = status.HTTP_200_OK)
 async def get_pregunta(
@@ -139,8 +142,11 @@ async def get_pregunta(
     else:
         query = Pregunta.select()
 
-    result = [model_to_dict(item) for item in query]
-    return result
+    if query.exists():
+        result = [model_to_dict(item) for item in query]
+        return result
+    else:
+        return "Preguta invalida"
 
 @app.put("/pregunta/{nombre}/visit", status_code = status.HTTP_200_OK)
 async def visit_pregunta(
@@ -160,7 +166,8 @@ async def visit_pregunta(
 @app.put("/pregunta/{id}/update-final", status_code = status.HTTP_200_OK)
 async def update_flag(
     id: int = Path(
-        ...
+        ...,
+        ge=1
     ),
     value: bool = Query(
         ...
@@ -168,32 +175,32 @@ async def update_flag(
 ):
     query = (Pregunta
             .update({Pregunta.is_final: value})
-            .where(Pregunta.nombre == nombre))
+            .where(Pregunta.id == id))
     query.execute()
     return "Updated"
 
 # TODO: Id fetching works, but should be improved
 # TODO: Check if parent is_final is true to make it false
-# FIX: Check if PreguntaIn.nombre exists in DB
 @app.post("/pregunta/create")
 async def create_pregunta(pregunta: PreguntaIn):
-    arrayCat = []
-    query = (Pregunta.select(Pregunta.id)
-            .where(Pregunta.nombre == pregunta.padre))
-    for id in query:
-        arrayCat.append(id)
-    if (arrayCat != []):
-        newPregunta = Pregunta.create(
-            padre_id = [model_to_dict(item) for item in query][0]["id"],
-            nombre = pregunta.nombre,
-            emoji = pregunta.emoji,
-            texto = pregunta.texto,
-            visitas = 0,
-            is_final = True
-        )
+    query = Pregunta.get_or_none(Pregunta.nombre == pregunta.padre)
+    if (query != None):
+        nameTaken = Pregunta.get_or_none(Pregunta.nombre == pregunta.nombre)
+        if nameTaken:
+            return "Nombre ya existe"
+        else:
+            print(query)
+            newPregunta = Pregunta.create(
+                padre_id = query,
+                nombre = pregunta.nombre,
+                emoji = pregunta.emoji,
+                texto = pregunta.texto,
+                visitas = 0,
+                is_final = True
+            )
         return pregunta
     else:
-        return "No se pudo crear la pregunta"
+        return "Padre no existe"
 
 
 
