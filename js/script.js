@@ -30,6 +30,8 @@ const getDataDB = async function (url, query) {
 const insertHtmlOptionsDB = async function (query = "Inicio") {
   const dataOptions = await getDataDB(URL, query);
   let newURL = URLTEXTO(query);
+  console.log("dataOptions: ", dataOptions);
+  console.log("|||||||||||||||||||||||||||||||||||||");
 
   const dataText = await getDataDB(newURL, "");
 

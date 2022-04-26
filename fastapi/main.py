@@ -111,7 +111,7 @@ async def show_texto(
         result = [model_to_dict(item) for item in query]
         return result
     else:
-        return "Preguta invalida"
+        return "Pregunta invalida"
 
 @app.get("/pregunta/show", status_code = status.HTTP_200_OK)
 async def get_pregunta(
