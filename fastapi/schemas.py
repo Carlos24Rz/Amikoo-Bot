@@ -26,9 +26,6 @@ class PreguntaIn(BaseModel):
         min_length = 1,
         max_length = 60
     )
-    is_final: bool = Field(
-        ...
-    )
 
 class PreguntaText(BaseModel):
     nombre: str = Field(
