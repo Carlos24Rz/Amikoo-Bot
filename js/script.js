@@ -34,9 +34,13 @@ const insertHtmlOptionsDB = async function (query = "Inicio") {
   console.log("|||||||||||||||||||||||||||||||||||||");
 
   const dataText = await getDataDB(newURL, "");
+  console.log("DATATEXT ********************");
+  console.log(dataText[0].texto);
+
+  const titulo = dataText[0].texto.replaceAll("\n", "<br>");
 
   htmlOptions = dataOptions.map((option) => `${option.nombre} ${option.emoji}`);
-  insertHtmlChatbotOptions(dataText[0].texto, ...htmlOptions);
+  insertHtmlChatbotOptions(titulo, ...htmlOptions);
 
   // MOSTRAR EL FORMULARIO DE SATISFACCION SOLO CUANDO SEA NODO HOJA
   // if (dataCategoria[0].texto == "mostrarFormulario()") {
