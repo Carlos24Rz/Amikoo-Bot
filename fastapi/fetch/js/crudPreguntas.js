@@ -31,7 +31,7 @@ const htmlNoPreguntas = function () {
 };
 
 const URL = "http://127.0.0.1:8000/pregunta/show?";
-const URLPREGUNTA = "http://127.0.0.1:8000/pregunta/show?pregunta=";
+const URLPREGUNTA = "http://127.0.0.1:8000/pregunta/show?nombre=";
 const inputPregunta = document.querySelector("#nombre-input");
 const btnUser = document.querySelector("#btn-nombre");
 const containerTable = document.querySelector(".container-database-info");
@@ -105,3 +105,92 @@ btnAllPreguntas.addEventListener("click", function () {
 btnClear.addEventListener("click", function () {
   containerTable.innerHTML = "";
 });
+
+//
+//
+//
+//
+//
+//
+const bodyEl = document.body;
+console.log(bodyEl);
+
+const htmlBackdrop = `
+    <div class="backdrop"> </div>
+`;
+
+const htmlModal = function (title) {
+  return `
+        <div class="modal">
+        <header class="modal-header"><h2>${title}</h2></header>
+
+        <div class="modal-content">
+            <div class="modal-row-input">
+            <label for="padre-input">Ingresa padre</label>
+            <input id="padre-input" type="text" placeholder="Nosotros" />
+            </div>
+            <div class="modal-row-input">
+            <label for="nombre-pregunta-input">Ingresa nombre</label>
+            <input
+                id="nombre-pregunta-input"
+                type="text"
+                placeholder="Nuestra app"
+            />
+            </div>
+            <div class="modal-row-input">
+            <label for="emoji-input">Ingresa emoji</label>
+            <input id="emoji-input" type="text" placeholder=":)" />
+            </div>
+            <div class="modal-row-input">
+            <label for="texto-input">Ingresa texto</label>
+            <input id="texto-input" type="text" placeholder="Esta pregunta..." />
+            </div>
+        </div>
+
+        <footer class="modal-actions">
+            <button id="btn-modal-cancelar">Cancelar</button>
+            <button id="btn-modal-crear">Crear</button>
+        </footer>
+        </div>
+    `;
+};
+
+const insertHtmlModal = function (title) {
+  const html = htmlModal(title);
+  bodyEl.insertAdjacentHTML("beforeend", htmlBackdrop);
+  bodyEl.insertAdjacentHTML("beforeend", html);
+};
+
+// insertHtmlModal("Mi titulo", "Mi contenido");
+
+const btnNewPregunta = document.querySelector(".btn-crear-nueva-pregunta");
+
+btnNewPregunta.addEventListener("click", function () {
+  insertHtmlModal("Niceeee");
+  initializeButtonsCreate();
+});
+
+const initializeButtonsCreate = function () {
+  const btnCancelar = document.querySelector("#btn-modal-cancelar");
+  btnCancelar.addEventListener("click", function () {
+    const modal = document.querySelector(".modal");
+    const backdrop = document.querySelector(".backdrop");
+    modal.remove();
+    backdrop.remove();
+  });
+
+  const btnCrear = document.querySelector("#btn-modal-crear");
+  btnCrear.addEventListener("click", function () {
+    const padreValue = document.querySelector("#padre-input").value;
+    const nombreValue = document.querySelector("#nombre-pregunta-input").value;
+    const emojiValue = document.querySelector("#emoji-input").value;
+    const textoValue = document.querySelector("#texto-input").value;
+    const objPregunta = {
+      padre: padreValue,
+      nombre: nombreValue,
+      emoji: emojiValue,
+      texto: textoValue,
+    };
+    console.log(objPregunta);
+  });
+};
