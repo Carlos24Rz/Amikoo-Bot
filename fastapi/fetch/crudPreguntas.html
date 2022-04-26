@@ -16,7 +16,7 @@
       src="https://kit.fontawesome.com/96bb550736.js"
       crossorigin="anonymous"
     ></script>
-    <link href="./css/crudCalificaciones.css" rel="stylesheet" />
+    <link href="./css/crudPreguntas.css" rel="stylesheet" />
     <title>Chatbot</title>
   </head>
   <body>
@@ -54,19 +54,21 @@
     <main>
       <section class="section-search">
         <div class="search-box">
-          <!--  -->
-          <div class="container-date">
-            <input type="date" name="" id="date-begin" value="2017-06-01" />
-            <input type="date" name="" id="date-end" value="2030-06-01" />
-            <button id="btn-submit">
+          <div class="container-btn-extra">
+            <button class="btn-crear-nueva-pregunta">
+              Crear nueva pregunta
+            </button>
+          </div>
+          <div class="btn-search">
+            <input id="nombre-input" class="" type="text" name=""
+            placeholder="Search by nombre"">
+            <button id="btn-nombre">
               <i class="fa-solid fa-magnifying-glass"></i>
             </button>
           </div>
 
           <div class="container-btn-extra">
-            <button class="btn-all-calificaciones">
-              Todas las calificaciones
-            </button>
+            <button class="btn-all-preguntas">Todas las preguntas</button>
           </div>
 
           <div class="container-btn-extra">
@@ -79,8 +81,12 @@
         <div class="container-table">
           <div class="grid-row grid-row--header">
             <div class="grid-item grid-item--id">Id</div>
-            <div class="grid-item grid-item--calificacion">Calificacion</div>
-            <div class="grid-item grid-item--fecha">Fecha</div>
+            <div class="grid-item grid-item--padre-id">Padre id</div>
+            <div class="grid-item grid-item--nombre">Nombre</div>
+            <div class="grid-item grid-item--emoji">Emoji</div>
+            <div class="grid-item grid-item--texto">Texto</div>
+            <div class="grid-item grid-item--visitas">Visitas</div>
+            <div class="grid-item grid-item--is-final">Is final</div>
             <div class="grid-item grid-item--botones">Botones</div>
           </div>
           <div class="container-database-info"></div>
@@ -88,6 +94,42 @@
       </section>
     </main>
 
-    <script src="./js/crudCalificaciones.js"></script>
+    <script src="./js/crudPreguntas.js"></script>
+
+    <!--  -->
+    <!--  -->
+    <!--  -->
+    <!-- <div class="backdrop"></div> -->
+    <!-- <div class="modal">
+      <header class="modal-header"><h2>${title}</h2></header>
+
+      <div class="modal-content">
+        <div class="modal-row-input">
+          <label for="padre-input">Ingresa padre</label>
+          <input id="padre-input" type="text" placeholder="Nosotros" />
+        </div>
+        <div class="modal-row-input">
+          <label for="nombre-pregunta-input">Ingresa nombre</label>
+          <input
+            id="nombre-pregunta-input"
+            type="text"
+            placeholder="Nuestra app"
+          />
+        </div>
+        <div class="modal-row-input">
+          <label for="emoji-input">Ingresa emoji</label>
+          <input id="emoji-input" type="text" placeholder=":)" />
+        </div>
+        <div class="modal-row-input">
+          <label for="texto-input">Ingresa texto</label>
+          <input id="texto-input" type="text" placeholder="Esta pregunta..." />
+        </div>
+      </div>
+
+      <footer class="modal-actions">
+        <button id="btn-cancelar-pregunta">Cancelar</button>
+        <button id="btn-crear-pregunta">Crear</button>
+      </footer>
+    </div> -->
   </body>
 </html>
