@@ -515,7 +515,8 @@ body {
 }
 
 .modal-actions #btn-modal-crear,
-.modal-actions #btn-modal-actualizar {
+.modal-actions #btn-modal-actualizar,
+.modal-actions #btn-modal-borrar {
   background-color: var(--green-color);
 }
 

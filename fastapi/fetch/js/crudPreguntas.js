@@ -77,6 +77,7 @@ const initializeButtons = function () {
   document.querySelectorAll(".grid-button-delete").forEach(function (elem) {
     elem.addEventListener("click", function (event) {
       console.log("Delete: " + event.target.value);
+      insertHtmlModalDelete(event.target.value);
     });
   });
 };
@@ -167,7 +168,7 @@ const insertHtmlModalCreate = function (title) {
 const btnNewPregunta = document.querySelector(".btn-crear-nueva-pregunta");
 
 btnNewPregunta.addEventListener("click", function () {
-  insertHtmlModalCreate("Niceeee");
+  insertHtmlModalCreate("Crear nueva pregunta");
   initializeButtonsCreate();
 });
 
@@ -220,28 +221,32 @@ const URLUPDATEPREGUNTA = "http://127.0.0.1:8000/pregunta/show?nombre=";
 const htmlModalUpdate = function (pregunta) {
   return `
   <div class="modal">
-    <header class="modal-header"><h2>---------</h2></header>
+    <header class="modal-header"><h2>Actualizando pregunta</h2></header>
 
     <div class="modal-content">
         <div class="modal-row-input">
         <label for="id-input">Id</label>
-        <input id="id-input" type="text" placeholder="${pregunta.id}" />
+        <input id="id-input" type="text" value="${pregunta.id}" disabled />
         </div>
         <div class="modal-row-input">
         <label for="padre-input">Padre</label>
-        <input id="padre-input" type="text" placeholder="${pregunta.padre_id}" />
+        <input id="padre-input" type="text" value="${pregunta.padre_id}" ${
+    pregunta.nombre == "Inicio" ? "disabled" : ""
+  } />
         </div>
         <div class="modal-row-input">
         <label for="nombre-pregunta-input">Nombre</label>
-        <input id="nombre-pregunta-input" type="text" placeholder="${pregunta.nombre}" />
+        <input id="nombre-pregunta-input" type="text" value="${
+          pregunta.nombre
+        }" ${pregunta.nombre == "Inicio" ? "disabled" : ""}/>
         </div>
         <div class="modal-row-input">
         <label for="emoji-input">Emoji</label>
-        <input id="emoji-input" type="text" placeholder="${pregunta.emoji}" />
+        <input id="emoji-input" type="text" value="${pregunta.emoji}" />
         </div>
         <div class="modal-row-input">
         <label for="texto-input">Texto</label>
-        <input id="texto-input" type="text" placeholder="${pregunta.texto}" />
+        <input id="texto-input" type="text" value="${pregunta.texto}" />
         </div>
     </div>
 
@@ -259,4 +264,116 @@ const insertHtmlModalUpdate = async function (query) {
   const html = htmlModalUpdate(pregunta[0]);
   bodyEl.insertAdjacentHTML("beforeend", htmlBackdrop);
   bodyEl.insertAdjacentHTML("beforeend", html);
+  initializeButtonsUpdate();
+};
+
+const initializeButtonsUpdate = function () {
+  console.log("CLICKKKKKKK");
+  const btnCancelar = document.querySelector("#btn-modal-cancelar");
+
+  btnCancelar.addEventListener("click", function () {
+    console.log("Click");
+    const modal = document.querySelector(".modal");
+    const backdrop = document.querySelector(".backdrop");
+    modal.remove();
+    backdrop.remove();
+  });
+
+  // Aqui va lo que se debe actualizar
+  // const btnCrear = document.querySelector("#btn-modal-crear");
+  // btnCrear.addEventListener("click", function () {
+  //   const padreValue = document.querySelector("#padre-input").value;
+  //   const nombreValue = document.querySelector("#nombre-pregunta-input").value;
+  //   const emojiValue = document.querySelector("#emoji-input").value;
+  //   const textoValue = document.querySelector("#texto-input").value;
+  //   const objPregunta = {
+  //     padre: padreValue,
+  //     nombre: nombreValue,
+  //     emoji: emojiValue,
+  //     texto: textoValue,
+  //   };
+  //   console.log(objPregunta);
+  //   putPreguntaDB(objPregunta);
+  // });
+};
+
+//
+//
+//
+//
+const URLDELETEPREGUNTA = "http://127.0.0.1:8000/pregunta/show?nombre=";
+
+const htmlModalDelete = function (pregunta) {
+  return `
+  <div class="modal">
+    <header class="modal-header"><h2>¿Deseas borrar esta pregunta?</h2></header>
+
+    <div class="modal-content">
+        <div class="modal-row-input">
+        <label for="id-input">Id</label>
+        <input id="id-input" type="text" value="${pregunta.id}" disabled />
+        </div>
+        <div class="modal-row-input">
+        <label for="padre-input">Padre</label>
+        <input id="padre-input" type="text" value="${pregunta.padre_id}" disabled/>
+        </div>
+        <div class="modal-row-input">
+        <label for="nombre-pregunta-input">Nombre</label>
+        <input id="nombre-pregunta-input" type="text" value="${pregunta.nombre}" disabled/>
+        </div>
+        <div class="modal-row-input">
+        <label for="emoji-input">Emoji</label>
+        <input id="emoji-input" type="text" value="${pregunta.emoji}" disabled />
+        </div>
+        <div class="modal-row-input">
+        <label for="texto-input">Texto</label>
+        <input id="texto-input" type="text" value="${pregunta.texto}" /disabled>
+        </div>
+    </div>
+
+    <footer class="modal-actions">
+        <button id="btn-modal-cancelar">Cancelar</button>
+        <button id="btn-modal-borrar">Borrar</button>
+    </footer>
+    </div>
+      `;
+};
+
+const insertHtmlModalDelete = async function (query) {
+  const pregunta = await getDataDB(URLUPDATEPREGUNTA, query);
+
+  const html = htmlModalDelete(pregunta[0]);
+  bodyEl.insertAdjacentHTML("beforeend", htmlBackdrop);
+  bodyEl.insertAdjacentHTML("beforeend", html);
+  initializeButtonsUpdate();
+};
+
+const initializeButtonsDelete = function () {
+  console.log("CLICKKKKKKK");
+  const btnCancelar = document.querySelector("#btn-modal-cancelar");
+
+  btnCancelar.addEventListener("click", function () {
+    console.log("Click");
+    const modal = document.querySelector(".modal");
+    const backdrop = document.querySelector(".backdrop");
+    modal.remove();
+    backdrop.remove();
+  });
+
+  // Aqui va lo que se debe actualizar
+  // const btnCrear = document.querySelector("#btn-modal-crear");
+  // btnCrear.addEventListener("click", function () {
+  //   const padreValue = document.querySelector("#padre-input").value;
+  //   const nombreValue = document.querySelector("#nombre-pregunta-input").value;
+  //   const emojiValue = document.querySelector("#emoji-input").value;
+  //   const textoValue = document.querySelector("#texto-input").value;
+  //   const objPregunta = {
+  //     padre: padreValue,
+  //     nombre: nombreValue,
+  //     emoji: emojiValue,
+  //     texto: textoValue,
+  //   };
+  //   console.log(objPregunta);
+  //   putPreguntaDB(objPregunta);
+  // });
 };

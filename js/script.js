@@ -1,46 +1,66 @@
 const timeLoader = 1;
 
-// const URLCATEGORIAS = "http://127.0.0.1:8000/categoria/show?nombre=";
-// const URLPREGUNTAS = "http://127.0.0.1:8000/pregunta/show?categoria=";
+// URL AWS
+// http://ec2-34-235-152-206.compute-1.amazonaws.com/
+// http://34.235.152.206/docs
 
 const URL = "http://127.0.0.1:8000/pregunta/show?preguntaParent=";
 
 // const URLTEXTO = "http://127.0.0.1:8000/pregunta/Inicio/show";
 const URLTEXTO = function (query) {
   const url = `http://127.0.0.1:8000/pregunta/${query}/show`;
-  console.log("PRUEBA URL: ", url);
+  // console.log("PRUEBA URL: ", url);
   return url;
 };
 
 const getDataDB = async function (url, query) {
-  console.log("Query is:", query);
-
   const data = await fetch(`${url}${query}`)
     .then((response) => response.json())
     .then((data) => data);
 
-  // console.log("before data");
-  console.log("primera funcion", data);
-
-  // console.log("after data");
+  // console.log("getDataBD", data);
 
   return data;
 };
 
-const insertHtmlOptionsDB = async function (query = "Inicio") {
-  const dataOptions = await getDataDB(URL, query);
-  let newURL = URLTEXTO(query);
-  console.log("dataOptions: ", dataOptions);
-  console.log("|||||||||||||||||||||||||||||||||||||");
+const URLCURRENT = "http://127.0.0.1:8000/pregunta/show?nombre=";
 
-  const dataText = await getDataDB(newURL, "");
-  console.log("DATATEXT ********************");
-  console.log(dataText[0].texto);
+const URLGETCHILDREN = "http://127.0.0.1:8000/pregunta/show2?idChild=";
+const URLBYID = "http://127.0.0.1:8000/pregunta/show?id=";
 
-  const titulo = dataText[0].texto.replaceAll("\n", "<br>");
+const insertHtmlOptionsDB = async function (
+  query = "Inicio",
+  backPregunta = false
+) {
+  let dataOptions;
+  let dataText;
+
+  // En caso de que se selecciona una opcion normal
+  if (backPregunta == false) {
+    dataOptions = await getDataDB(URL, query);
+    dataText = await getDataDB(URLCURRENT, query);
+  }
+  // En caso de que se selecciona la opcion de regresar
+  // Se obtienen las opciones de los hijos de la ultima opcion
+  // El texto se obtiene de la ultima opcion id
+  else {
+    // console.log("MY NUMBER QUERY: ", query);
+    dataOptions = await getDataDB(URLGETCHILDREN, query);
+    dataText = await getDataDB(URLBYID, query);
+  }
+
+  // console.log(dataText);
+  // console.log("DataText", dataText[0].texto);
+
+  let titulo;
+  dataText[0].texto.includes("\n")
+    ? (titulo = dataText[0].texto.replaceAll("\n", "<br>"))
+    : (titulo = dataText[0].texto);
 
   htmlOptions = dataOptions.map((option) => `${option.nombre} ${option.emoji}`);
-  insertHtmlChatbotOptions(titulo, ...htmlOptions);
+  // console.log("hmltOptions", htmlOptions);
+
+  insertHtmlChatbotOptions(titulo, dataText[0].padre_id, ...htmlOptions);
 
   // MOSTRAR EL FORMULARIO DE SATISFACCION SOLO CUANDO SEA NODO HOJA
   // if (dataCategoria[0].texto == "mostrarFormulario()") {
@@ -168,10 +188,19 @@ const htmlChatbotLoading = () => {
 `;
 };
 
-const htmlChatbotOptions = (text, ...options) => {
+let backPregunta = "";
+
+const htmlChatbotOptions = (text, queryAnterior, ...options) => {
   htmlOptions = options
     .map((option) => `<p class="chatbot-option">${option}</p>`)
     .join("");
+
+  // console.log("Query anterior: ", queryAnterior);
+
+  if (queryAnterior != null && htmlOptions != "") {
+    htmlOptions += `<p class="chatbot-option chatbot-option--return">Pregunta anterior ◀</p>`;
+  }
+  // console.log("SSSSSS ", htmlOptions);
 
   // console.log(htmlOptions);
 
@@ -260,7 +289,7 @@ const insertHtmlChatbotLoading = function () {
   updateScrollBar();
 };
 
-const insertHtmlChatbotOptions = function (text, ...options) {
+const insertHtmlChatbotOptions = function (text, queryAnterior, ...options) {
   // Cuando ya hay mas de un chatbotOptions, bloqueamos el ultimo chatbotOptions
   if (optionsBox !== undefined) {
     optionsBox.classList.add("block-chatbot-options");
@@ -269,10 +298,10 @@ const insertHtmlChatbotOptions = function (text, ...options) {
   // Formar normal
   chatbotChat.insertAdjacentHTML(
     "beforeend",
-    htmlChatbotOptions(text, ...options)
+    htmlChatbotOptions(text, queryAnterior, ...options)
   );
   optionsBox = [...document.querySelectorAll(".chatbot-options")].at(-1);
-  selectOptionHandler();
+  selectOptionHandler(queryAnterior);
   updateScrollBar();
 };
 
@@ -397,14 +426,21 @@ btnChatbotForm.addEventListener("click", function () {
 // 2. Determine what element originated the event
 
 let optionsBox = [...document.querySelectorAll(".chatbot-options")].at(-1);
-const selectOptionHandler = function () {
+const selectOptionHandler = function (queryAnterior) {
   optionsBox.addEventListener("click", function (e) {
     if (e.target.classList.contains("chatbot-option")) {
       insertHtmlUserInput(e.target.textContent);
 
       strNoEmoji = e.target.textContent.split(" ").slice(0, -1).join(" ");
+      // console.log("Seleccionando opcion: ", strNoEmoji);
 
-      console.log("Seleccionando opcion: ", strNoEmoji);
+      if (strNoEmoji == "Pregunta anterior") {
+        // console.log("ENTER EN PREGUNTA ANTERIOR");
+        // console.log("QUERY_ANTERIOR: ", queryAnterior);
+        insertHtmlOptionsDB(queryAnterior, true);
+        return;
+      }
+
       // OJO
       // Aqui el e.target.textContent es un nombre que se ve en el html, pero necesitamos la categoriaID de ese nombre para mostrarlo
       insertHtmlOptionsDB(strNoEmoji);
