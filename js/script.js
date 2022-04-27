@@ -1,14 +1,13 @@
 const timeLoader = 1;
-
-// URL AWS
-// http://ec2-34-235-152-206.compute-1.amazonaws.com/
+const activeURL = "http://127.0.0.1:8000";
+// const activeURL = http://ec2-34-235-152-206.compute-1.amazonaws.com/
 // http://34.235.152.206/docs
 
-const URL = "http://127.0.0.1:8000/pregunta/show?preguntaParent=";
+const URL = `${activeURL}/pregunta/show?preguntaParent=`;
 
-// const URLTEXTO = "http://127.0.0.1:8000/pregunta/Inicio/show";
+// const URLTEXTO = `${activeURL}/pregunta/Inicio/show`;
 const URLTEXTO = function (query) {
-  const url = `http://127.0.0.1:8000/pregunta/${query}/show`;
+  const url = `${activeURL}/pregunta/${query}/show`;
   // console.log("PRUEBA URL: ", url);
   return url;
 };
@@ -23,10 +22,10 @@ const getDataDB = async function (url, query) {
   return data;
 };
 
-const URLCURRENT = "http://127.0.0.1:8000/pregunta/show?nombre=";
+const URLCURRENT = `${activeURL}/pregunta/show?nombre=`;
 
-const URLGETCHILDREN = "http://127.0.0.1:8000/pregunta/show2?idChild=";
-const URLBYID = "http://127.0.0.1:8000/pregunta/show?id=";
+const URLGETCHILDREN = `${activeURL}/pregunta/show2?idChild=`;
+const URLBYID = `${activeURL}/pregunta/show?id=`;
 
 const insertHtmlOptionsDB = async function (
   query = "Inicio",
@@ -448,7 +447,7 @@ const selectOptionHandler = function (queryAnterior) {
   });
 };
 
-const URLPOSTCALIFICACION = "http://127.0.0.1:8000/calificacion/create";
+const URLPOSTCALIFICACION = "${activeURL}/calificacion/create";
 
 const postCalificacionDB = async function (cali) {
   const options = {
@@ -489,7 +488,7 @@ const activeFormStars = function () {
   });
 };
 
-const URLPOSTPERSONA = "http://127.0.0.1:8000/persona/create";
+const URLPOSTPERSONA = "${activeURL}/persona/create";
 
 const postPersonaDB = async function (persona) {
   const options = {

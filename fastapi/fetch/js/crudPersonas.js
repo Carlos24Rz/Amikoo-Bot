@@ -1,4 +1,6 @@
-// NEW CODE
+const activeURL = "http://127.0.0.1:8000";
+// const activeURL = http://ec2-34-235-152-206.compute-1.amazonaws.com/
+// http://34.235.152.206/docs
 
 const htmlPersonas = function (...personas) {
   const htmlPersonas = personas
@@ -28,9 +30,9 @@ const htmlNoPersonas = function () {
   </div>`;
 };
 
-const URL = "http://127.0.0.1:8000/persona/show?";
-const URLNOMBRE = "http://127.0.0.1:8000/persona/show?name=";
-const URLCORREO = "http://127.0.0.1:8000/persona/show?correo=";
+const URL = `${activeURL}/persona/show?`;
+const URLNOMBRE = `${activeURL}/persona/show?name=`;
+const URLCORREO = `${activeURL}/persona/show?correo=`;
 const inputUser = document.querySelector("#user-input");
 const inputCorreo = document.querySelector("#email-input");
 const btnUser = document.querySelector("#btn-user");
@@ -199,7 +201,7 @@ function getText() {
 function getUsers() {
   let user = document.getElementById("getUserName").value;
   let email = document.getElementById("getUserEmail").value;
-  let url = "http://127.0.0.1:8000/persona/show";
+  let url = "${activeURL}/persona/show";
   if (user != "" || email != "") {
     url = url.concat("?");
     if (user != "") {

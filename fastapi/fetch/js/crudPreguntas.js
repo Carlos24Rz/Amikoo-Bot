@@ -1,4 +1,6 @@
-// NEW CODE
+const activeURL = "http://127.0.0.1:8000";
+// const activeURL = http://ec2-34-235-152-206.compute-1.amazonaws.com/
+// http://34.235.152.206/docs
 
 const htmlPreguntas = function (...preguntas) {
   const htmlPreguntas = preguntas
@@ -30,8 +32,8 @@ const htmlNoPreguntas = function () {
     </div>`;
 };
 
-const URL = "http://127.0.0.1:8000/pregunta/show?";
-const URLPREGUNTA = "http://127.0.0.1:8000/pregunta/show?nombre=";
+const URL = `${activeURL}/pregunta/show?`;
+const URLPREGUNTA = `${activeURL}/pregunta/show?nombre=`;
 const inputPregunta = document.querySelector("#nombre-input");
 const btnUser = document.querySelector("#btn-nombre");
 const containerTable = document.querySelector(".container-database-info");
@@ -198,7 +200,7 @@ const initializeButtonsCreate = function () {
   });
 };
 
-const URLPOSTPREGUNTA = "http://127.0.0.1:8000/pregunta/create";
+const URLPOSTPREGUNTA = `${activeURL}/pregunta/create`;
 const putPreguntaDB = async function (pregunta) {
   const options = {
     method: "POST",
@@ -216,7 +218,7 @@ const putPreguntaDB = async function (pregunta) {
 //
 //
 //
-const URLUPDATEPREGUNTA = "http://127.0.0.1:8000/pregunta/show?nombre=";
+const URLUPDATEPREGUNTA = `${activeURL}/pregunta/show?nombre=`;
 
 const htmlModalUpdate = function (pregunta) {
   return `
@@ -301,7 +303,7 @@ const initializeButtonsUpdate = function () {
 //
 //
 //
-const URLDELETEPREGUNTA = "http://127.0.0.1:8000/pregunta/show?nombre=";
+const URLDELETEPREGUNTA = `${activeURL}/pregunta/show?nombre=`;
 
 const htmlModalDelete = function (pregunta) {
   return `

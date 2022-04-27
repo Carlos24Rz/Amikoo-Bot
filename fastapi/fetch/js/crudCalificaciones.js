@@ -1,4 +1,6 @@
-// NEW CODE
+const activeURL = "http://127.0.0.1:8000";
+// const activeURL = http://ec2-34-235-152-206.compute-1.amazonaws.com/
+// http://34.235.152.206/docs
 
 const htmlCalificaciones = function (...calificaciones) {
   const htmlPersonas = calificaciones
@@ -26,7 +28,7 @@ const htmlNoCalificaciones = function () {
     </div>`;
 };
 
-const URL = "http://127.0.0.1:8000/calificacion/show?";
+const URL = `${activeURL}/calificacion/show?`;
 const urlFechas = function (dateBegin, dateEnd) {
   return `${URL}dateBegin=${dateBegin}&dateEnd=${dateEnd}`;
 };
