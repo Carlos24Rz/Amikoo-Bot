@@ -195,7 +195,7 @@ async def create_pregunta(pregunta: PreguntaIn):
                 visitas = 0,
                 is_final = True
             )
-        return pregunta
+        return "Pregunta creada"
     else:
         return "Padre no existe"
 
@@ -300,7 +300,6 @@ def create_persona(persona: PersonaIn):
         descripcion=persona.descripcion
     )
     return persona
-    # return "Gracias por contactarnos"
 
 # TODO: Is this a right way to update?
 @app.put("/persona/update/{id}", status_code = status.HTTP_200_OK)
