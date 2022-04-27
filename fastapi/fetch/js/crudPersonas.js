@@ -40,14 +40,15 @@ const btnAllUsers = document.querySelector(".btn-all-users");
 const btnClear = document.querySelector(".btn-clear");
 
 const getDataDB = async function (url, query) {
-  query == "" ? (query = JSON.stringify(query)) : query;
+  query == "" ? (query = "NONAMEDETECTED") : query;
+  console.log(query);
+  console.log(url);
 
   const data = await fetch(`${url}${query}`)
     .then((response) => response.json())
     .then((data) => data)
     .catch((err) => err);
 
-  // console.log(data);
   return data;
 };
 
@@ -56,6 +57,9 @@ const insertHtmlPersonasByUser = async function (url) {
 
   await getDataDB(url, userValue).then((personas) => {
     containerTable.innerHTML = "";
+
+    console.log("Personas: ", personas);
+
     if (personas.length <= 0) {
       containerTable.insertAdjacentHTML("beforeend", htmlNoPersonas());
     } else {

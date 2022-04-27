@@ -295,6 +295,8 @@ body {
 
 .chatbot-text {
   width: 100%;
+  /* background-color: yellow; */
+  /* text-align: justify; */
 }
 
 /**************************/
@@ -344,6 +346,11 @@ body {
   display: flex;
   justify-content: baseline;
   align-items: center;
+}
+
+.chatbot-options-text {
+  text-align: justify;
+  text-justify: inter-word;
 }
 
 /**************************/

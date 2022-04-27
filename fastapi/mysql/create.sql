@@ -8,7 +8,7 @@ CREATE TABLE pregunta(
   padre_id INT,
   nombre varchar(80) NOT NULL,
   emoji varchar(3) NOT NULL,
-  texto varchar(600) NOT NULL,
+  texto varchar(1000) NOT NULL,
   visitas INT NOT NULL,
   is_final BOOLEAN NOT NULL,
     FOREIGN KEY (padre_id)
