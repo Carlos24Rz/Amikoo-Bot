@@ -95,19 +95,38 @@ async def shutdown():
 # PREGUNTAS
 # TODO: Method returns json with all values, how do I fix it
 # @app.get("/pregunta/show/{pregunta}", response_model = PreguntaText, status_code = status.HTTP_200_OK)
-@app.get("/pregunta/{pregunta}/show", status_code = status.HTTP_200_OK)
+@app.get("/pregunta/text", status_code = status.HTTP_200_OK)
 async def show_texto(
-    pregunta: str = Path(
-        ...,
+    nombre: Optional[str] = Query(
+        None,
         title = "Name of pregunta",
         description = "Name of pregunta from which to get it's text",
         min_length = 1,
         max_length = 80,
         example = "Inicio"
+    ),
+    child: Optional[str] = Query(
+        None,
+        title = "Name of child",
+        description = "Name of child from which to get it's parent's text",
+        min_length = 1,
+        max_length = 80,
+        example = "Nosotros"
     )
 ):
-    query = (Pregunta.select(Pregunta.texto)
-            .where(Pregunta.nombre == pregunta))
+    if (nombre):
+        query = (Pregunta.select(Pregunta.texto)
+                .where(Pregunta.nombre == nombre)
+                )
+    elif (child):
+        query_parent_id = (Pregunta.select(Pregunta.padre_id)
+                            .where(Pregunta.nombre == child))
+
+        query = (Pregunta.select(Pregunta.texto)
+                .where(Pregunta.id == query_parent_id)
+                )
+    else:
+        return "No se pasó ningun parámetro"
     if query.exists():
         result = [model_to_dict(item) for item in query]
         return result
