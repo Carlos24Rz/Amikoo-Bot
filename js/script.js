@@ -1,7 +1,6 @@
 const timeLoader = 1;
 const activeURL = "http://127.0.0.1:8000";
-// const activeURL = http://ec2-34-235-152-206.compute-1.amazonaws.com/
-// http://34.235.152.206/docs
+// const activeURL = "http://34.230.152.92";
 
 const URL = `${activeURL}/pregunta/show?preguntaParent=`;
 
