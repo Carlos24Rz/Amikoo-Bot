@@ -114,6 +114,7 @@ async def show_texto(
     else:
         return "Pregunta invalida"
 
+
 @app.get("/pregunta/show", status_code = status.HTTP_200_OK)
 async def get_pregunta(
     id: Optional[str] = Query(
@@ -170,27 +171,6 @@ async def get_pregunta(
     result = [model_to_dict(item) for item in query]
     return result
 
-# CODIGO DE ANGEL
-@app.get("/pregunta/show2", status_code = status.HTTP_200_OK)
-async def get_pregunta(
-    idChild: Optional[str] = Query(
-        None,
-        min_length = 1,
-        max_length = 80,
-        example = "Inicio"
-    )
-):
-    Parent = Pregunta.alias()
-    if (idChild):
-        query = (Pregunta.select()
-        .where(Pregunta.padre_id == idChild)
-        )
-
-    else:
-        query = Pregunta.select()
-
-    result = [model_to_dict(item) for item in query]
-    return result
 
 @app.put("/pregunta/{nombre}/visit", status_code = status.HTTP_200_OK)
 async def visit_pregunta(
@@ -206,6 +186,7 @@ async def visit_pregunta(
             .where(Pregunta.nombre == nombre))
     query.execute()
     return "Updated"
+
 
 @app.put("/pregunta/{id}/update-final", status_code = status.HTTP_200_OK)
 async def update_flag(
