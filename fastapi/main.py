@@ -155,7 +155,7 @@ async def get_pregunta(
         query = (Pregunta.select()
                 .join_from(Pregunta, Parent,
                 on=(Pregunta.padre_id == Parent.id))
-                .where(Parent.nombre == preguntaParent)
+                .where(Parent.nombre == parent)
                 )
     elif (child):
         query_parent_id = (Pregunta.select(Pregunta.padre_id)
