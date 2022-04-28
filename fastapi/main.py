@@ -178,10 +178,11 @@ async def get_pregunta(
                 )
     elif (child):
         query_parent_id = (Pregunta.select(Pregunta.padre_id)
-                            .where(Pregunta.nombre == child))
+                            .where(Pregunta.nombre == child)
+                            )
 
         query = (Pregunta.select()
-                .where(Pregunta.id == query_parent_id)
+                .where(Pregunta.padre_id == query_parent_id)
                 )
 
     else:
