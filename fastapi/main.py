@@ -23,6 +23,7 @@ from database import Calificacion
 # SCHEMAS
 from schemas import PreguntaIn
 from schemas import PreguntaText
+from schemas import PreguntaUpdate
 from schemas import PersonaIn
 from schemas import PersonaOut
 from schemas import PersonaUpdate
@@ -115,11 +116,11 @@ async def show_texto(
 
 @app.get("/pregunta/show", status_code = status.HTTP_200_OK)
 async def get_pregunta(
-    preguntaParent: Optional[str] = Query(
+    id: Optional[str] = Query(
         None,
         min_length = 1,
         max_length = 80,
-        example = "Inicio"
+        example = "2"
     ),
     nombre: Optional[str] = Query(
         None,
@@ -127,29 +128,42 @@ async def get_pregunta(
         max_length = 80,
         example = "Inicio"
     ),
-    id: Optional[str] = Query(
+    parent: Optional[str] = Query(
         None,
         min_length = 1,
         max_length = 80,
-        example = "2"
+        example = "Inicio"
+    ),
+    child: Optional[str] = Query(
+        None,
+        min_length = 1,
+        max_length = 80,
+        example = "Nosotros"
     )
-
 ):
     Parent = Pregunta.alias()
-    if (nombre):
+    if (id):
         query = (Pregunta.select()
-        .where(Pregunta.nombre == nombre)
-        )
-    elif (preguntaParent):
+                .where(Pregunta.id == id)
+                )
+    elif (nombre):
+        query = (Pregunta.select()
+                .where(Pregunta.nombre == nombre)
+                )
+    elif (parent):
         query = (Pregunta.select()
                 .join_from(Pregunta, Parent,
                 on=(Pregunta.padre_id == Parent.id))
                 .where(Parent.nombre == preguntaParent)
                 )
-    elif (id):
+    elif (child):
+        query_parent_id = (Pregunta.select(Pregunta.padre_id)
+                            .where(Pregunta.nombre == child))
+
         query = (Pregunta.select()
-                .where(Pregunta.id == id)
+                .where(Pregunta.id == query_parent_id)
                 )
+
     else:
         query = Pregunta.select()
 
@@ -233,7 +247,24 @@ async def create_pregunta(pregunta: PreguntaIn):
         return "Padre no existe"
 
 
-
+# @app.put("/pregunta/update")
+# async def update_pregunta(preguntaUpdate: PreguntaUpate):
+#     if (preguntaUpdate.nombre):
+#         query = (Pregunta
+#                  .update({Pregunta.nombre: preguntaUpdate.nombre})
+#                  .where(Pregunta.id == id))
+#         query.execute()
+#     if (preguntaUpdate.correo):
+#         query = (Pregunta
+#                 .update({Pregunta.correo: preguntaUpdate.correo})
+#                 .where(Pregunta.id == id))
+#         query.execute()
+#     if (preguntaUpdate.descripcion):
+#         query = (Pregunta
+#                 .update({Pregunta.descripcion: preguntaUpdate.descripcion})
+#                 .where(Pregunta.id == id))
+#         query.execute()
+#     return "Updated"
 
 
 
@@ -272,6 +303,9 @@ async def create_pregunta(pregunta: PreguntaIn):
 #                 .where(Categoria.id == id))
 #         query.execute()
 #         return "Deleted"
+
+
+
 
 
 
