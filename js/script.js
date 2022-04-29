@@ -16,10 +16,13 @@ const getDataDB = async function (url, query) {
   const data = await fetch(`${url}${query}`)
     .then((response) => response.json())
     .then((data) => data)
-    .catch(() => MSGEROR);
+    .catch(() => {
+      throw MSGEROR;
+    });
 
   // console.log("getDataBD", data);
 
+  console.log("DATA: ", data);
   return data;
 };
 
@@ -62,9 +65,9 @@ const insertHtmlOptionsDB = async function (
 
   // En caso de que se selecciona una opcion normal
   if (backPregunta == false) {
-    dataText = await getDataDB(URLCURRENT, query);
+    dataText = await getDataDB(URLCURRENT, query).catch((err) => err);
     dataOptions = await showLoader(timeLoader).then(() =>
-      getDataDB(URL, query)
+      getDataDB(URL, query).catch((err) => err)
     ); // AQUI VA EL SHOW LOADER
   }
   // En caso de que se selecciona la opcion de regresar
@@ -77,12 +80,13 @@ const insertHtmlOptionsDB = async function (
       getDataDB(URLGETCHILDREN, query)
     ); // AQUI VA EL SHOW LOADER
   }
-
+  8;
   // ATRAPANDO ERRORES
   if (dataText == MSGEROR || dataOptions == MSGEROR) {
-    console.log("Ocurrio un erorrrrrrrrrr-------------------");
     removeLoader();
     insertHtmlChatbotTex("Ha ocurrido un error");
+    // showLoader(3).then(() => insertHtmlChatbotTex("Ha ocurrido un error"));
+    // console.clear();
     return;
   }
 
