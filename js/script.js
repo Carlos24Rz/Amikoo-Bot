@@ -1,20 +1,22 @@
 const timeLoader = 1;
-const activeURL = "http://127.0.0.1:8000";
-// const activeURL = "http://34.230.152.92";
+const MSGEROR = "Ha ocurrido un error";
+const activeURL = "http://127.0.0.1:800";
+// const activeURL = "http://34.230.152.92:8080";
 
 const URL = `${activeURL}/pregunta/show?parent=`;
 
 // // const URLTEXTO = `${activeURL}/pregunta/Inicio/show`;
-const URLTEXTO = function (query) {
-  const url = `${activeURL}/pregunta/${query}/show`;
-  // console.log("PRUEBA URL: ", url);
-  return url;
-};
+// const URLTEXTO = function (query) {
+//   const url = `${activeURL}/pregunta/${query}/show`;
+//   // console.log("PRUEBA URL: ", url);
+//   return url;
+// };
 
 const getDataDB = async function (url, query) {
   const data = await fetch(`${url}${query}`)
     .then((response) => response.json())
-    .then((data) => data);
+    .then((data) => data)
+    .catch(() => MSGEROR);
 
   // console.log("getDataBD", data);
 
@@ -31,6 +33,30 @@ const insertHtmlOptionsDB = async function (
   query = "Inicio",
   backPregunta = false
 ) {
+  console.log("Query: ", query);
+  // Aqui tenemos que poner la secuencia para que sea sí, otra pregunta, solicitar formulario
+  if (query == "Si") {
+    console.log("ENTEEEER");
+    optionsBox.classList.add("block-chatbot-options");
+    insertHtmlChatbotTextNoFace("Has seleccionado que sí");
+    insertHtmlChatbotTex("Nos ayudarías mucho calificando nuestro servicio: ");
+    insertHtmlChatbotReview();
+    return;
+  }
+
+  if (query == "Hacer otra pregunta") {
+    console.log("Reiniciar chatbot");
+    insertHtmlOptionsDB();
+    return;
+  }
+
+  if (query == "Solicitar información adicional") {
+    console.log("Reiniciar chatbot");
+    optionsBox.classList.add("block-chatbot-options");
+    insertHtmlFormEmail();
+    return;
+  }
+
   let dataOptions;
   let dataText;
 
@@ -52,6 +78,14 @@ const insertHtmlOptionsDB = async function (
     ); // AQUI VA EL SHOW LOADER
   }
 
+  // ATRAPANDO ERRORES
+  if (dataText == MSGEROR || dataOptions == MSGEROR) {
+    console.log("Ocurrio un erorrrrrrrrrr-------------------");
+    removeLoader();
+    insertHtmlChatbotTex("Ha ocurrido un error");
+    return;
+  }
+
   // console.log(dataText);
   // console.log("DataText", dataText[0].texto);
 
@@ -66,8 +100,15 @@ const insertHtmlOptionsDB = async function (
   htmlOptions = dataOptions.map((option) => `${option.nombre} ${option.emoji}`);
   // console.log("hmltOptions", htmlOptions);
 
+  console.log(htmlOptions);
+  console.log(...htmlOptions);
   removeLoader();
-  insertHtmlChatbotOptions(titulo, dataText[0].nombre, ...htmlOptions);
+  insertHtmlChatbotOptions(
+    titulo,
+    dataText[0].is_final,
+    dataText[0].nombre,
+    ...htmlOptions
+  );
 
   // MOSTRAR EL FORMULARIO DE SATISFACCION SOLO CUANDO SEA NODO HOJA
   // if (dataCategoria[0].texto == "mostrarFormulario()") {
@@ -76,10 +117,26 @@ const insertHtmlOptionsDB = async function (
   //   return;
   // }
 
+  // Cuando se llegar a un nodo hoja
   if (dataOptions.length == 0) {
     showLoader(timeLoader).then(() => {
       removeLoader();
-      insertHtmlChatbotReview();
+      // text,
+      // isFinal,
+      // queryAnterior,
+      // ...options
+      insertHtmlChatbotOptions(
+        "¿Pudimos ayudarte a encontrar lo que buscabas?",
+        true,
+        "",
+        ...[
+          "Si 🎈",
+          "Hacer otra pregunta 🎈",
+          "Solicitar información adicional 🎈",
+        ]
+      );
+
+      // insertHtmlChatbotReview();
       return;
     });
   }
@@ -197,14 +254,15 @@ const htmlChatbotLoading = () => {
 
 let backPregunta = "";
 
-const htmlChatbotOptions = (text, queryAnterior, ...options) => {
+const htmlChatbotOptions = (text, is_final, queryAnterior, ...options) => {
   htmlOptions = options
     .map((option) => `<p class="chatbot-option">${option}</p>`)
     .join("");
 
   // console.log("Query anterior: ", queryAnterior);
+  // && text != "¿Pudimos ayudarte a encontrar lo que buscabas?"
 
-  if (queryAnterior != "Inicio" && htmlOptions != "") {
+  if (queryAnterior != "Inicio" && htmlOptions != "" && is_final == false) {
     htmlOptions += `<p class="chatbot-option chatbot-option--return">Pregunta anterior ◀</p>`;
   }
   // console.log("SSSSSS ", htmlOptions);
@@ -296,7 +354,14 @@ const insertHtmlChatbotLoading = function () {
   updateScrollBar();
 };
 
-const insertHtmlChatbotOptions = function (text, queryAnterior, ...options) {
+const insertHtmlChatbotOptions = function (
+  text,
+  isFinal,
+  queryAnterior,
+  ...options
+) {
+  console.log("Nodo hoja: ", isFinal);
+
   // Cuando ya hay mas de un chatbotOptions, bloqueamos el ultimo chatbotOptions
   if (optionsBox !== undefined) {
     optionsBox.classList.add("block-chatbot-options");
@@ -305,7 +370,7 @@ const insertHtmlChatbotOptions = function (text, queryAnterior, ...options) {
   // Formar normal
   chatbotChat.insertAdjacentHTML(
     "beforeend",
-    htmlChatbotOptions(text, queryAnterior, ...options)
+    htmlChatbotOptions(text, isFinal, queryAnterior, ...options)
   );
   optionsBox = [...document.querySelectorAll(".chatbot-options")].at(-1);
   selectOptionHandler(queryAnterior);
@@ -457,6 +522,7 @@ const selectOptionHandler = function (queryAnterior) {
 
       // OJO
       // Aqui el e.target.textContent es un nombre que se ve en el html, pero necesitamos la categoriaID de ese nombre para mostrarlo
+
       insertHtmlOptionsDB(strNoEmoji);
     }
   });
