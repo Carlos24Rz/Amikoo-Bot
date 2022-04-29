@@ -41,11 +41,6 @@ class PreguntaTextOut(BaseModel):
     )
 
 class PreguntaUpdate(BaseModel):
-    padre: Optional[str] = Field(
-        None,
-        min_length = 1,
-        max_length = 80
-    )
     nombre: Optional[str] = Field(
         None,
         min_length = 1,
