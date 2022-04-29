@@ -27,7 +27,7 @@ class PreguntaIn(BaseModel):
         max_length = 60
     )
 
-class PreguntaText(BaseModel):
+class PreguntaTextOut(BaseModel):
     nombre: str = Field(
         ...,
         min_length = 1,
