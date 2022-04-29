@@ -347,20 +347,24 @@ const handleShowChatbot = function () {
 
     // Solo entra a este if cuando se abre por primera vez el chatbot
     if (!flagChatbotOpen) {
-      showLoader(timeLoader).then(() => {
-        removeLoader();
-        insertHtmlChatbotTex("Hola, este es un mensaje de bienvenida");
-        flagChatbotOpen = true;
+      insertHtmlChatbotTex("Hola, este es un mensaje de bienvenida");
+      flagChatbotOpen = true;
+      insertHtmlOptionsDB();
 
-        // PARA MOSTRAR LAS OPCIONES (puede que esto no sirva de nada)
-        if (optionsBox !== undefined) {
-          optionsBox.classList.add("block-chatbot-options");
-        }
+      // showLoader(timeLoader).then(() => {
+      //   removeLoader();
+      //   insertHtmlChatbotTex("Hola, este es un mensaje de bienvenida");
+      //   flagChatbotOpen = true;
 
-        // Insertamos las primeras opciones
-        insertHtmlChatbotOptions(someText, 1, 2, 3, 4);
-        // insertHtmlOptionsDB()
-      });
+      //   // PARA MOSTRAR LAS OPCIONES (puede que esto no sirva de nada)
+      //   if (optionsBox !== undefined) {
+      //     optionsBox.classList.add("block-chatbot-options");
+      //   }
+
+      //   // Insertamos las primeras opciones
+      //   insertHtmlChatbotOptions(someText, 1, 2, 3, 4);
+      //   // insertHtmlOptionsDB()
+      // });
     }
   });
 
