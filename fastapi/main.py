@@ -245,26 +245,33 @@ async def create_pregunta(pregunta: PreguntaIn):
         return "Padre no existe"
 
 
-# @app.put("/pregunta/update")
-# async def update_pregunta(preguntaUpdate: PreguntaUpate):
-#     if (preguntaUpdate.nombre):
-#         query = (Pregunta
-#                  .update({Pregunta.nombre: preguntaUpdate.nombre})
-#                  .where(Pregunta.id == id))
-#         query.execute()
-#     if (preguntaUpdate.correo):
-#         query = (Pregunta
-#                 .update({Pregunta.correo: preguntaUpdate.correo})
-#                 .where(Pregunta.id == id))
-#         query.execute()
-#     if (preguntaUpdate.descripcion):
-#         query = (Pregunta
-#                 .update({Pregunta.descripcion: preguntaUpdate.descripcion})
-#                 .where(Pregunta.id == id))
-#         query.execute()
-#     return "Updated"
+@app.put("/pregunta/update/{id}")
+async def update_pregunta(
+    id: int,
+    preguntaUpdate: PreguntaUpdate
+):
+    if (preguntaUpdate.nombre):
+        query = (Pregunta
+                 .update({Pregunta.nombre: preguntaUpdate.nombre})
+                 .where(Pregunta.id == id))
+        query.execute()
+    if (preguntaUpdate.emoji):
+        query = (Pregunta
+                .update({Pregunta.emoji: preguntaUpdate.emoji})
+                .where(Pregunta.id == id))
+        query.execute()
+    if (preguntaUpdate.texto):
+        query = (Pregunta
+                .update({Pregunta.texto: preguntaUpdate.texto})
+                .where(Pregunta.id == id))
+        query.execute()
+    return "Updated"
 
-
+# @app.put("/pregunta/move/{id}")
+# async def move_pregunta(
+#     id: int = Path(...),
+#     padre_id:
+# )
 
 # @app.delete("/categoria/{id}/delete", status_code = status.HTTP_200_OK)
 # async def delete_pregunta(
