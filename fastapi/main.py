@@ -22,7 +22,6 @@ from database import Calificacion
 
 # SCHEMAS
 from schemas import PreguntaIn
-from schemas import PreguntaText
 from schemas import PreguntaUpdate
 from schemas import PersonaIn
 from schemas import PersonaOut
@@ -81,8 +80,8 @@ async def startup():
 @app.on_event('shutdown')
 async def shutdown():
     shutdownTime = datetime.today().strftime("%d/%m/%Y %H:%M:%S")
-    with open("log.txt", mode="a") as log:
-        log.write("Application shutdown: " + startupTime + " - " + shutdownTime + "\n")
+    # with open("log.txt", mode="a") as log:
+    #     log.write("Application shutdown: " + startupTime + " - " + shutdownTime + "\n")
     if not connection.is_closed():
         connection.close()
 
@@ -93,8 +92,6 @@ async def shutdown():
 
 
 # PREGUNTAS
-# TODO: Method returns json with all values, how do I fix it
-# @app.get("/pregunta/show/{pregunta}", response_model = PreguntaText, status_code = status.HTTP_200_OK)
 @app.get("/pregunta/text", status_code = status.HTTP_200_OK)
 async def show_texto(
     nombre: Optional[str] = Query(
