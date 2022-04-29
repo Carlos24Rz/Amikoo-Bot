@@ -40,6 +40,28 @@ class PreguntaText(BaseModel):
         max_length = 60
     )
 
+class PreguntaUpdate(BaseModel):
+    padre: Optional[str] = Field(
+        None,
+        min_length = 1,
+        max_length = 80
+    )
+    nombre: Optional[str] = Field(
+        None,
+        min_length = 1,
+        max_length = 80,
+        regex = "^[A-Za-z][A-Za-z0-9,. ]+$"
+    )
+    emoji: Optional[str] = Field(
+        None,
+        min_length = 1,
+        max_length = 3
+    )
+    texto: Optional[str] = Field(
+        None,
+        min_length = 1,
+        max_length = 60
+    )
 
 
 
@@ -70,7 +92,7 @@ class PersonaIn(Persona):
 class PersonaOut(Persona):
     pass
 
-class PersonaUpdate(Persona):
+class PersonaUpdate(BaseModel):
     nombre: Optional[str] = Field(
         None,
         min_length = 1,

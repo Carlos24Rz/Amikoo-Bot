@@ -23,6 +23,7 @@ from database import Calificacion
 # SCHEMAS
 from schemas import PreguntaIn
 from schemas import PreguntaText
+from schemas import PreguntaUpdate
 from schemas import PersonaIn
 from schemas import PersonaOut
 from schemas import PersonaUpdate
@@ -94,32 +95,52 @@ async def shutdown():
 # PREGUNTAS
 # TODO: Method returns json with all values, how do I fix it
 # @app.get("/pregunta/show/{pregunta}", response_model = PreguntaText, status_code = status.HTTP_200_OK)
-@app.get("/pregunta/{pregunta}/show", status_code = status.HTTP_200_OK)
+@app.get("/pregunta/text", status_code = status.HTTP_200_OK)
 async def show_texto(
-    pregunta: str = Path(
-        ...,
+    nombre: Optional[str] = Query(
+        None,
         title = "Name of pregunta",
         description = "Name of pregunta from which to get it's text",
         min_length = 1,
         max_length = 80,
         example = "Inicio"
+    ),
+    child: Optional[str] = Query(
+        None,
+        title = "Name of child",
+        description = "Name of child from which to get it's parent's text",
+        min_length = 1,
+        max_length = 80,
+        example = "Nosotros"
     )
 ):
-    query = (Pregunta.select(Pregunta.texto)
-            .where(Pregunta.nombre == pregunta))
+    if (nombre):
+        query = (Pregunta.select(Pregunta.texto)
+                .where(Pregunta.nombre == nombre)
+                )
+    elif (child):
+        query_parent_id = (Pregunta.select(Pregunta.padre_id)
+                            .where(Pregunta.nombre == child))
+
+        query = (Pregunta.select()
+                .where(Pregunta.id == query_parent_id)
+                )
+    else:
+        return "No se pasó ningun parámetro"
     if query.exists():
         result = [model_to_dict(item) for item in query]
         return result
     else:
         return "Pregunta invalida"
 
+
 @app.get("/pregunta/show", status_code = status.HTTP_200_OK)
 async def get_pregunta(
-    preguntaParent: Optional[str] = Query(
+    id: Optional[str] = Query(
         None,
         min_length = 1,
         max_length = 80,
-        example = "Inicio"
+        example = "2"
     ),
     nombre: Optional[str] = Query(
         None,
@@ -127,56 +148,48 @@ async def get_pregunta(
         max_length = 80,
         example = "Inicio"
     ),
-    id: Optional[str] = Query(
-        None,
-        min_length = 1,
-        max_length = 80,
-        example = "2"
-    )
-
-):
-    Parent = Pregunta.alias()
-    if (nombre):
-        query = (Pregunta.select()
-        .where(Pregunta.nombre == nombre)
-        )
-    elif (preguntaParent):
-        query = (Pregunta.select()
-                .join_from(Pregunta, Parent,
-                on=(Pregunta.padre_id == Parent.id))
-                .where(Parent.nombre == preguntaParent)
-                )
-    elif (id):
-        query = (Pregunta.select()
-                .where(Pregunta.id == id)
-                )
-    else:
-        query = Pregunta.select()
-
-    result = [model_to_dict(item) for item in query]
-    return result
-
-# CODIGO DE ANGEL
-@app.get("/pregunta/show2", status_code = status.HTTP_200_OK)
-async def get_pregunta(
-    idChild: Optional[str] = Query(
+    parent: Optional[str] = Query(
         None,
         min_length = 1,
         max_length = 80,
         example = "Inicio"
+    ),
+    child: Optional[str] = Query(
+        None,
+        min_length = 1,
+        max_length = 80,
+        example = "Nosotros"
     )
 ):
     Parent = Pregunta.alias()
-    if (idChild):
+    if (id):
         query = (Pregunta.select()
-        .where(Pregunta.padre_id == idChild)
-        )
+                .where(Pregunta.id == id)
+                )
+    elif (nombre):
+        query = (Pregunta.select()
+                .where(Pregunta.nombre == nombre)
+                )
+    elif (parent):
+        query = (Pregunta.select()
+                .join_from(Pregunta, Parent,
+                on=(Pregunta.padre_id == Parent.id))
+                .where(Parent.nombre == parent)
+                )
+    elif (child):
+        query_parent_id = (Pregunta.select(Pregunta.padre_id)
+                            .where(Pregunta.nombre == child))
+
+        query = (Pregunta.select()
+                .where(Pregunta.padre_id == query_parent_id)
+                )
 
     else:
         query = Pregunta.select()
 
     result = [model_to_dict(item) for item in query]
     return result
+
 
 @app.put("/pregunta/{nombre}/visit", status_code = status.HTTP_200_OK)
 async def visit_pregunta(
@@ -192,6 +205,7 @@ async def visit_pregunta(
             .where(Pregunta.nombre == nombre))
     query.execute()
     return "Updated"
+
 
 @app.put("/pregunta/{id}/update-final", status_code = status.HTTP_200_OK)
 async def update_flag(
@@ -233,7 +247,24 @@ async def create_pregunta(pregunta: PreguntaIn):
         return "Padre no existe"
 
 
-
+# @app.put("/pregunta/update")
+# async def update_pregunta(preguntaUpdate: PreguntaUpate):
+#     if (preguntaUpdate.nombre):
+#         query = (Pregunta
+#                  .update({Pregunta.nombre: preguntaUpdate.nombre})
+#                  .where(Pregunta.id == id))
+#         query.execute()
+#     if (preguntaUpdate.correo):
+#         query = (Pregunta
+#                 .update({Pregunta.correo: preguntaUpdate.correo})
+#                 .where(Pregunta.id == id))
+#         query.execute()
+#     if (preguntaUpdate.descripcion):
+#         query = (Pregunta
+#                 .update({Pregunta.descripcion: preguntaUpdate.descripcion})
+#                 .where(Pregunta.id == id))
+#         query.execute()
+#     return "Updated"
 
 
 
@@ -272,6 +303,9 @@ async def create_pregunta(pregunta: PreguntaIn):
 #                 .where(Categoria.id == id))
 #         query.execute()
 #         return "Deleted"
+
+
+
 
 
 

@@ -1,5 +1,5 @@
 const activeURL = "http://127.0.0.1:8000";
-// const activeURL = "http://34.230.152.92";
+// const activeURL = "http://34.230.152.92:8080";
 
 const htmlPreguntas = function (...preguntas) {
   const htmlPreguntas = preguntas
