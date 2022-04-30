@@ -461,20 +461,23 @@ const updateScrollBar = function () {
   chatbotChat.scrollTo(0, chatbotChat.scrollHeight);
 };
 
-// Function to hide and show the chatbot box
 const chatbotFace = document.querySelector(".chatbot-face");
 const chatbotExit = document.querySelector(".chatbot-close-button");
+const msgWelcome = "Hola, este es un mensaje de bienvenida";
 let flagChatbotOpen = false;
-
-const handleShowChatbot = function () {
+/*
+ * Mostrar y ocultar la cara del chatbot y la caja del chatbot
+ */
+const handleShowChatbot = (function () {
   // Para abrir el chabtotChat al hacer click en la cara
   chatbotFace.addEventListener("click", function () {
+    // Se oculta y visibiliza la cara y la caja del chatbot respectivamente
     chatbotBox.classList.toggle("hidden");
     chatbotFace.classList.toggle("hidden");
 
     // Solo entra a este if cuando se abre por primera vez el chatbot
     if (!flagChatbotOpen) {
-      insertHtmlChatbotText("Hola, este es un mensaje de bienvenida");
+      insertHtmlChatbotText(msgWelcome);
       flagChatbotOpen = true;
       prepareHtmlOptionsDB();
     }
@@ -482,13 +485,284 @@ const handleShowChatbot = function () {
 
   // Para cerrar el chatbotChat al hacer click en la x
   chatbotExit.addEventListener("click", function () {
+    // Se oculta y visibiliza la cara y la caja del chatbot respectivamente
     chatbotBox.classList.toggle("hidden");
     chatbotFace.classList.toggle("hidden");
   });
 
   updateScrollBar();
+})(); // La funciona se llama automaticamente una vez creada
+
+///////////////////////
+///////////////////////
+///////////////////////
+
+/*
+ * Manejar cuando se selecciona una de las opciones mostradas
+ * @param  {string} prevQuery   Opcion padre (anterior) de la opcion seleccionada
+ */
+const selectOptionHandler = function (prevQuery) {
+  // Para seleccionar una opcion se hace event delegation:
+  // 1. Se agrega un event listener al elemento padre comun
+  // 2. Se determina que elemento hijo origino el evento
+
+  optionsBox.addEventListener("click", function (e) {
+    if (e.target.classList.contains("chatbot-option")) {
+      insertHtmlUserInput(e.target.textContent);
+
+      // De la opcion seleccionada, se quita el emoji
+      const strNoEmoji = e.target.textContent.split(" ").slice(0, -1).join(" ");
+
+      // Se verifica si la opcion seleccionada es la de regresa a la anterior
+      if (strNoEmoji == "Pregunta anterior") {
+        prepareHtmlOptionsDB(prevQuery, true);
+        return;
+      }
+
+      // Se preparan las nuevas opciones en base a la seleccionada
+      prepareHtmlOptionsDB(strNoEmoji);
+    }
+  });
 };
-handleShowChatbot();
+
+const URLPOSTCALIFICACION = `${activeURL}/calificacion/create`;
+/*
+ * Publicar la calificacion obtenida en el formulario
+ * @param  {int}      score   Calificacion del formulario
+ * @return {promise}  -----   Fetch con la url para subir la calificacion y sus opciones
+ */
+const postScoreDB = async function (score) {
+  const options = {
+    method: "POST",
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      calificacion: score,
+    }),
+  };
+
+  return fetch(URLPOSTCALIFICACION, options);
+};
+
+let formReview = [...document.querySelectorAll(".form-stars")].at(-1);
+/*
+ * Habilitar el formReview para aceptar calificaciones
+ */
+const activeFormReview = function () {
+  formReview.addEventListener("submit", function (e) {
+    e.preventDefault();
+
+    // Se obtiene la respuesta del formulario
+    const answer = document.querySelector('input[name="rate"]:checked')?.value;
+
+    // En caso de que no se haya selecionado ninguna calificacion
+    if (!answer) {
+      return;
+    }
+
+    // Se bloquea el formulario para no aceptar más inputs
+    formReview.style.pointerEvents = "none";
+
+    showLoader(TIMELOADER).then(() => {
+      postScoreDB(answer)
+        .then((response) => response.json())
+        .then((data) => {
+          insertHtmlChatbotText(data);
+          removeLoader();
+        })
+        .catch(() => {
+          insertHtmlChatbotText("Ocurrio un error");
+          removeLoader();
+        });
+    });
+  });
+};
+
+const URLPOSTPERSONA = `${activeURL}/persona/create`;
+/*
+ * Publicar los datos de una persona obtenidos del formulario de contacto
+ * @param  {obj}      persona  Objeto persona con su informacion
+ * @return {promise}  -----    Fetch con la url para subir a la persona y sus opciones
+ */
+const postPersonDB = async function (persona) {
+  const options = {
+    method: "POST",
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      nombre: persona.nombre,
+      correo: persona.correo,
+      descripcion: persona.descripcion,
+    }),
+  };
+
+  return fetch(URLPOSTPERSONA, options);
+};
+
+let formContact = [...document.querySelectorAll(".form-to-mail")].at(-1);
+/*
+ * Habilitar el formContact para aceptar datos de personas
+ */
+const activeFormContact = function () {
+  // Formulario de los datos
+  formContact.addEventListener("submit", function (e) {
+    e.preventDefault();
+
+    // Mansajes de error
+    const errorName = "Error al ingresar el nombre. Intenta de nuevo";
+    const errorEmail = "Error al ingresar mail. Intenta de nuevo";
+    const errorMsg = "Error al ingresa el mensaje. Intenta de nuevo";
+
+    // Se obtienen los valores dados por el usuario
+    const name = e.target[0].value;
+    const email = e.target[1].value;
+    const msg = e.target[2].value;
+
+    let isError = false;
+
+    // Verificacion de los tres datos dados por el usuario
+    if (!checkName(name)) {
+      const placeholderName = document.querySelector("#input-name");
+      placeholderName.placeholder = errorName;
+      placeholderName.classList.add("error-input-form");
+      isError = true;
+      e.target[0].value = "";
+    }
+
+    if (!checkEmail(email)) {
+      const placeholderEmail = document.querySelector("#input-email");
+      placeholderEmail.placeholder = errorEmail;
+      placeholderEmail.classList.add("error-input-form");
+      isError = true;
+      e.target[1].value = "";
+    }
+
+    if (!checkMessage(msg)) {
+      const placeholderMsg = document.querySelector("#input-msg");
+      placeholderMsg.placeholder = errorMsg;
+      placeholderMsg.classList.add("error-input-form");
+      isError = true;
+      e.target[2].value = "";
+    }
+
+    if (!isError) {
+      // En caso de que no haya errores
+      formContact.style.pointerEvents = "none"; // Se bloquea el formulario para no aceptar más información
+
+      const newPerson = {
+        nombre: name,
+        correo: email,
+        descripcion: msg,
+      };
+
+      showLoader(TIMELOADER).then(() => {
+        postPersonDB(newPerson)
+          .then((response) => response.json())
+          .then((data) => {
+            insertHtmlChatbotText(
+              `Muchas gracias, ${data.nombre}. Hemos recibido tus datos`
+            );
+            removeLoader();
+          })
+          .catch((err) => {
+            console.log("Ocurrio un error");
+            insertHtmlChatbotText("Ocurrio un error");
+            removeLoader();
+          });
+      });
+    }
+  });
+};
+
+///////////////////////
+///////////////////////
+///////////////////////
+
+/*
+ * Habilitar la barra de busqueda del usuario
+ */
+const activateSearchBar = (function () {
+  const searchBarEl = document.querySelector(".search-bar");
+
+  searchBarEl.addEventListener("keyup", function (e) {
+    e.preventDefault();
+    if (e.key === "Enter" || e.keyCode === 13) {
+      insertHtmlUserInput(searchBarEl.value);
+      searchBarEl.value = "";
+    }
+  });
+})();
+
+/*
+ * Mostrar el loader de cargando
+ * @param  {int}      sec      Cuantos segundos debe aparecer
+ * @return {promise}  -----    Promesa que incluye un tiempo de espera
+ */
+const showLoader = function (sec) {
+  return new Promise(function (resolve) {
+    chatbotChat.insertAdjacentHTML("beforeend", htmlChatbotLoading());
+    updateScrollBar();
+
+    setTimeout(resolve, 1000 * sec);
+  });
+};
+
+/*
+ * Quitar el loader de cargando
+ */
+const removeLoader = function () {
+  lastLoaderElement = [...document.querySelectorAll(".chatbot-loader")].at(-1);
+  lastLoaderElement.remove();
+  updateScrollBar();
+};
+
+/*
+ * Verificar nombre del formulario con regex
+ * @param  {string}   name    Nombre a revisar
+ * @return {bool}     ----    Depende si name cumple la regex
+ */
+const checkName = (name) => {
+  const re = new RegExp(/^[a-zA-Z ]+$/);
+  return re.test(name);
+};
+
+/*
+ * Verificar correo del formulario con regex
+ * @param  {string}   mail    Correo a revisar
+ * @return {bool}     ----    Depende si correo cumple la regex
+ */
+const checkEmail = (mail) => {
+  const re = new RegExp(
+    /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+  );
+  return re.test(mail);
+};
+
+/*
+ * Verificar mensaje del formulario con regex
+ * @param  {string}   msg    Mensaje a revisar
+ * @return {bool}     ----    Depende si mensaje cumple la regex
+ */
+const checkMessage = (msg) => {
+  const maxWords = 100;
+  const numWords = msg.trim().split(" ").length;
+
+  if (numWords < maxWords && numWords >= 1 && msg.trim().split(" ")[0] !== "") {
+    return true;
+  } else {
+    return false;
+  }
+};
+
+//////////////////////////////
+//////////////////////////////
+//////////////////////////////
+//////////////////////////////
+//////////////////////////////
 
 //////////////////////////////
 // Menu to add texts box in the chatbot
@@ -541,242 +815,3 @@ btnChatbotReview.addEventListener("click", function () {
 btnChatbotForm.addEventListener("click", function () {
   insertHtmlFormEmail();
 });
-
-///////////////////////
-///////////////////////
-///////////////////////
-
-const selectOptionHandler = function (prevQuery) {
-  // Para seleccionar una opcion se hace event delegation:
-  // 1. Se agrega un event listener al elemento padre comun
-  // 2. Se determina que elemento hijo origino el evento
-
-  optionsBox.addEventListener("click", function (e) {
-    if (e.target.classList.contains("chatbot-option")) {
-      insertHtmlUserInput(e.target.textContent);
-
-      // De la opcion seleccionada, se quita el emoji
-      const strNoEmoji = e.target.textContent.split(" ").slice(0, -1).join(" ");
-
-      // Se verifica si la opcion seleccionada es la de regresa a la anterior
-      if (strNoEmoji == "Pregunta anterior") {
-        prepareHtmlOptionsDB(prevQuery, true);
-        return;
-      }
-
-      // Se preparan las nuevas opciones en base a la seleccionada
-      prepareHtmlOptionsDB(strNoEmoji);
-    }
-  });
-};
-
-const URLPOSTCALIFICACION = `${activeURL}/calificacion/create`;
-
-const postCalificacionDB = async function (cali) {
-  const options = {
-    method: "POST",
-    headers: {
-      Accept: "application/json",
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      calificacion: cali,
-    }),
-  };
-
-  return fetch(URLPOSTCALIFICACION, options);
-};
-
-// Formulario stars
-let formReview = [...document.querySelectorAll(".form-stars")].at(-1);
-const activeFormReview = function () {
-  formReview.addEventListener("submit", function (e) {
-    e.preventDefault();
-
-    const answer = document.querySelector('input[name="rate"]:checked')?.value;
-
-    // En caso de que no se haya selecionado ninguna estrella
-    if (!answer) {
-      return;
-    }
-
-    formReview.style.pointerEvents = "none"; // Se bloquea el formulario para no aceptar más inputs
-
-    showLoader(TIMELOADER).then(() => {
-      postCalificacionDB(answer)
-        .then((response) => response.json())
-        .then((data) => {
-          insertHtmlChatbotText(data);
-          removeLoader();
-        })
-        .catch((err) => {
-          console.log("Ocurrio un error");
-          insertHtmlChatbotText("Ocurrio un error");
-          removeLoader();
-        });
-    });
-
-    // showLoader(TIMELOADER).then(() => {
-    //   removeLoader();
-
-    //   insertHtmlChatbotText("Hemos recibido tus datos, muchas gracias.");
-    //   postCalificacionDB(answer)
-    //     .then((response) => response.json())
-    //     .then((data) => console.log(data));
-    // });
-  });
-};
-
-const URLPOSTPERSONA = `${activeURL}/persona/create`;
-
-const postPersonaDB = async function (persona) {
-  const options = {
-    method: "POST",
-    headers: {
-      Accept: "application/json",
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      nombre: persona.nombre,
-      correo: persona.correo,
-      descripcion: persona.descripcion,
-    }),
-  };
-
-  return fetch(URLPOSTPERSONA, options);
-};
-
-// Formulario datos
-let formContact = [...document.querySelectorAll(".form-to-mail")].at(-1);
-const activeFormContact = function () {
-  // Formulario de los datos
-  formContact.addEventListener("submit", function (e) {
-    e.preventDefault();
-
-    const errorName = "Error al ingresar el nombre. Intenta de nuevo";
-    const errorEmail = "Error al ingresar mail. Intenta de nuevo";
-    const errorMsg = "Error al ingresa el mensaje. Intenta de nuevo";
-
-    const name = e.target[0].value;
-    const email = e.target[1].value;
-    const msg = e.target[2].value;
-
-    let isError = false;
-
-    if (!checkName(name)) {
-      placeholderName = document.querySelector("#input-name");
-      placeholderName.placeholder = errorName;
-      placeholderName.classList.add("error-input-form");
-      isError = true;
-      e.target[0].value = "";
-    }
-
-    if (!checkEmail(email)) {
-      placeholderEmail = document.querySelector("#input-email");
-      placeholderEmail.placeholder = errorEmail;
-      placeholderEmail.classList.add("error-input-form");
-      isError = true;
-      e.target[1].value = "";
-    }
-
-    if (!checkMessage(msg)) {
-      placeholderMsg = document.querySelector("#input-msg");
-      placeholderMsg.placeholder = errorMsg;
-      placeholderMsg.classList.add("error-input-form");
-      isError = true;
-      e.target[2].value = "";
-    }
-
-    if (!isError) {
-      // En caso de que no haya errores
-      formContact.style.pointerEvents = "none"; // Se bloquea el formulario para no aceptar más información
-      console.log(name, email, msg);
-
-      const newPersona = {
-        nombre: name,
-        correo: email,
-        descripcion: msg,
-      };
-
-      showLoader(TIMELOADER).then(() => {
-        postPersonaDB(newPersona)
-          .then((response) => response.json())
-          .then((data) => {
-            insertHtmlChatbotText(
-              `Muchas gracias, ${data.nombre}. Hemos recibido tus datos`
-            );
-            removeLoader();
-          })
-          .catch((err) => {
-            console.log("Ocurrio un error");
-            insertHtmlChatbotText("Ocurrio un error");
-            removeLoader();
-          });
-      });
-    }
-  });
-};
-
-///////////////////////
-///////////////////////
-///////////////////////
-
-// SEARCH BAR
-const searchBarEl = document.querySelector(".search-bar");
-
-searchBarEl.addEventListener("keyup", function (e) {
-  e.preventDefault();
-  if (e.key === "Enter" || e.keyCode === 13) {
-    insertHtmlUserInput(searchBarEl.value);
-    searchBarEl.value = "";
-  }
-});
-
-// MOSTRAR LOADER
-const showLoader = function (sec) {
-  return new Promise(function (resolve) {
-    chatbotChat.insertAdjacentHTML("beforeend", htmlChatbotLoading());
-    updateScrollBar();
-
-    setTimeout(resolve, 1000 * sec);
-  });
-};
-
-const removeLoader = function () {
-  lastLoaderElement = [...document.querySelectorAll(".chatbot-loader")].at(-1);
-  lastLoaderElement.remove();
-  updateScrollBar();
-};
-
-// Formulario
-// Functions to check each input
-
-const checkName = (string) => {
-  const re = new RegExp(/^[a-zA-Z ]+$/);
-
-  return re.test(string);
-};
-
-const checkEmail = (string) => {
-  const re = new RegExp(
-    /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
-  );
-
-  // console.log(re.test(string));
-  return re.test(string);
-};
-
-const checkMessage = (string) => {
-  const maxWords = 100;
-  const numWords = string.trim().split(" ").length;
-
-  if (
-    numWords < maxWords &&
-    numWords >= 1 &&
-    string.trim().split(" ")[0] !== ""
-  ) {
-    return true;
-  } else {
-    return false;
-  }
-};
