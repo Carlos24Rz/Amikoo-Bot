@@ -68,7 +68,7 @@ const insertHtmlOptionsDB = async function (
     dataText = await getDataDB(URLCURRENT, query).catch((err) => err);
     dataOptions = await showLoader(timeLoader).then(() =>
       getDataDB(URL, query).catch((err) => err)
-    ); // AQUI VA EL SHOW LOADER
+    );
   }
   // En caso de que se selecciona la opcion de regresar
   // Se obtienen las opciones de los hijos de la ultima opcion
@@ -532,7 +532,7 @@ const selectOptionHandler = function (queryAnterior) {
   });
 };
 
-const URLPOSTCALIFICACION = "${activeURL}/calificacion/create";
+const URLPOSTCALIFICACION = `${activeURL}/calificacion/create`;
 
 const postCalificacionDB = async function (cali) {
   const options = {
@@ -563,13 +563,33 @@ const activeFormStars = function () {
     }
 
     formStars.style.pointerEvents = "none"; // Se bloquea el formulario para no aceptar más inputs
+
+    // AQUI OCURRE LA MAGIA
+    //   dataOptions = await showLoader(timeLoader).then(() =>
+    //   getDataDB(URL, query).catch((err) => err)
+    // );
+
     showLoader(timeLoader).then(() => {
-      removeLoader();
-      insertHtmlChatbotTex("Hemos recibido tus datos, muchas gracias.");
       postCalificacionDB(answer)
         .then((response) => response.json())
-        .then((data) => console.log(data));
+        .then((data) => {
+          insertHtmlChatbotTex(data);
+          removeLoader();
+        })
+        .catch((err) => {
+          console.log("Ocurrio un error");
+          insertHtmlChatbotTex("Ocurrio un error");
+          removeLoader();
+        });
     });
+
+    // showLoader(timeLoader).then(() => {
+    //   removeLoader();
+    //   insertHtmlChatbotTex("Hemos recibido tus datos, muchas gracias.");
+    //   postCalificacionDB(answer)
+    //     .then((response) => response.json())
+    //     .then((data) => console.log(data));
+    // });
   });
 };
 
