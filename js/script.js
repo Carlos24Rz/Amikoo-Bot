@@ -1,6 +1,6 @@
 const timeLoader = 1;
 const MSGEROR = "Ha ocurrido un error";
-const activeURL = "http://127.0.0.1:800";
+const activeURL = "http://127.0.0.1:8000";
 // const activeURL = "http://34.230.152.92:8080";
 
 const URL = `${activeURL}/pregunta/show?parent=`;
@@ -64,6 +64,7 @@ const insertHtmlOptionsDB = async function (
   let dataText;
 
   // En caso de que se selecciona una opcion normal
+
   if (backPregunta == false) {
     dataText = await getDataDB(URLCURRENT, query).catch((err) => err);
     dataOptions = await showLoader(timeLoader).then(() =>
@@ -80,7 +81,7 @@ const insertHtmlOptionsDB = async function (
       getDataDB(URLGETCHILDREN, query)
     ); // AQUI VA EL SHOW LOADER
   }
-  8;
+
   // ATRAPANDO ERRORES
   if (dataText == MSGEROR || dataOptions == MSGEROR) {
     removeLoader();
@@ -593,7 +594,7 @@ const activeFormStars = function () {
   });
 };
 
-const URLPOSTPERSONA = "${activeURL}/persona/create";
+const URLPOSTPERSONA = `${activeURL}/persona/create`;
 
 const postPersonaDB = async function (persona) {
   const options = {
@@ -665,31 +666,32 @@ const activeFormData = function () {
       };
 
       showLoader(timeLoader).then(() => {
-        removeLoader();
-        insertHtmlChatbotTex("Hemos recibido tus datos, muchas gracias.");
-        // TODO REVISAR QUE DEVUELVA ALGO, (EL NOMBRE)
         postPersonaDB(newPersona)
           .then((response) => response.json())
-          .then((data) => console.log(data));
+          .then((data) => {
+            insertHtmlChatbotTex(
+              `Muchas gracias, ${data.nombre}. Hemos recibido tus datos`
+            );
+            removeLoader();
+          })
+          .catch((err) => {
+            console.log("Ocurrio un error");
+            insertHtmlChatbotTex("Ocurrio un error");
+            removeLoader();
+          });
       });
+
+      // showLoader(timeLoader).then(() => {
+      //   removeLoader();
+      //   insertHtmlChatbotTex("Hemos recibido tus datos, muchas gracias.");
+      //   // TODO REVISAR QUE DEVUELVA ALGO, (EL NOMBRE)
+      //   postPersonaDB(newPersona)
+      //     .then((response) => response.json())
+      //     .then((data) => console.log(data));
+      // });
     }
   });
 };
-
-// const getDataDB = async function (url, query) {
-//   console.log("Query is:", query);
-
-//   const data = await fetch(`${url}${query}`)
-//     .then((response) => response.json())
-//     .then((data) => data);
-
-//   // console.log("before data");
-//   console.log("primera funcion", data);
-
-//   // console.log("after data");
-
-//   return data;
-// };
 
 ///////////////////////
 ///////////////////////
