@@ -136,14 +136,17 @@ body {
 }
 
 .chatbot-box {
-  z-index: 11;
-  position: fixed;
+  width: 26%;
+  height: 84%;
+
+  background-color: var(--main-bg-color);
+  border-radius: 1.2rem;
+
   right: 0%;
   bottom: 0%;
-  background-color: var(--main-bg-color);
-  width: 24%;
-  height: 80%;
-  border-radius: 1.2rem;
+
+  z-index: 11;
+  position: fixed;
 }
 
 /**************************/
@@ -151,9 +154,11 @@ body {
 /**************************/
 
 .chatbot-header {
+  height: 10%;
+
   background-color: var(--secundary-color);
   color: #f3f3f3;
-  height: 10%;
+
   border-radius: 1.2rem 1.2rem 0 0;
 
   display: flex;
@@ -173,15 +178,15 @@ body {
 .chatbot-title {
   font-size: 2rem;
   font-weight: 500;
-  /* background-color: yellowgreen; */
 }
 
 .chatbot-close-button {
+  width: 3rem;
+  height: 3rem;
+
   position: absolute;
   right: 5%;
 
-  width: 3rem;
-  height: 3rem;
   font-size: 2rem;
   font-weight: 500;
   color: #f3f3f3;
@@ -207,48 +212,34 @@ body {
 /**************************/
 
 .chatbot-chat {
-  /* background-color: coral; */
-  background-color: var(--main-bg-color);
   height: 78%;
   width: 100%;
 
+  background-color: var(--main-bg-color);
   overflow-y: scroll;
-  /* scroll-behavior: smooth;  */
-
-  /* padding-top: 180px; */
 
   padding-top: 50%;
-  /* padding-bottom: 50%; */
-
-  /* display: flex;
-  flex-direction: column;
-  justify-content: end;
-  align-items: center; */
 }
 
-/* Message */
-
+/* Para hacer aparecer un mensaje */
 @keyframes append-animate {
   from {
-    /* transform: scale(0); */
     transform: translateY(-8%);
     opacity: 0;
   }
   to {
-    /* transform: scale(1); */
     transform: translateY(0%);
     opacity: 1;
   }
 }
 
 .chatbot-msg {
-  /* background-color: springgreen; */
-  align-self: baseline;
   width: 100%;
+
+  align-self: baseline;
   padding: 0 1.6rem;
   padding-top: 1.6rem;
   padding-bottom: 1.6rem;
-  /* margin: 0.5rem 0; */
 
   display: flex;
   gap: 5%;
@@ -268,11 +259,12 @@ body {
 
 /* Logo of the message */
 .logo--chat {
-  width: 15%;
+  width: 13%;
+
   background-color: transparent;
   box-shadow: 0 2.4rem 4.8rem rgba(0, 0, 0, 0.075);
 
-  /* background-color: yellow; */
+  background-color: var(--main-bg-color);
 }
 
 .logo--chat:hover .right-eye {
@@ -281,22 +273,21 @@ body {
 
 /* Content of the message */
 .chatbot-msg-content {
+  width: 87%;
+
   background: linear-gradient(151.38deg, #0078a3 0%, #0abeff 100%);
-  width: 80%;
   color: #f3f3f3;
-  font-size: 1.6rem;
+  font-size: 1.4rem;
   line-height: 1.4;
 
   padding: 1rem 1.5rem;
   border-radius: 1.2rem;
-
   box-shadow: 0 2.4rem 4.8rem rgba(0, 0, 0, 0.075);
 }
 
 .chatbot-text {
   width: 100%;
-  /* background-color: yellow; */
-  /* text-align: justify; */
+  text-align: justify;
 }
 
 /**************************/
@@ -308,7 +299,6 @@ body {
 
 .chatbot-msg-user .chatbot-msg-content {
   background: linear-gradient(151.38deg, #e0e5ea 0%, #e7ecf0 100%);
-  /* background: linear-gradient(151.38deg, #e4e41d 0%, #fbff00 100%); */
 }
 
 .chatbot-msg-user .chatbot-text {
@@ -325,24 +315,25 @@ body {
   gap: 1rem;
 }
 
-/* This allows to only accept inputs from the last chatbot-options */
+/* Esta clase nos permite solo aceptar inputs del ultimo chatbotOptions */
 .block-chatbot-options {
   pointer-events: none;
 }
 
 .chatbot-option {
-  background-color: #f3f3f3;
-  height: 3rem;
+  /* height: 3rem; */
   width: 90%;
 
+  background-color: #f3f3f3;
   color: #2d2d2d;
-  font-size: 1.4rem;
+  font-size: 1.3rem;
   line-height: 1.5;
 
   border-radius: 1.2rem;
   cursor: pointer;
 
-  padding-left: 1.5rem;
+  padding: 0.5rem 1.3rem;
+
   display: flex;
   justify-content: baseline;
   align-items: center;
@@ -358,14 +349,11 @@ body {
 
 .loader {
   width: 40%;
-  /* width: 85%; */
   height: 5rem;
-  display: flex;
+
   display: flex;
   justify-content: center;
   align-items: flex-end;
-
-  /* margin-right: 45%; */
 }
 
 .loader > span {
@@ -399,7 +387,9 @@ body {
 }
 
 /**************************/
-/* CHATBOT REVIEW*/
+/* CHATBOT FORM REVIEW*/
+/**************************/
+
 .container-stars {
   display: flex;
   align-items: center;
@@ -424,6 +414,7 @@ body {
 
 .star-widget label {
   width: 12%;
+
   padding: 1rem 0;
   font-size: 2.5rem;
   color: #f3f3f3;
@@ -443,58 +434,60 @@ body {
 
 .form-stars {
   width: 100%;
-  /* background-color: #004b66; */
 }
 
 #rate-1:checked ~ .title-star:before {
-  content: " I just hate it";
+  content: " Insuficiente";
 }
 
 #rate-2:checked ~ .title-star:before {
-  content: " I don't like it";
+  content: " Suficente";
 }
 
 #rate-3:checked ~ .title-star:before {
-  content: " It is awesome";
+  content: " Satisfactorio";
 }
 
 #rate-4:checked ~ .title-star:before {
-  content: " I just like it";
+  content: " Distinguido";
 }
 
 #rate-5:checked ~ .title-star:before {
-  content: " I just love it";
+  content: " Sobresaliente";
 }
 
 .form-stars .title-star {
   width: 100%;
+
   font-style: 2.5rem;
   padding-top: 0.4rem;
   padding-bottom: 1.2rem;
   color: #f3f3f3;
   text-align: center;
   font-weight: 500;
+
   transition: all 200ms ease;
 }
 
 .submit-box {
   width: 100%;
   height: 3rem;
+
   display: flex;
   justify-content: center;
   align-items: center;
 }
 
 .submit-box .btn-submit-form-stars {
-  height: 80%;
-  width: 40%;
+  height: 2.75rem;
+  width: 35%;
 
   color: #f3f3f3;
   background-color: var(--secundary-color);
   font-weight: 600;
 
   cursor: pointer;
-  border-radius: 0.8rem;
+  border-radius: 1.2rem;
   border: none;
   outline: none;
 
@@ -506,38 +499,7 @@ body {
 }
 
 /**************************/
-/* CHATBOT SEARCH */
-/**************************/
-
-.chatbot-search {
-  height: 12%;
-
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.search-bar {
-  pointer-events: none;
-  background-color: #e7ecf0;
-  width: 90%;
-  height: 65%;
-  padding: 1.2rem;
-  font-size: 1.4rem;
-  font-family: inherit;
-  color: inherit;
-  border: 0;
-  border-radius: 1.2rem;
-  box-shadow: 0 2.4rem 4.8rem rgba(0, 0, 0, 0.4);
-}
-
-.search-bar:focus {
-  outline: none;
-  border: none;
-}
-
-/**************************/
-/* CHATBOT FORM to EMAIL */
+/* CHATBOT FORM CONTACT */
 /**************************/
 
 .error-option {
@@ -548,7 +510,6 @@ body {
 .form-to-mail {
   display: flex;
   flex-direction: column;
-  /* padding-left: 1.2rem; */
 }
 
 .form-to-mail label,
@@ -575,7 +536,7 @@ body {
   border: none;
   outline: none;
   resize: none;
-  /* background-color: yellow; */
+
   border-radius: 1rem;
 
   padding: 0.2rem 1rem;
@@ -589,11 +550,12 @@ body {
 }
 
 .btn-submit-form-email {
+  width: 35%;
+  height: 3rem;
+
   color: #f3f3f3;
   background-color: var(--secundary-color);
   font-weight: 600;
-  width: 35%;
-  height: 3rem;
 
   cursor: pointer;
   margin-top: 2rem;
@@ -615,4 +577,39 @@ body {
 
 .error-input-form::placeholder {
   color: red;
+}
+
+/**************************/
+/* CHATBOT SEARCH */
+/**************************/
+
+.chatbot-search {
+  height: 12%;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.search-bar {
+  width: 90%;
+  height: 65%;
+
+  pointer-events: none;
+
+  color: inherit;
+  background-color: #e7ecf0;
+
+  padding: 1.2rem;
+  font-size: 1.4rem;
+  font-family: inherit;
+
+  border: 0;
+  border-radius: 1.2rem;
+  box-shadow: 0 2.4rem 4.8rem rgba(0, 0, 0, 0.4);
+}
+
+.search-bar:focus {
+  outline: none;
+  border: none;
 }

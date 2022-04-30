@@ -6,7 +6,7 @@ Instead, 1rem = 1em = 16px   */
 /**************************/
 @media (max-width: 84em) {
   .chatbot-box {
-    width: 36%;
+    width: 32%;
   }
 }
 
@@ -20,7 +20,7 @@ Instead, 1rem = 1em = 16px   */
   }
 
   .chatbot-box {
-    width: 44%;
+    width: 36%;
   }
 }
 
@@ -34,7 +34,7 @@ Instead, 1rem = 1em = 16px   */
   }
 
   .chatbot-box {
-    width: 50%;
+    width: 44%;
   }
 }
 
@@ -43,7 +43,7 @@ Instead, 1rem = 1em = 16px   */
 /**************************/
 @media (max-width: 44em) {
   .chatbot-box {
-    width: 75%;
+    width: 52%;
   }
 }
 
