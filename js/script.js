@@ -208,6 +208,117 @@ const htmlChatbotLoading = () => {
 `;
 };
 
+//////////////////////////////
+// HTML INSERT TEMPLATES
+//////////////////////////////
+const chatbotBox = document.querySelector(".chatbot-box");
+const chatbotChat = document.querySelector(".chatbot-chat");
+
+/*
+ * Insertar un cuadro de texto del chatbot
+ * @param  {string} text      Texto a mostrar
+ */
+const insertHtmlChatbotText = function (text) {
+  chatbotChat.insertAdjacentHTML("beforeend", htmlChatbotText(text));
+  updateScrollBar();
+};
+
+/*
+ * Insertar un cuadro de texto del chatbot sin la cara del mismo
+ * @param  {string} text      Texto a mostrar
+ */
+const insertHtmlChatbotTextNoFace = function (text) {
+  chatbotChat.insertAdjacentHTML("beforeend", htmlChatbotTextNoface(text));
+  updateScrollBar();
+};
+
+/*
+ * Insertar el cuadro de animacion
+ */
+const insertHtmlChatbotLoading = function () {
+  chatbotChat.insertAdjacentHTML("beforeend", htmlChatbotLoading());
+  updateScrollBar();
+};
+
+/*
+ * Insertar un cuadro de texto del chatbot sin la cara del mismo
+ * @param  {string} text      Texto que va arriba de las opciones
+ * @param  {bool}   is_final  Indica si es una pregunta final que no tiene mas opciones debajo
+ * @param  {string} prevQuery Indica la opcion anterior que fue seleccionada
+ * @param  {string} optons    Opciones a mostrar
+ */
+const insertHtmlChatbotOptions = function (
+  text,
+  isFinal,
+  prevQuery,
+  ...options
+) {
+  // Cuando ya hay mas de un chatbotOptions, se bloquea el ultimo chatbotOptions
+  if (optionsBox !== undefined) {
+    blockLastChatbotOptions();
+  }
+
+  // Se inserta el html
+  chatbotChat.insertAdjacentHTML(
+    "beforeend",
+    htmlChatbotOptions(text, isFinal, prevQuery, ...options)
+  );
+
+  // Actualizamos el ultimo optionsBox
+  optionsBox = [...document.querySelectorAll(".chatbot-options")].at(-1);
+
+  // Se agrega el handler para manejar las nuevas opciones
+  selectOptionHandler(prevQuery);
+
+  updateScrollBar();
+};
+
+/*
+ * Insertar un cuadro de texto del usuario
+ * @param  {string} text      Texto a mostrar
+ */
+const insertHtmlUserInput = function (text) {
+  chatbotChat.insertAdjacentHTML("beforeend", htmlUserInput(text));
+  updateScrollBar();
+};
+
+/*
+ * Insertar el chatbot review
+ */
+const insertHtmlChatbotFormReview = function () {
+  chatbotChat.insertAdjacentHTML("beforeend", htmlChatbotFormReview());
+  updateScrollBar();
+
+  // Habilitamos al ultimo formulario
+  formReview = [...document.querySelectorAll(".form-stars")].at(-1);
+  activeFormReview();
+};
+
+/*
+ * Insertar formulario de contacto
+ */
+const insertHtmlFormEmail = function () {
+  chatbotChat.insertAdjacentHTML("beforeend", htmlChatbotFormContact());
+  updateScrollBar();
+
+  // Habilitamos al ultimo formulario
+  formContact = [...document.querySelectorAll(".form-to-mail")].at(-1);
+  activeFormContact();
+};
+
+///////////////////////
+///////////////////////
+///////////////////////
+
+// optionsBox mantiene el chatbotOptions actual
+let optionsBox = [...document.querySelectorAll(".chatbot-options")].at(-1);
+/*
+ * Deshabilitar el ultimo chatbotOptions para no darle click
+ */
+const blockLastChatbotOptions = function () {
+  optionsBox.classList.add("block-chatbot-options");
+};
+
 const TIMELOADER = 1;
 const MSGEROR = "Ha ocurrido un error";
 
@@ -251,10 +362,10 @@ const prepareHtmlOptionsDB = async function (
   // Esta serie de if's es para cuando se llega a una respuesta final y se muestran las ultimas opciones
   if (query == "Si") {
     console.log("ENTEEEER");
-    optionsBox.classList.add("block-chatbot-options");
+    blockLastChatbotOptions();
     insertHtmlChatbotTextNoFace("Has seleccionado que sí");
-    insertHtmlChatbotTex("Nos ayudarías mucho calificando nuestro servicio: ");
-    insertHtmlChatbotReview();
+    insertHtmlChatbotText("Nos ayudarías mucho calificando nuestro servicio: ");
+    insertHtmlChatbotFormReview();
     return;
   }
 
@@ -266,7 +377,7 @@ const prepareHtmlOptionsDB = async function (
 
   if (query == "Solicitar información adicional") {
     console.log("Reiniciar chatbot");
-    optionsBox.classList.add("block-chatbot-options");
+    blockLastChatbotOptions();
     insertHtmlFormEmail();
     return;
   }
@@ -291,7 +402,7 @@ const prepareHtmlOptionsDB = async function (
   // Atrapando los errores que pudieron generarse al hacer el fetch
   if (dataQnParent == MSGEROR || dataOptions == MSGEROR) {
     removeLoader();
-    insertHtmlChatbotTex("Ha ocurrido un error");
+    insertHtmlChatbotText("Ha ocurrido un error");
     return;
   }
 
@@ -343,76 +454,9 @@ const prepareHtmlOptionsDB = async function (
   return;
 };
 
-//////////////////////////////
-// HTML INSERT TEMPLATES
-//////////////////////////////
-const chatbotBox = document.querySelector(".chatbot-box");
-const chatbotChat = document.querySelector(".chatbot-chat");
-
-const insertHtmlChatbotTex = function (text) {
-  chatbotChat.insertAdjacentHTML("beforeend", htmlChatbotText(text));
-  updateScrollBar();
-};
-
-const insertHtmlChatbotTextNoFace = function (text) {
-  chatbotChat.insertAdjacentHTML("beforeend", htmlChatbotTextNoface(text));
-  updateScrollBar();
-};
-
-const insertHtmlChatbotReview = function () {
-  chatbotChat.insertAdjacentHTML("beforeend", htmlChatbotFormReview());
-  updateScrollBar();
-
-  formStars = [...document.querySelectorAll(".form-stars")].at(-1);
-  activeFormStars();
-};
-
-const insertHtmlChatbotLoading = function () {
-  chatbotChat.insertAdjacentHTML("beforeend", htmlChatbotLoading());
-  updateScrollBar();
-};
-
-const insertHtmlChatbotOptions = function (
-  text,
-  isFinal,
-  prevQuery,
-  ...options
-) {
-  console.log("Nodo hoja: ", isFinal);
-
-  // Cuando ya hay mas de un chatbotOptions, bloqueamos el ultimo chatbotOptions
-  if (optionsBox !== undefined) {
-    optionsBox.classList.add("block-chatbot-options");
-  }
-
-  // Formar normal
-  chatbotChat.insertAdjacentHTML(
-    "beforeend",
-    htmlChatbotOptions(text, isFinal, prevQuery, ...options)
-  );
-  optionsBox = [...document.querySelectorAll(".chatbot-options")].at(-1);
-  selectOptionHandler(prevQuery);
-  updateScrollBar();
-};
-
-const insertHtmlUserInput = function (text) {
-  chatbotChat.insertAdjacentHTML("beforeend", htmlUserInput(text));
-  updateScrollBar();
-};
-
-const insertHtmlFormEmail = function () {
-  chatbotChat.insertAdjacentHTML("beforeend", htmlChatbotFormContact());
-  updateScrollBar();
-
-  formToMail = [...document.querySelectorAll(".form-to-mail")].at(-1);
-  activeFormData();
-};
-
-///////////////////////
-///////////////////////
-///////////////////////
-
-// Function that put down the scroll bar
+/*
+ * Baja el cursor hasta abajo cada que se inserta un elemento
+ */
 const updateScrollBar = function () {
   chatbotChat.scrollTo(0, chatbotChat.scrollHeight);
 };
@@ -430,25 +474,9 @@ const handleShowChatbot = function () {
 
     // Solo entra a este if cuando se abre por primera vez el chatbot
     if (!flagChatbotOpen) {
-      insertHtmlChatbotTex("Hola, este es un mensaje de bienvenida");
+      insertHtmlChatbotText("Hola, este es un mensaje de bienvenida");
       flagChatbotOpen = true;
       prepareHtmlOptionsDB();
-
-      // showLoader(TIMELOADER).then(() => {
-      //   removeLoader();
-
-      //   insertHtmlChatbotTex("Hola, este es un mensaje de bienvenida");
-      //   flagChatbotOpen = true;
-
-      //   // PARA MOSTRAR LAS OPCIONES (puede que esto no sirva de nada)
-      //   if (optionsBox !== undefined) {
-      //     optionsBox.classList.add("block-chatbot-options");
-      //   }
-
-      //   // Insertamos las primeras opciones
-      //   insertHtmlChatbotOptions(someText, 1, 2, 3, 4);
-      //   // prepareHtmlOptionsDB()
-      // });
     }
   });
 
@@ -480,7 +508,7 @@ const someText =
   "Lorem ipsum dolor sit amet consectetur adipisicing elit. Ipsum libero, sit eum voluptates natus voluptatem dolorum. Beatae sit.";
 
 btnChatbotText.addEventListener("click", function () {
-  insertHtmlChatbotTex(someText);
+  insertHtmlChatbotText(someText);
 });
 
 btnChatbotTextNoface.addEventListener("click", function () {
@@ -507,7 +535,7 @@ btnChatbotUser.addEventListener("click", function () {
 });
 
 btnChatbotReview.addEventListener("click", function () {
-  insertHtmlChatbotReview();
+  insertHtmlChatbotFormReview();
 });
 
 btnChatbotForm.addEventListener("click", function () {
@@ -518,31 +546,25 @@ btnChatbotForm.addEventListener("click", function () {
 ///////////////////////
 ///////////////////////
 
-// SELECTING AN OPTION
-// Event delegation
-// 1. Add event listener to common parent element
-// 2. Determine what element originated the event
-
-let optionsBox = [...document.querySelectorAll(".chatbot-options")].at(-1);
 const selectOptionHandler = function (prevQuery) {
+  // Para seleccionar una opcion se hace event delegation:
+  // 1. Se agrega un event listener al elemento padre comun
+  // 2. Se determina que elemento hijo origino el evento
+
   optionsBox.addEventListener("click", function (e) {
     if (e.target.classList.contains("chatbot-option")) {
       insertHtmlUserInput(e.target.textContent);
 
-      strNoEmoji = e.target.textContent.split(" ").slice(0, -1).join(" ");
-      // console.log("Seleccionando opcion: ", strNoEmoji);
+      // De la opcion seleccionada, se quita el emoji
+      const strNoEmoji = e.target.textContent.split(" ").slice(0, -1).join(" ");
 
+      // Se verifica si la opcion seleccionada es la de regresa a la anterior
       if (strNoEmoji == "Pregunta anterior") {
-        // console.log("ENTER EN PREGUNTA ANTERIOR");
-        // console.log("QUERY_ANTERIOR: ", prevQuery);
-        // console.log("QUERY ANTERIOR: ", prevQuery);
         prepareHtmlOptionsDB(prevQuery, true);
         return;
       }
 
-      // OJO
-      // Aqui el e.target.textContent es un nombre que se ve en el html, pero necesitamos la categoriaID de ese nombre para mostrarlo
-
+      // Se preparan las nuevas opciones en base a la seleccionada
       prepareHtmlOptionsDB(strNoEmoji);
     }
   });
@@ -566,9 +588,9 @@ const postCalificacionDB = async function (cali) {
 };
 
 // Formulario stars
-let formStars = [...document.querySelectorAll(".form-stars")].at(-1);
-const activeFormStars = function () {
-  formStars.addEventListener("submit", function (e) {
+let formReview = [...document.querySelectorAll(".form-stars")].at(-1);
+const activeFormReview = function () {
+  formReview.addEventListener("submit", function (e) {
     e.preventDefault();
 
     const answer = document.querySelector('input[name="rate"]:checked')?.value;
@@ -578,18 +600,18 @@ const activeFormStars = function () {
       return;
     }
 
-    formStars.style.pointerEvents = "none"; // Se bloquea el formulario para no aceptar más inputs
+    formReview.style.pointerEvents = "none"; // Se bloquea el formulario para no aceptar más inputs
 
     showLoader(TIMELOADER).then(() => {
       postCalificacionDB(answer)
         .then((response) => response.json())
         .then((data) => {
-          insertHtmlChatbotTex(data);
+          insertHtmlChatbotText(data);
           removeLoader();
         })
         .catch((err) => {
           console.log("Ocurrio un error");
-          insertHtmlChatbotTex("Ocurrio un error");
+          insertHtmlChatbotText("Ocurrio un error");
           removeLoader();
         });
     });
@@ -597,7 +619,7 @@ const activeFormStars = function () {
     // showLoader(TIMELOADER).then(() => {
     //   removeLoader();
 
-    //   insertHtmlChatbotTex("Hemos recibido tus datos, muchas gracias.");
+    //   insertHtmlChatbotText("Hemos recibido tus datos, muchas gracias.");
     //   postCalificacionDB(answer)
     //     .then((response) => response.json())
     //     .then((data) => console.log(data));
@@ -625,10 +647,10 @@ const postPersonaDB = async function (persona) {
 };
 
 // Formulario datos
-let formToMail = [...document.querySelectorAll(".form-to-mail")].at(-1);
-const activeFormData = function () {
+let formContact = [...document.querySelectorAll(".form-to-mail")].at(-1);
+const activeFormContact = function () {
   // Formulario de los datos
-  formToMail.addEventListener("submit", function (e) {
+  formContact.addEventListener("submit", function (e) {
     e.preventDefault();
 
     const errorName = "Error al ingresar el nombre. Intenta de nuevo";
@@ -667,7 +689,7 @@ const activeFormData = function () {
 
     if (!isError) {
       // En caso de que no haya errores
-      formToMail.style.pointerEvents = "none"; // Se bloquea el formulario para no aceptar más información
+      formContact.style.pointerEvents = "none"; // Se bloquea el formulario para no aceptar más información
       console.log(name, email, msg);
 
       const newPersona = {
@@ -680,14 +702,14 @@ const activeFormData = function () {
         postPersonaDB(newPersona)
           .then((response) => response.json())
           .then((data) => {
-            insertHtmlChatbotTex(
+            insertHtmlChatbotText(
               `Muchas gracias, ${data.nombre}. Hemos recibido tus datos`
             );
             removeLoader();
           })
           .catch((err) => {
             console.log("Ocurrio un error");
-            insertHtmlChatbotTex("Ocurrio un error");
+            insertHtmlChatbotText("Ocurrio un error");
             removeLoader();
           });
       });
