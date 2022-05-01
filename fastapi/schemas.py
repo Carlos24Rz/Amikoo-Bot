@@ -8,7 +8,8 @@ class PreguntaIn(BaseModel):
     padre: str = Field(
         ...,
         min_length = 1,
-        max_length = 80
+        max_length = 80,
+        regex = "^[A-Za-z][A-Za-z0-9,. ]+$"
     )
     nombre: str = Field(
         ...,
@@ -24,20 +25,7 @@ class PreguntaIn(BaseModel):
     texto: str = Field(
         ...,
         min_length = 1,
-        max_length = 60
-    )
-
-class PreguntaTextOut(BaseModel):
-    nombre: str = Field(
-        ...,
-        min_length = 1,
-        max_length = 80,
-        regex = "^[A-Za-z][A-Za-z0-9,. ]+$"
-    )
-    texto: str = Field(
-        ...,
-        min_length = 1,
-        max_length = 60
+        max_length = 600
     )
 
 class PreguntaUpdate(BaseModel):
@@ -55,10 +43,13 @@ class PreguntaUpdate(BaseModel):
     texto: Optional[str] = Field(
         None,
         min_length = 1,
-        max_length = 60
+        max_length = 600
     )
 
-
+class PreguntaPadre(BaseModel):
+    padre: str = Field(
+        ...,
+    )
 
 
 
