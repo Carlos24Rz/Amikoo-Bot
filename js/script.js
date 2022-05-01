@@ -1,6 +1,6 @@
 const timeLoader = 1;
 const MSGEROR = "Ha ocurrido un error";
-const activeURL = "http://127.0.0.1:800";
+const activeURL = "http://127.0.0.1:8000";
 // const activeURL = "http://34.230.152.92:8080";
 
 const URL = `${activeURL}/pregunta/show?parent=`;
@@ -224,7 +224,7 @@ const htmlChatbotReview = () => {
             value="1"
           />
           <label for="rate-1" class="fa-solid fa-star"></label>
-          <header class="title-star">&nbsp;</header>  
+          <header class="title-star">&nbsp;</header>
         </div>
 
         <div class="submit-box">
@@ -528,7 +528,7 @@ const selectOptionHandler = function (queryAnterior) {
   });
 };
 
-const URLPOSTCALIFICACION = "${activeURL}/calificacion/create";
+const URLPOSTCALIFICACION = `${activeURL}/calificacion/create`;
 
 const postCalificacionDB = async function (cali) {
   const options = {
