@@ -27,27 +27,33 @@ SELECT * FROM cte;
 
 
 -- All rows with their parents row name
-select a.id, a.nombre, a.emoji, b.nombre as parent
-from pregunta a
-left join pregunta b on a.padre_id = b.id
-where b.nombre = "Inicio"
+SELECT a.id, a.nombre, a.emoji, b.nombre AS parent
+FROM pregunta a
+LEFT JOIN pregunta b ON a.padre_id = b.id
+WHERE b.nombre = "Inicio"
 
 -- All rows with their parents row name
-select pregunta.id, pregunta.nombre, pregunta.emoji, b.nombre as parent
-from pregunta
-left join pregunta b on pregunta.padre_id = b.id
-where b.nombre = "Inicio"
+SELECT pregunta.id, pregunta.nombre, pregunta.emoji, b.nombre AS parent
+FROM pregunta
+LEFT JOIN pregunta b ON pregunta.padre_id = b.id
+WHERE b.nombre = "Inicio"
 
 -- Get Parent of a pregunta
-select pregunta.id, pregunta.nombre, pregunta.emoji, b.nombre as parent
-from pregunta
-left join pregunta b on pregunta.padre_id = b.id
-where pregunta.nombre = "Nosotros"
+SELECT pregunta.id, pregunta.nombre, pregunta.emoji, b.nombre AS parent
+FROM pregunta
+LEFT JOIN pregunta b ON pregunta.padre_id = b.id
+WHERE pregunta.nombre = "Nosotros"
 
-
-select id, nombre, emoji
-from pregunta
-where id = (select padre_id
-            from pregunta
-            where pregunta.nombre = "Nosotros"
+-- IDK
+SELECT id, nombre, emoji
+FROM pregunta
+WHERE id = (SELECT padre_id
+            FROM pregunta
+            WHERE pregunta.nombre = "Nosotros"
             )
+
+-- Select count
+SELECT count(*)
+FROM pregunta
+LEFT JOIN pregunta Parent ON pregunta.padre_id = Parent.id
+WHERE Parent.nombre = "Nosotros";

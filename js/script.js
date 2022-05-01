@@ -1,21 +1,22 @@
 const timeLoader = 1;
-const activeURL = "http://127.0.0.1:8000";
-// const activeURL = http://ec2-34-235-152-206.compute-1.amazonaws.com/
-// http://34.235.152.206/docs
+const MSGEROR = "Ha ocurrido un error";
+const activeURL = "http://127.0.0.1:800";
+// const activeURL = "http://34.230.152.92:8080";
 
-const URL = `${activeURL}/pregunta/show?preguntaParent=`;
+const URL = `${activeURL}/pregunta/show?parent=`;
 
-// const URLTEXTO = `${activeURL}/pregunta/Inicio/show`;
-const URLTEXTO = function (query) {
-  const url = `${activeURL}/pregunta/${query}/show`;
-  // console.log("PRUEBA URL: ", url);
-  return url;
-};
+// // const URLTEXTO = `${activeURL}/pregunta/Inicio/show`;
+// const URLTEXTO = function (query) {
+//   const url = `${activeURL}/pregunta/${query}/show`;
+//   // console.log("PRUEBA URL: ", url);
+//   return url;
+// };
 
 const getDataDB = async function (url, query) {
   const data = await fetch(`${url}${query}`)
     .then((response) => response.json())
-    .then((data) => data);
+    .then((data) => data)
+    .catch(() => MSGEROR);
 
   // console.log("getDataBD", data);
 
@@ -24,34 +25,74 @@ const getDataDB = async function (url, query) {
 
 const URLCURRENT = `${activeURL}/pregunta/show?nombre=`;
 
-const URLGETCHILDREN = `${activeURL}/pregunta/show2?idChild=`;
-const URLBYID = `${activeURL}/pregunta/show?id=`;
+const URLGETCHILDREN = `${activeURL}/pregunta/show?child=`;
+
+const URLGETTEXTCHILD = `${activeURL}/pregunta/text?child=`;
 
 const insertHtmlOptionsDB = async function (
   query = "Inicio",
   backPregunta = false
 ) {
+  console.log("Query: ", query);
+  // Aqui tenemos que poner la secuencia para que sea sí, otra pregunta, solicitar formulario
+  if (query == "Si") {
+    console.log("ENTEEEER");
+    optionsBox.classList.add("block-chatbot-options");
+    insertHtmlChatbotTextNoFace("Has seleccionado que sí");
+    insertHtmlChatbotTex("Nos ayudarías mucho calificando nuestro servicio: ");
+    insertHtmlChatbotReview();
+    return;
+  }
+
+  if (query == "Hacer otra pregunta") {
+    console.log("Reiniciar chatbot");
+    insertHtmlOptionsDB();
+    return;
+  }
+
+  if (query == "Solicitar información adicional") {
+    console.log("Reiniciar chatbot");
+    optionsBox.classList.add("block-chatbot-options");
+    insertHtmlFormEmail();
+    return;
+  }
+
   let dataOptions;
   let dataText;
 
   // En caso de que se selecciona una opcion normal
   if (backPregunta == false) {
-    dataOptions = await getDataDB(URL, query);
     dataText = await getDataDB(URLCURRENT, query);
+    dataOptions = await showLoader(timeLoader).then(() =>
+      getDataDB(URL, query)
+    ); // AQUI VA EL SHOW LOADER
   }
   // En caso de que se selecciona la opcion de regresar
   // Se obtienen las opciones de los hijos de la ultima opcion
   // El texto se obtiene de la ultima opcion id
   else {
     // console.log("MY NUMBER QUERY: ", query);
-    dataOptions = await getDataDB(URLGETCHILDREN, query);
-    dataText = await getDataDB(URLBYID, query);
+    dataText = await getDataDB(URLGETTEXTCHILD, query);
+    dataOptions = await showLoader(timeLoader).then(() =>
+      getDataDB(URLGETCHILDREN, query)
+    ); // AQUI VA EL SHOW LOADER
+  }
+
+  // ATRAPANDO ERRORES
+  if (dataText == MSGEROR || dataOptions == MSGEROR) {
+    console.log("Ocurrio un erorrrrrrrrrr-------------------");
+    removeLoader();
+    insertHtmlChatbotTex("Ha ocurrido un error");
+    return;
   }
 
   // console.log(dataText);
   // console.log("DataText", dataText[0].texto);
 
   let titulo;
+  // console.log("QUERY: ", query);
+  // console.log("DataText: ", dataText[0]);
+
   dataText[0].texto.includes("\n")
     ? (titulo = dataText[0].texto.replaceAll("\n", "<br>"))
     : (titulo = dataText[0].texto);
@@ -59,7 +100,15 @@ const insertHtmlOptionsDB = async function (
   htmlOptions = dataOptions.map((option) => `${option.nombre} ${option.emoji}`);
   // console.log("hmltOptions", htmlOptions);
 
-  insertHtmlChatbotOptions(titulo, dataText[0].padre_id, ...htmlOptions);
+  console.log(htmlOptions);
+  console.log(...htmlOptions);
+  removeLoader();
+  insertHtmlChatbotOptions(
+    titulo,
+    dataText[0].is_final,
+    dataText[0].nombre,
+    ...htmlOptions
+  );
 
   // MOSTRAR EL FORMULARIO DE SATISFACCION SOLO CUANDO SEA NODO HOJA
   // if (dataCategoria[0].texto == "mostrarFormulario()") {
@@ -68,10 +117,26 @@ const insertHtmlOptionsDB = async function (
   //   return;
   // }
 
+  // Cuando se llegar a un nodo hoja
   if (dataOptions.length == 0) {
     showLoader(timeLoader).then(() => {
       removeLoader();
-      insertHtmlChatbotReview();
+      // text,
+      // isFinal,
+      // queryAnterior,
+      // ...options
+      insertHtmlChatbotOptions(
+        "¿Pudimos ayudarte a encontrar lo que buscabas?",
+        true,
+        "",
+        ...[
+          "Si 🎈",
+          "Hacer otra pregunta 🎈",
+          "Solicitar información adicional 🎈",
+        ]
+      );
+
+      // insertHtmlChatbotReview();
       return;
     });
   }
@@ -189,14 +254,15 @@ const htmlChatbotLoading = () => {
 
 let backPregunta = "";
 
-const htmlChatbotOptions = (text, queryAnterior, ...options) => {
+const htmlChatbotOptions = (text, is_final, queryAnterior, ...options) => {
   htmlOptions = options
     .map((option) => `<p class="chatbot-option">${option}</p>`)
     .join("");
 
   // console.log("Query anterior: ", queryAnterior);
+  // && text != "¿Pudimos ayudarte a encontrar lo que buscabas?"
 
-  if (queryAnterior != null && htmlOptions != "") {
+  if (queryAnterior != "Inicio" && htmlOptions != "" && is_final == false) {
     htmlOptions += `<p class="chatbot-option chatbot-option--return">Pregunta anterior ◀</p>`;
   }
   // console.log("SSSSSS ", htmlOptions);
@@ -288,7 +354,14 @@ const insertHtmlChatbotLoading = function () {
   updateScrollBar();
 };
 
-const insertHtmlChatbotOptions = function (text, queryAnterior, ...options) {
+const insertHtmlChatbotOptions = function (
+  text,
+  isFinal,
+  queryAnterior,
+  ...options
+) {
+  console.log("Nodo hoja: ", isFinal);
+
   // Cuando ya hay mas de un chatbotOptions, bloqueamos el ultimo chatbotOptions
   if (optionsBox !== undefined) {
     optionsBox.classList.add("block-chatbot-options");
@@ -297,7 +370,7 @@ const insertHtmlChatbotOptions = function (text, queryAnterior, ...options) {
   // Formar normal
   chatbotChat.insertAdjacentHTML(
     "beforeend",
-    htmlChatbotOptions(text, queryAnterior, ...options)
+    htmlChatbotOptions(text, isFinal, queryAnterior, ...options)
   );
   optionsBox = [...document.querySelectorAll(".chatbot-options")].at(-1);
   selectOptionHandler(queryAnterior);
@@ -339,19 +412,24 @@ const handleShowChatbot = function () {
 
     // Solo entra a este if cuando se abre por primera vez el chatbot
     if (!flagChatbotOpen) {
-      showLoader(timeLoader).then(() => {
-        removeLoader();
-        insertHtmlChatbotTex("Hola, este es un mensaje de bienvenida");
-        flagChatbotOpen = true;
+      insertHtmlChatbotTex("Hola, este es un mensaje de bienvenida");
+      flagChatbotOpen = true;
+      insertHtmlOptionsDB();
 
-        // PARA MOSTRAR LAS OPCIONES (puede que esto no sirva de nada)
-        if (optionsBox !== undefined) {
-          optionsBox.classList.add("block-chatbot-options");
-        }
+      // showLoader(timeLoader).then(() => {
+      //   removeLoader();
+      //   insertHtmlChatbotTex("Hola, este es un mensaje de bienvenida");
+      //   flagChatbotOpen = true;
 
-        // Insertamos las primeras opciones
-        insertHtmlChatbotOptions(someText, 1, 2, 3, 4);
-      });
+      //   // PARA MOSTRAR LAS OPCIONES (puede que esto no sirva de nada)
+      //   if (optionsBox !== undefined) {
+      //     optionsBox.classList.add("block-chatbot-options");
+      //   }
+
+      //   // Insertamos las primeras opciones
+      //   insertHtmlChatbotOptions(someText, 1, 2, 3, 4);
+      //   // insertHtmlOptionsDB()
+      // });
     }
   });
 
@@ -396,6 +474,7 @@ btnChatbotLoading.addEventListener("click", function () {
 
 btnChatbotOptions.addEventListener("click", function () {
   // Insertamos las nuevas opciones
+
   showLoader(timeLoader).then(() => {
     removeLoader();
     // insertHtmlChatbotOptions(someText, 1, 2, 3, 4);
@@ -436,12 +515,14 @@ const selectOptionHandler = function (queryAnterior) {
       if (strNoEmoji == "Pregunta anterior") {
         // console.log("ENTER EN PREGUNTA ANTERIOR");
         // console.log("QUERY_ANTERIOR: ", queryAnterior);
+        // console.log("QUERY ANTERIOR: ", queryAnterior);
         insertHtmlOptionsDB(queryAnterior, true);
         return;
       }
 
       // OJO
       // Aqui el e.target.textContent es un nombre que se ve en el html, pero necesitamos la categoriaID de ese nombre para mostrarlo
+
       insertHtmlOptionsDB(strNoEmoji);
     }
   });
