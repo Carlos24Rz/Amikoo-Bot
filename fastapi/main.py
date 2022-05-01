@@ -23,6 +23,7 @@ from database import Calificacion
 # SCHEMAS
 from schemas import PreguntaIn
 from schemas import PreguntaUpdate
+from schemas import PreguntaPadre
 from schemas import PersonaIn
 from schemas import PersonaOut
 from schemas import PersonaUpdate
@@ -34,7 +35,6 @@ from datetime import datetime
 from datetime import date
 from typing import Optional
 import json
-
 
 
 app = FastAPI()
@@ -53,6 +53,7 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=['*'],
     allow_methods=["*"],
+    # allow_methods=['GET', 'POST'],
     allow_headers=["*"],
     allow_credentials=True,
 )
@@ -181,12 +182,15 @@ async def get_pregunta(
         query = (Pregunta.select()
                 .where(Pregunta.padre_id == query_parent_id)
                 )
-
     else:
         query = Pregunta.select()
 
     result = [model_to_dict(item) for item in query]
     return result
+
+
+# @app.get("/pregunta/{id}/details"):
+# async def get_details():
 
 
 @app.put("/pregunta/{nombre}/visit", status_code = status.HTTP_200_OK)
@@ -205,22 +209,6 @@ async def visit_pregunta(
     return "Updated"
 
 
-@app.put("/pregunta/{id}/update-final", status_code = status.HTTP_200_OK)
-async def update_flag(
-    id: int = Path(
-        ...,
-        ge=1
-    ),
-    value: bool = Query(
-        ...
-    )
-):
-    query = (Pregunta
-            .update({Pregunta.is_final: value})
-            .where(Pregunta.id == id))
-    query.execute()
-    return "Updated"
-
 # TODO: Id fetching works, but should be improved
 # TODO: Check if parent is_final is true to make it false
 @app.post("/pregunta/create")
@@ -231,16 +219,37 @@ async def create_pregunta(pregunta: PreguntaIn):
         if nameTaken:
             return "Nombre ya existe"
         else:
-            print(query)
-            newPregunta = Pregunta.create(
-                padre_id = query,
-                nombre = pregunta.nombre,
-                emoji = pregunta.emoji,
-                texto = pregunta.texto,
-                visitas = 0,
-                is_final = True
-            )
-        return "Pregunta creada"
+            count = Pregunta.select().where(Pregunta.padre_id == query.id).count()
+            if (count == 0):
+                with connection.atomic() as transaction:
+                    try:
+                        newPregunta = Pregunta.create(
+                            padre_id = query,
+                            nombre = pregunta.nombre,
+                            emoji = pregunta.emoji,
+                            texto = pregunta.texto,
+                            visitas = 0,
+                            is_final = True
+                        )
+                        update = (Pregunta
+                                 .update({Pregunta.is_final: False})
+                                 .where(Pregunta.id == query))
+                        update.execute()
+                        return 'Pregunta creada and updated'
+                    except:
+                        transaction.rollback()
+                        return 'Failure'
+
+            else:
+                newPregunta = Pregunta.create(
+                    padre_id = query,
+                    nombre = pregunta.nombre,
+                    emoji = pregunta.emoji,
+                    texto = pregunta.texto,
+                    visitas = 0,
+                    is_final = True
+                )
+                return "Pregunta creada"
     else:
         return "Padre no existe"
 
@@ -267,62 +276,120 @@ async def update_pregunta(
         query.execute()
     return "Updated"
 
-# @app.put("/pregunta/move/{id}")
-# async def move_pregunta(
-#     id: int = Path(...),
-#     padre_id:
-# )
+@app.put("/pregunta/move/{id}")
+async def move_pregunta(
+    id: int,
+    new_padre: PreguntaPadre
+):
+    new_padre = Pregunta.get_or_none(Pregunta.nombre == new_padre.padre)
+    if (new_padre != None):
+        pregunta = Pregunta.get_or_none(Pregunta.id == id)
+        old_padre = Pregunta.get_or_none(Pregunta.id == pregunta.padre_id)
+        old_count = (Pregunta.select()
+                        .where(Pregunta.padre_id == pregunta.padre_id)
+                        .count()
+                        )
+        new_count = (Pregunta.select()
+                        .where(Pregunta.padre_id == new_padre)
+                        .count()
+                        )
+        # print(pregunta.nombre)
+        # print("New padre id: " + str(new_padre))
+        # print("New padre count: " + str(new_count))
+        # print("Old padre id: " + str(old_padre))
+        # print("Old padre count: " + str(old_count))
+        if (old_count == 1 and new_count == 0):
+            # Move and update both
+            with connection.atomic() as transaction:
+                try:
+                    move = (Pregunta
+                             .update({Pregunta.padre_id: new_padre})
+                             .where(Pregunta.id == id))
+                    old_update = (Pregunta
+                             .update({Pregunta.is_final: True})
+                             .where(Pregunta.id == id))
+                    new_update = (Pregunta
+                             .update({Pregunta.is_final: False})
+                             .where(Pregunta.id == id))
+                    move.execute()
+                    old_update.execute()
+                    new_update.execute()
+                    return 'Moved and updated both'
+                except:
+                    transaction.rollback()
+                    return 'Failure'
+        elif (old_count == 1):
+            # Move and update old
+            with connection.atomic() as transaction:
+                try:
+                    move = (Pregunta
+                             .update({Pregunta.padre_id: new_padre})
+                             .where(Pregunta.id == id))
+                    old_update = (Pregunta
+                             .update({Pregunta.is_final: True})
+                             .where(Pregunta.id == id))
+                    move.execute()
+                    old_update.execute()
+                    return 'Moved and updated old'
+                except:
+                    transaction.rollback()
+                    return 'Failure'
+        elif (new_count == 0):
+            with connection.atomic() as transaction:
+                try:
+                    move = (Pregunta
+                             .update({Pregunta.padre_id: new_padre})
+                             .where(Pregunta.id == id))
+                    new_update = (Pregunta
+                             .update({Pregunta.is_final: False})
+                             .where(Pregunta.id == id))
+                    move.execute()
+                    new_update.execute()
+                    return 'Moved and updated new'
+                except:
+                    transaction.rollback()
+                    return 'Failure'
+            # Move and update new
+        else:
+            query = (Pregunta
+                     .update({Pregunta.padre_id: new_padre})
+                     .where(Pregunta.id == id))
+            query.execute()
+            return "Moved"
+    else:
+        return "Padre no existe"
 
-# @app.delete("/categoria/{id}/delete", status_code = status.HTTP_200_OK)
-# async def delete_pregunta(
-#     id: int = Path(...)
-# ):
-#     count = (Pregunta.select()
-#             .where(Pregunta.categoria_id == id)
-#             .count())
-#     if (count != 0):
-#         return "Cannot delete a parent row: A foreign key constraint fails"
-#     else:
-#         query = (Categoria.delete()
-#                 .where(Categoria.id == id))
-#         query.execute()
-#         return "Deleted"
 
+@app.delete("/pregunta/{id}/delete", status_code = status.HTTP_200_OK)
+async def delete_pregunta(
+    id: int = Path(...)
+):
+    preguntaChild = Pregunta.get_or_none(Pregunta.padre_id == id)
+    if (preguntaChild == None):
+        pregunta = Pregunta.get_or_none(Pregunta.id == id)
+        parent_count = Pregunta.select().where(Pregunta.parent_id == pregunta.padre_id).count()
 
-# @app.delete("/pregunta/{id}/delete", status_code = status.HTTP_200_OK)
-# async def delete_pregunta(
-#     id: int = Path(...)
-# ):
-#
-#     query = (Pregunta.select()
-#             .join_from(Pregunta, Categoria, on=(Pregunta.categoria_id == Categoria.id))
-#             .where(Categoria.nombre==categoria))
-#
-#     count = (Pregunta.select()
-#             .where(Pregunta.categoria_id == id)
-#             .count())
-#     if (count != 0):
-#         return "Cannot delete a parent row: A foreign key constraint fails"
-#     else:
-#         query = (Categoria.delete()
-#                 .where(Categoria.id == id))
-#         query.execute()
-#         return "Deleted"
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+        if (parent_count == 1):
+            with connection.atomic() as transaction:
+                try:
+                    delete = (Pregunta.delete()
+                             .where(Pregunta.id == id))
+                    update_parent = (Pregunta
+                             .update({Pregunta.is_final: False})
+                             .where(Pregunta.id == pregunta.padre_id))
+                    delete.execute()
+                    update_parent.execute()
+                    return 'Deleted and updated'
+                except:
+                    transaction.rollback()
+                    return 'Failure'
+        else:
+            delete = (Pregunta.delete()
+            .where(Pregunta.id == id))
+            delete.execute()
+            return 'Deleted'
+    else:
+        return "Cannot delete a pregunta with children"
 
 
 
