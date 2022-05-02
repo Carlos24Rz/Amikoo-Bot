@@ -18,7 +18,7 @@
 <path id="Line 13" d="M33 5.80005L34.9101 4.23723" stroke="#2D2D2D" stroke-linecap="round"/>
 <line id="Line 14" x1="1.21112" y1="16.2112" x2="6.90393" y2="16.2112" stroke="#2D2D2D" stroke-linecap="round"/>
 <line id="Line 21" x1="7.49976" y1="27.5709" x2="26.3716" y2="27.5709" stroke="#2D2D2D" stroke-linecap="round"/>
-<rect id="Eye-left" x="15" y="13" width="3.55555" height="7.82222" rx="1.77778" fill="#2D2D2D"/>
-<rect id="Eye-right" x="24.9556" y="13" width="3.55555" height="7.82222" rx="1.77778" fill="#2D2D2D"/>
+<rect id="Eye-left-s" x="15" y="13" width="3.55555" height="7.82222" rx="1.77778" fill="#2D2D2D"/>
+<rect id="Eye-right-s" x="24.9556" y="13" width="3.55555" height="7.82222" rx="1.77778" fill="#2D2D2D"/>
 </g>
 </svg>

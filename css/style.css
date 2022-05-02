@@ -91,6 +91,18 @@ body {
   display: none;
 }
 
+@keyframes float {
+  0% {
+    transform: translatey(0px);
+  }
+  50% {
+    transform: translatey(-0.4rem);
+  }
+  100% {
+    transform: translatey(0px);
+  }
+}
+
 /* Chabot face icon */
 .chatbot-face {
   z-index: 11;
@@ -100,6 +112,7 @@ body {
   right: 2%;
 
   cursor: pointer;
+  animation: float 5s ease-in-out infinite;
 }
 
 #Eye-right,
@@ -224,7 +237,7 @@ body {
 /* Para hacer aparecer un mensaje */
 @keyframes append-animate {
   from {
-    transform: translateY(-8%);
+    transform: translateY(-15%);
     opacity: 0;
   }
   to {
@@ -262,9 +275,21 @@ body {
   width: 13%;
 
   background-color: transparent;
-  box-shadow: 0 2.4rem 4.8rem rgba(0, 0, 0, 0.075);
 
   background-color: var(--main-bg-color);
+
+  animation: float 2s ease-in-out infinite;
+
+  /* transition: all 2s; */
+}
+
+.block-chatbot-logo--chat {
+  animation: none;
+}
+
+.bgChatbot {
+  /* fill: yellow; */
+  background: linear-gradient(#e66465, #9198e5);
 }
 
 .logo--chat:hover .right-eye {
