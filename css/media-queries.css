@@ -22,6 +22,18 @@ Instead, 1rem = 1em = 16px   */
   .chatbot-box {
     width: 36%;
   }
+
+  @keyframes closeEyes {
+    0% {
+      height: 0rem;
+    }
+
+    10%,
+    100% {
+      /* height: 0.75rem; */
+      height: 0.8rem;
+    }
+  }
 }
 
 /**************************/
@@ -35,6 +47,18 @@ Instead, 1rem = 1em = 16px   */
 
   .chatbot-box {
     width: 44%;
+  }
+
+  @keyframes closeEyes {
+    0% {
+      height: 0rem;
+    }
+
+    10%,
+    100% {
+      /* height: 0.75rem; */
+      height: 0.9rem;
+    }
   }
 }
 
