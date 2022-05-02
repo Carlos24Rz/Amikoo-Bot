@@ -467,15 +467,19 @@ async def update_persona(
     # result = [model_to_dict(item) for item in query]
 
 # TODO: Check Response Model
-@app.delete("/persona/delete/{id}", status_code = status.HTTP_200_OK)
+@app.delete("/persona/delete/{id}", response_model = PersonaOut, status_code = status.HTTP_200_OK)
 async def delete_persona(
-    id: int = Path
+    id: int = Path(...)
 ):
-    query = (Persona.delete()
-            .where(Persona.id == id))
-    query.execute()
-    return "Deleted"
-
+    # return "J-Hola"
+    personaExists = Persona.get_or_none(Persona.id == id)
+    if (personaExists != None):
+        query = (Persona.delete()
+                .where(Persona.id == id))
+        query.execute()
+        return personaExists.__data__
+    else:
+        return "Persona no existe"
 
 
 
@@ -527,10 +531,14 @@ async def calificar_chatbot(userCal: CalificacionIn):
 async def delete_calificacion(
     id: int = Path
 ):
-    query = (Calificacion.delete()
-            .where(Calificacion.id == id))
-    query.execute()
-    return "Deleted"
+    preguntaExists = Pregunta.get_or_none(Pregunta.id == id)
+    if (preguntaExists):
+        query = (Calificacion.delete()
+                .where(Calificacion.id == id))
+        query.execute()
+        return "Deleted"
+    else:
+        return "La pregunta no existe"
 
 
 # @app.exception_handler(RequestValidationError)
