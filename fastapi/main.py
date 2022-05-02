@@ -367,7 +367,7 @@ async def delete_pregunta(
     preguntaChild = Pregunta.get_or_none(Pregunta.padre_id == id)
     if (preguntaChild == None):
         pregunta = Pregunta.get_or_none(Pregunta.id == id)
-        parent_count = Pregunta.select().where(Pregunta.parent_id == pregunta.padre_id).count()
+        parent_count = Pregunta.select().where(Pregunta.padre_id == pregunta.padre_id).count()
 
         if (parent_count == 1):
             with connection.atomic() as transaction:
