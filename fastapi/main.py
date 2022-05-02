@@ -394,6 +394,9 @@ async def delete_pregunta(
 
 
 
+
+
+
 # PERSONAS
 # TODO: Buscar por fecha
 @app.get("/persona/show", status_code = status.HTTP_200_OK)
