@@ -120,7 +120,7 @@ async def show_texto(
         query_parent_id = (Pregunta.select(Pregunta.padre_id)
                             .where(Pregunta.nombre == child))
 
-        query = (Pregunta.select(Pregunta.texto)
+        query = (Pregunta.select()
                 .where(Pregunta.id == query_parent_id)
                 )
     else:

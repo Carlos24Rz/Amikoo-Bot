@@ -54,6 +54,7 @@ const htmlChatbotOptions = (text, is_final, prevQuery, ...options) => {
     .map((option) => `<p class="chatbot-option">${option}</p>`)
     .join("");
 
+  console.log(prevQuery);
   // Se verifica cuando agregar la opcion de regresar a la pregunta anterior
   if (prevQuery != "Inicio" && htmlOptions != "" && is_final == false) {
     htmlOptions += `<p class="chatbot-option chatbot-option--return">Pregunta anterior ◀</p>`;
