@@ -419,7 +419,7 @@ async def delete_pregunta(
                 delete = (Pregunta.delete()
                 .where(Pregunta.id == id))
                 delete.execute()
-                return 'Deleted'
+                return 'Eliminada'
         else:
             return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST, content="No se puede eliminar una pregunta que tenga hijos")
     else:
