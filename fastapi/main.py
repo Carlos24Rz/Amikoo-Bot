@@ -39,9 +39,6 @@ import json
 
 app = FastAPI()
 
-# TODO: Checar selects de cada path
-# TODO: Select count before delete, is it correct?
-# TODO: Function to check if ID exists in a table
 
 origins = [
     "http://localhost",
@@ -93,20 +90,21 @@ async def shutdown():
 
 
 # PREGUNTAS
+# TODO: Response model
 @app.get("/pregunta/text", status_code = status.HTTP_200_OK)
 async def show_texto(
     nombre: Optional[str] = Query(
         None,
-        title = "Name of pregunta",
-        description = "Name of pregunta from which to get it's text",
+        title = "Nombre de la pregunta",
+        description = "Nombre de la pregunta de la cual obtener su texto",
         min_length = 1,
         max_length = 80,
         example = "Inicio"
     ),
     child: Optional[str] = Query(
         None,
-        title = "Name of child",
-        description = "Name of child from which to get it's parent's text",
+        title = "Nombre del hijo",
+        description = "Nombre del hijo del cual obtener el texto de su padre",
         min_length = 1,
         max_length = 80,
         example = "Nosotros"
@@ -133,28 +131,36 @@ async def show_texto(
 
 
 # JSONRESPONSE all methods
+# @app.get("/pregunta/show", response_model=PreguntaIn, status_code = status.HTTP_200_OK)
 @app.get("/pregunta/show", status_code = status.HTTP_200_OK)
 async def get_pregunta(
-    id: Optional[str] = Query(
+    id: Optional[int] = Query(
         None,
-        min_length = 1,
-        max_length = 80,
-        example = "2"
+        title="Id de la pregunta",
+        description="Id de la pregunta de la cual obtener sus datos",
+        ge = 1,
+        example = 2
     ),
     nombre: Optional[str] = Query(
         None,
+        title="Nombre de la pregunta",
+        description="Nombre de la pregunta de la cual obtener sus datos",
         min_length = 1,
         max_length = 80,
         example = "Inicio"
     ),
     parent: Optional[str] = Query(
         None,
+        title="Nombre del padre",
+        description="Nombre del padre del cual obtener sus hijos",
         min_length = 1,
         max_length = 80,
         example = "Inicio"
     ),
     child: Optional[str] = Query(
         None,
+        title="Nombre del hijo",
+        description="Nombre del hijo del cual obtener su padre",
         min_length = 1,
         max_length = 80,
         example = "Nosotros"
@@ -195,11 +201,13 @@ async def get_details():
     return "hola"
 
 
-
+# Validar si nombre existe
 @app.put("/pregunta/{nombre}/visit", status_code = status.HTTP_200_OK)
 async def visit_pregunta(
     nombre: str = Path(
         ...,
+        title="Nombre de la pregunta",
+        description="Nombre de la pregunta a la cual agregarle una visita",
         min_length = 1,
         max_length = 80,
         example = "Inicio"
@@ -209,11 +217,9 @@ async def visit_pregunta(
             .update({Pregunta.visitas: Pregunta.visitas + 1})
             .where(Pregunta.nombre == nombre))
     query.execute()
-    return "Updated"
+    return "Actualizado"
 
-
-# TODO: Id fetching works, but should be improved
-# TODO: Check if parent is_final is true to make it false
+# Example of body request?
 @app.post("/pregunta/create", status_code = status.HTTP_201_CREATED)
 async def create_pregunta(pregunta: PreguntaIn):
     query = Pregunta.get_or_none(Pregunta.nombre == pregunta.padre)
@@ -238,10 +244,10 @@ async def create_pregunta(pregunta: PreguntaIn):
                                  .update({Pregunta.is_final: False})
                                  .where(Pregunta.id == query))
                         update.execute()
-                        return 'Pregunta creada and updated'
+                        return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST, content="Pregunta creada y actualizada")
                     except:
                         transaction.rollback()
-                        return 'Failure'
+                        return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST, content="Failure")
 
             else:
                 newPregunta = Pregunta.create(
@@ -257,10 +263,20 @@ async def create_pregunta(pregunta: PreguntaIn):
         return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST, content="Padre no existe")
 
 
+# Validar si id existe
 @app.put("/pregunta/update/{id}", status_code = status.HTTP_200_OK)
 async def update_pregunta(
-    id: int,
-    preguntaUpdate: PreguntaUpdate
+    id: int = Path(
+        ...,
+        title="Id de la pregunta",
+        description="Id de la pregunta de la cual modificar sus datos",
+        ge = 1
+    ),
+    preguntaUpdate: PreguntaUpdate = Body(
+        ...,
+        title="Body Request",
+        description="Datos a modificar"
+    )
 ):
     if (preguntaUpdate.nombre):
         query = (Pregunta
@@ -277,12 +293,23 @@ async def update_pregunta(
                 .update({Pregunta.texto: preguntaUpdate.texto})
                 .where(Pregunta.id == id))
         query.execute()
-    return "Updated"
+    return "Actualizada"
 
+
+# TODO: TestCase: Mover el padre de una pregunta a uno de sus hijos
 @app.put("/pregunta/move/{id}", status_code = status.HTTP_200_OK)
 async def move_pregunta(
-    id: int,
-    new_padre: PreguntaPadre
+    id: int = Path(
+        ...,
+        title="Id de la pregunta",
+        description="Id de la pregunta a mover",
+        ge = 1
+    ),
+    new_padre: PreguntaPadre = Body(
+        ...,
+        title="Body Request",
+        description="Nombre del nuevo padre"
+    )
 ):
     new_padre = Pregunta.get_or_none(Pregunta.nombre == new_padre.padre)
     if (new_padre != None):
@@ -296,11 +323,6 @@ async def move_pregunta(
                         .where(Pregunta.padre_id == new_padre)
                         .count()
                         )
-        # print(pregunta.nombre)
-        # print("New padre id: " + str(new_padre))
-        # print("New padre count: " + str(new_count))
-        # print("Old padre id: " + str(old_padre))
-        # print("Old padre count: " + str(old_count))
         if (old_count == 1 and new_count == 0):
             # Move and update both
             with connection.atomic() as transaction:
@@ -317,10 +339,10 @@ async def move_pregunta(
                     move.execute()
                     old_update.execute()
                     new_update.execute()
-                    return 'Moved and updated both'
+                    return "Movida y actualizado ambos padres"
                 except:
                     transaction.rollback()
-                    return 'Failure'
+                    return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST, content="Ha ocurrido un error")
         elif (old_count == 1):
             # Move and update old
             with connection.atomic() as transaction:
@@ -333,11 +355,12 @@ async def move_pregunta(
                              .where(Pregunta.id == id))
                     move.execute()
                     old_update.execute()
-                    return 'Moved and updated old'
+                    return "Movida y actualizado el padre anterior"
                 except:
                     transaction.rollback()
-                    return 'Failure'
+                    return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST, content="Ha ocurrido un error")
         elif (new_count == 0):
+            # Move and update new
             with connection.atomic() as transaction:
                 try:
                     move = (Pregunta
@@ -348,24 +371,28 @@ async def move_pregunta(
                              .where(Pregunta.id == id))
                     move.execute()
                     new_update.execute()
-                    return 'Moved and updated new'
+                    return "Movida y actualizado el nuevo padre"
                 except:
                     transaction.rollback()
-                    return 'Failure'
-            # Move and update new
+                    return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST, content="Ha ocurrido un error")
         else:
             query = (Pregunta
                      .update({Pregunta.padre_id: new_padre})
                      .where(Pregunta.id == id))
             query.execute()
-            return "Moved"
+            return "Movida"
     else:
-        return "Padre no existe"
+        return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST, content="Padre no existe")
 
 
 @app.delete("/pregunta/{id}/delete", status_code = status.HTTP_200_OK)
 async def delete_pregunta(
-    id: int = Path(...)
+    id: int = Path(
+        ...,
+        title="Id de la pregunta",
+        description="Id de la pregunta a eliminar",
+        ge = 1
+    ),
 ):
     preguntaExists = Pregunta.get_or_none(Pregunta.id == id)
     if (preguntaExists):
@@ -384,19 +411,19 @@ async def delete_pregunta(
                                  .where(Pregunta.id == pregunta.padre_id))
                         delete.execute()
                         update_parent.execute()
-                        return 'Deleted and updated'
+                        return "Eliminada y actualizado"
                     except:
                         transaction.rollback()
-                        return 'Failure'
+                        return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST, content="Ha ocurrido un error")
             else:
                 delete = (Pregunta.delete()
                 .where(Pregunta.id == id))
                 delete.execute()
                 return 'Deleted'
         else:
-            return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST, content="Cannot delete a pregunta with children")
+            return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST, content="No se puede eliminar una pregunta que tenga hijos")
     else:
-        return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST, content="Pregunta doesnt exist")
+        return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST, content="La pregunta no existe")
 
 
 
@@ -404,24 +431,25 @@ async def delete_pregunta(
 
 
 # PERSONAS
-# TODO: Buscar por fecha
+# TODO: Feature: Buscar por fecha
+# TODO: Response model of personaIn
 @app.get("/persona/show", status_code = status.HTTP_200_OK)
 async def get_persona(
     name: Optional[str] = Query(
         None,
-        title = "Name of person",
-        description = "Exact name of the person you want to look up.",
+        title = "Nombre de la persona",
+        description = "Nombre exacto de la persona",
         min_length = 1,
         max_length = 60,
         regex = "^[A-Za-z][A-Za-z ]+$"
     ),
     correo: Optional[str] = Query(
         None,
-        title = "Email of person",
-        description = "Exact email of person you want to look up.",
+        title = "Correo de la persona",
+        description = "Nombre exacto del correo de la persona",
         min_length = 1,
         max_length = 50,
-        regex = "(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)"
+        regex = "^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$"
     )
 ):
     if (name and correo):
@@ -438,10 +466,14 @@ async def get_persona(
     result = [model_to_dict(item) for item in query]
     return result
 
-# TODO: Check Response Model
-# @app.post("/persona/create", status_code = status.HTTP_201_CREATED)
 @app.post("/persona/create", response_model = PersonaOut, status_code = status.HTTP_201_CREATED)
-def create_persona(persona: PersonaIn):
+def create_persona(
+    persona: PersonaIn = Body(
+        ...,
+        title="Body Request",
+        description="Datos de la persona"
+    )
+):
     newPerson = Persona.create(
         nombre=persona.nombre,
         correo=persona.correo,
@@ -449,13 +481,20 @@ def create_persona(persona: PersonaIn):
     )
     return persona
 
-# TODO: Is this a right way to update?
+
 @app.put("/persona/update/{id}", status_code = status.HTTP_200_OK)
 async def update_persona(
     id: int = Path(
-        ...
+        ...,
+        title="Id de la persona",
+        description="Id de la persona de la cual modificar sus datos",
+        ge = 1
     ),
-    personaUpdate: PersonaUpdate = Body(...)
+    personaUpdate: PersonaUpdate = Body(
+        ...,
+        title="Body Request",
+        description="Datos a modificar"
+    )
 ):
     if (personaUpdate.nombre):
         query = (Persona
@@ -472,12 +511,17 @@ async def update_persona(
                 .update({Persona.descripcion: personaUpdate.descripcion})
                 .where(Persona.id == id))
         query.execute()
-    return "Updated"
-    # result = [model_to_dict(item) for item in query]
+    return "Actualizado"
+
 
 @app.delete("/persona/delete/{id}", response_model = PersonaOut, status_code = status.HTTP_200_OK)
 async def delete_persona(
-    id: int = Path(...)
+    id: int = Path(
+        ...,
+        title="Id de la persona",
+        description="Id de la persona a eliminar",
+        ge = 1
+    ),
 ):
     personaExists = Persona.get_or_none(Persona.id == id)
     if (personaExists != None):
@@ -486,30 +530,29 @@ async def delete_persona(
         query.execute()
         return personaExists.__data__
     else:
-        return "Persona no existe"
+        return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST, content="Persona no existe")
 
 
 
 # CALIFICACIONES
-# TODO: REGEX OF FECHA
 @app.get("/calificacion/show", status_code = status.HTTP_200_OK)
 async def get_calificacion(
     dateBegin: Optional[date] = Query(
         None,
-        title = "Begin date",
-        description = "Lower end date for selection.",
+        title = "Fecha inferior",
+        description = "Fecha inicial",
         example = getDate()
     ),
     dateEnd: Optional[date] = Query(
         None,
-        title = "Ending date",
-        description = "Upper end date for selection.",
+        title = "Fecha superior",
+        description = "Fecha final",
         example = getDate()
     )
 ):
     if (dateBegin and dateEnd):
         if (dateBegin > dateEnd):
-            return "Invalid dates"
+            return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST, content="Fechas inválidas")
         else:
             query = (Calificacion.select().where(Calificacion.fecha.between(dateBegin, dateEnd)))
     elif (dateBegin):
@@ -526,7 +569,12 @@ async def get_calificacion(
 
 
 @app.post("/calificacion/create", status_code = status.HTTP_201_CREATED)
-async def calificar_chatbot(userCal: CalificacionIn):
+async def calificar_chatbot(userCal: CalificacionIn = Body(
+        ...,
+        title="Body Request",
+        description="Datos de la calificacion"
+    )
+):
     newCal = Calificacion.create(
         calificacion = userCal.calificacion,
         fecha = getDateTime()
@@ -543,9 +591,10 @@ async def delete_calificacion(
         query = (Calificacion.delete()
                 .where(Calificacion.id == id))
         query.execute()
-        return "Deleted"
+        return "Calificacion eliminada"
     else:
-        return "La pregunta no existe"
+        return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST, content="La calificacion no existe")
+
 
 
 # @app.exception_handler(RequestValidationError)
