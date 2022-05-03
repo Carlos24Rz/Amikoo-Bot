@@ -120,7 +120,7 @@ async def show_texto(
         query_parent_id = (Pregunta.select(Pregunta.padre_id)
                             .where(Pregunta.nombre == child))
 
-        query = (Pregunta.select(Pregunta.texto)
+        query = (Pregunta.select()
                 .where(Pregunta.id == query_parent_id)
                 )
     else:
@@ -397,6 +397,9 @@ async def delete_pregunta(
             return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST, content="Cannot delete a pregunta with children")
     else:
         return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST, content="Pregunta doesnt exist")
+
+
+
 
 
 
