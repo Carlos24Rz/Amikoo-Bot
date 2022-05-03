@@ -124,14 +124,15 @@ async def show_texto(
                 .where(Pregunta.id == query_parent_id)
                 )
     else:
-        return "No se pasó ningun parámetro"
+        return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST, content="No se pasó ningun parámetro")
     if query.exists():
         result = [model_to_dict(item) for item in query]
         return result
     else:
-        return "Pregunta invalida"
+        return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST, content="Pregunta invalida")
 
 
+# JSONRESPONSE all methods
 @app.get("/pregunta/show", status_code = status.HTTP_200_OK)
 async def get_pregunta(
     id: Optional[str] = Query(
@@ -189,8 +190,10 @@ async def get_pregunta(
     return result
 
 
-# @app.get("/pregunta/{id}/details"):
-# async def get_details():
+@app.get("/pregunta/{id}/details")
+async def get_details():
+    return "hola"
+
 
 
 @app.put("/pregunta/{nombre}/visit", status_code = status.HTTP_200_OK)
@@ -211,13 +214,13 @@ async def visit_pregunta(
 
 # TODO: Id fetching works, but should be improved
 # TODO: Check if parent is_final is true to make it false
-@app.post("/pregunta/create")
+@app.post("/pregunta/create", status_code = status.HTTP_201_CREATED)
 async def create_pregunta(pregunta: PreguntaIn):
     query = Pregunta.get_or_none(Pregunta.nombre == pregunta.padre)
     if (query != None):
         nameTaken = Pregunta.get_or_none(Pregunta.nombre == pregunta.nombre)
         if nameTaken:
-            return "Nombre ya existe"
+            return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST, content="Nombre ya existe")
         else:
             count = Pregunta.select().where(Pregunta.padre_id == query.id).count()
             if (count == 0):
@@ -251,10 +254,10 @@ async def create_pregunta(pregunta: PreguntaIn):
                 )
                 return "Pregunta creada"
     else:
-        return "Padre no existe"
+        return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST, content="Padre no existe")
 
 
-@app.put("/pregunta/update/{id}")
+@app.put("/pregunta/update/{id}", status_code = status.HTTP_200_OK)
 async def update_pregunta(
     id: int,
     preguntaUpdate: PreguntaUpdate
@@ -276,7 +279,7 @@ async def update_pregunta(
         query.execute()
     return "Updated"
 
-@app.put("/pregunta/move/{id}")
+@app.put("/pregunta/move/{id}", status_code = status.HTTP_200_OK)
 async def move_pregunta(
     id: int,
     new_padre: PreguntaPadre
@@ -364,33 +367,36 @@ async def move_pregunta(
 async def delete_pregunta(
     id: int = Path(...)
 ):
-    preguntaChild = Pregunta.get_or_none(Pregunta.padre_id == id)
-    if (preguntaChild == None):
-        pregunta = Pregunta.get_or_none(Pregunta.id == id)
-        parent_count = Pregunta.select().where(Pregunta.padre_id == pregunta.padre_id).count()
+    preguntaExists = Pregunta.get_or_none(Pregunta.id == id)
+    if (preguntaExists):
+        preguntaChild = Pregunta.get_or_none(Pregunta.padre_id == id)
+        if (preguntaChild == None):
+            pregunta = Pregunta.get_or_none(Pregunta.id == id)
+            parent_count = Pregunta.select().where(Pregunta.padre_id == pregunta.padre_id).count()
 
-        if (parent_count == 1):
-            with connection.atomic() as transaction:
-                try:
-                    delete = (Pregunta.delete()
-                             .where(Pregunta.id == id))
-                    update_parent = (Pregunta
-                             .update({Pregunta.is_final: False})
-                             .where(Pregunta.id == pregunta.padre_id))
-                    delete.execute()
-                    update_parent.execute()
-                    return 'Deleted and updated'
-                except:
-                    transaction.rollback()
-                    return 'Failure'
+            if (parent_count == 1):
+                with connection.atomic() as transaction:
+                    try:
+                        delete = (Pregunta.delete()
+                                 .where(Pregunta.id == id))
+                        update_parent = (Pregunta
+                                 .update({Pregunta.is_final: False})
+                                 .where(Pregunta.id == pregunta.padre_id))
+                        delete.execute()
+                        update_parent.execute()
+                        return 'Deleted and updated'
+                    except:
+                        transaction.rollback()
+                        return 'Failure'
+            else:
+                delete = (Pregunta.delete()
+                .where(Pregunta.id == id))
+                delete.execute()
+                return 'Deleted'
         else:
-            delete = (Pregunta.delete()
-            .where(Pregunta.id == id))
-            delete.execute()
-            return 'Deleted'
+            return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST, content="Cannot delete a pregunta with children")
     else:
-        return "Cannot delete a pregunta with children"
-
+        return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST, content="Pregunta doesnt exist")
 
 
 
@@ -466,12 +472,10 @@ async def update_persona(
     return "Updated"
     # result = [model_to_dict(item) for item in query]
 
-# TODO: Check Response Model
 @app.delete("/persona/delete/{id}", response_model = PersonaOut, status_code = status.HTTP_200_OK)
 async def delete_persona(
     id: int = Path(...)
 ):
-    # return "J-Hola"
     personaExists = Persona.get_or_none(Persona.id == id)
     if (personaExists != None):
         query = (Persona.delete()
