@@ -365,6 +365,8 @@ const URLGETCHILDREN = `${activeURL}/pregunta/show?child=`;
 
 const URLGETTEXTCHILD = `${activeURL}/pregunta/text?child=`;
 
+let formReviewSent = false;
+
 /*
  * Preparar los datos para insertar las opciones en el html
  * @param  {string} query       Valor que indica que opciones y que texto se debe mostrar
@@ -383,17 +385,28 @@ const prepareHtmlOptionsDB = async function (
     insertHtmlChatbotTextNoFace("Has seleccionado que sí");
     updateChatbotFace();
 
-    blockChatboFace();
-    insertHtmlChatbotText("Nos ayudarías mucho calificando nuestro servicio: ");
-    updateChatbotFace();
+    if (formReviewSent == false) {
+      blockChatboFace();
+      insertHtmlChatbotText(
+        "Nos ayudarías mucho calificando nuestro servicio: "
+      );
+      changeEyesHappy();
+      updateChatbotFace();
 
-    blockChatboFace();
-    insertHtmlChatbotFormReview();
-    updateChatbotFace();
+      blockChatboFace();
+      insertHtmlChatbotFormReview();
+      updateChatbotFace();
+
+      formReviewSent = true;
+    } else {
+      blockChatboFace();
+      insertHtmlChatbotOptions("", true, "", "Reiniciar chatbot 🎈");
+      updateChatbotFace();
+    }
     return;
   }
 
-  if (query == "Hacer otra pregunta") {
+  if (query == "Hacer otra pregunta" || query == "Reiniciar chatbot") {
     console.log("Reiniciar chatbot");
     prepareHtmlOptionsDB();
     return;
@@ -430,6 +443,7 @@ const prepareHtmlOptionsDB = async function (
     removeLoader();
     blockChatboFace();
     insertHtmlChatbotText("Ha ocurrido un error");
+    changeEyesSad();
     updateChatbotFace();
     return;
   }
@@ -464,6 +478,11 @@ const prepareHtmlOptionsDB = async function (
     dataQnParent[0].nombre,
     ...htmlOptions
   );
+
+  if (dataQnParent[0].is_final == true) {
+    changeEyesHappy();
+  }
+
   updateChatbotFace();
 
   // Cuando se llegar a una pregunta final, se muestran las siguientes opciones a manera de cierre
@@ -602,6 +621,14 @@ const activeFormReview = function () {
       return;
     }
 
+    // if (answer < 3) {
+    //   changeEyesSad();
+    // }
+
+    // if (answer >= 3) {
+    //   changeEyesHappy();
+    // }
+
     // Se bloquea el formulario para no aceptar más inputs
     formReview.style.pointerEvents = "none";
 
@@ -610,13 +637,21 @@ const activeFormReview = function () {
         .then((response) => response.json())
         .then((data) => {
           blockChatboFace();
-          insertHtmlChatbotText(data);
+          insertHtmlChatbotOptions(data, true, "", "Reiniciar chatbot 🎈");
           updateChatbotFace();
           removeLoader();
+
+          if (answer < 3) {
+            changeEyesSad();
+          }
+          if (answer >= 3) {
+            changeEyesHappy();
+          }
         })
         .catch(() => {
           blockChatboFace();
           insertHtmlChatbotText("Ocurrio un error");
+          changeEyesSad();
           updateChatbotFace();
           removeLoader();
         });
@@ -712,12 +747,16 @@ const activeFormContact = function () {
               `Muchas gracias, ${data.nombre}. Hemos recibido tus datos`
             );
             updateChatbotFace();
+
+            blockChatboFace();
+            insertHtmlChatbotOptions("", true, "", "Reiniciar chatbot 🎈");
+            updateChatbotFace();
             removeLoader();
           })
           .catch((err) => {
             blockChatboFace();
-            console.log("Ocurrio un error");
             insertHtmlChatbotText("Ocurrio un error");
+            changeEyesSad();
             updateChatbotFace();
             removeLoader();
           });
@@ -776,7 +815,7 @@ const removeLoader = function () {
  * @return {bool}     ----    Depende si name cumple la regex
  */
 const checkName = (name) => {
-  const re = new RegExp(/^[a-zA-Z ]+$/);
+  const re = new RegExp(/^[a-zA-Z\u00C0-\u024F\u1E00-\u1EFF]/);
   return re.test(name);
 };
 
