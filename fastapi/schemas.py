@@ -9,13 +9,13 @@ class PreguntaIn(BaseModel):
         ...,
         min_length = 1,
         max_length = 80,
-        regex = "^[A-Za-z][A-Za-z0-9,. ]+$"
+        regex = "^[A-Za-z][A-Za-z0-9\,\. ]+$"
     )
     nombre: str = Field(
         ...,
         min_length = 1,
         max_length = 80,
-        regex = "^[A-Za-z][A-Za-z0-9,. ]+$"
+        regex = "^[A-Za-z][A-Za-z0-9\,\. ]+$"
     )
     emoji: str = Field(
         ...,
@@ -33,7 +33,7 @@ class PreguntaUpdate(BaseModel):
         None,
         min_length = 1,
         max_length = 80,
-        regex = "^[A-Za-z][A-Za-z0-9,. ]+$"
+        regex = "^[A-Za-z][A-Za-z0-9\,\. ]+$"
     )
     emoji: Optional[str] = Field(
         None,
@@ -59,7 +59,7 @@ class Persona(BaseModel):
         ...,
         min_length = 1,
         max_length = 60,
-        regex = "^[A-Za-z][A-Za-z ]+$"
+        regex = "^[a-zA-Z\u00C0-\u024F\u1E00-\u1EFF][a-zA-Z\u00C0-\u024F\u1E00-\u1EFF ]+$"
     )
 
 class PersonaIn(Persona):
@@ -83,7 +83,7 @@ class PersonaUpdate(BaseModel):
         None,
         min_length = 1,
         max_length = 60,
-        regex = "^[A-Za-z][A-Za-z ]+$"
+        regex = "^[a-zA-Z\u00C0-\u024F\u1E00-\u1EFF][a-zA-Z\u00C0-\u024F\u1E00-\u1EFF ]+$"
     )
     correo: Optional[str] = Field(
         None,
