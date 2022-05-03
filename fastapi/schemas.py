@@ -67,7 +67,7 @@ class PersonaIn(Persona):
         ...,
         min_length = 1,
         max_length = 50,
-        regex = "(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)"
+        regex = "^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$"
     )
     descripcion: str = Field(
         ...,
