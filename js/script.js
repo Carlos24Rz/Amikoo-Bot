@@ -365,6 +365,8 @@ const URLGETCHILDREN = `${activeURL}/pregunta/show?child=`;
 
 const URLGETTEXTCHILD = `${activeURL}/pregunta/text?child=`;
 
+let formReviewSent = false;
+
 /*
  * Preparar los datos para insertar las opciones en el html
  * @param  {string} query       Valor que indica que opciones y que texto se debe mostrar
@@ -383,14 +385,24 @@ const prepareHtmlOptionsDB = async function (
     insertHtmlChatbotTextNoFace("Has seleccionado que sí");
     updateChatbotFace();
 
-    blockChatboFace();
-    insertHtmlChatbotText("Nos ayudarías mucho calificando nuestro servicio: ");
-    changeEyesHappy();
-    updateChatbotFace();
+    if (formReviewSent == false) {
+      blockChatboFace();
+      insertHtmlChatbotText(
+        "Nos ayudarías mucho calificando nuestro servicio: "
+      );
+      changeEyesHappy();
+      updateChatbotFace();
 
-    blockChatboFace();
-    insertHtmlChatbotFormReview();
-    updateChatbotFace();
+      blockChatboFace();
+      insertHtmlChatbotFormReview();
+      updateChatbotFace();
+
+      formReviewSent = true;
+    } else {
+      blockChatboFace();
+      insertHtmlChatbotOptions("", true, "", "Reiniciar chatbot 🎈");
+      updateChatbotFace();
+    }
     return;
   }
 
@@ -734,6 +746,10 @@ const activeFormContact = function () {
             insertHtmlChatbotText(
               `Muchas gracias, ${data.nombre}. Hemos recibido tus datos`
             );
+            updateChatbotFace();
+
+            blockChatboFace();
+            insertHtmlChatbotOptions("", true, "", "Reiniciar chatbot 🎈");
             updateChatbotFace();
             removeLoader();
           })
