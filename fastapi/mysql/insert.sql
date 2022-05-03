@@ -2,6 +2,7 @@ INSERT INTO pregunta (padre_id, nombre, emoji, texto, visitas, is_final) VALUES
 (null,	"Inicio",	"😎",	"Para empezar selecciona una de las siguientes opciones",	0,	false),
   (1,	"Nosotros",	"😎",	"En Naatik  aplicamos la Inteligencia Artificial con un toque de ingenio y creavidad para tus soluciones tecnológicas",	0,	false),
   (1,	"Lineas de negocio",	"🛒",	"Trabajamos en 3 líneas de negocio: ",	0,	true),
+  (1,	"Proyectos y Reconocimientos",	"🥇",	"Logros:\n- IIE: PRIMER LUGAR EN EL CONGRESO MEXICANO DE INTELIGENCIA ARTIFICIAL.- IIE presentó el artículo: Modelo de comportamiento de una turbina eólica, el cual fue calificado como el mejor.\nProyectos:\n- PROYECTO P12.\n- Desarrollo de tecnología basada en Inteligencia Artificial y Mecatrónica, para integrar un parque de generación de energía eólica a una red inteligente",	0,	true),
   (1,	"Aplicaciones",	"👨‍🔧",	"La Inteligencia Artificial se puede aplicar en diferentes industrias tales como:\n- Manufactura o Fabricación\n- Servicios Financieros\n- Tecnología\n- Gobierno\n- Logística. \n- y muchos otros más.",	0,	true),
   (1,	"Oportunidades",	"🤩",	"Naatik ofrece todo tipo de oportunidades para estudiantes en las carreras que requiera la empresa. Desde servicio social, prácticas profesionales, estancias académicas, becas de tesis de licenciatura, maestría y doctorado. También podremos próximamente aceptar programas de posdoctorado. ",	0,	false),
   (1,	"Contacto",	"📞",	"mostrarFormulario()",	0,	true),
