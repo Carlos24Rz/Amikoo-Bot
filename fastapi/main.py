@@ -37,7 +37,23 @@ from typing import Optional
 import json
 
 
-app = FastAPI()
+tags_metadata = [
+    {
+        "name": "Preguntas",
+        "description": "Operaciones de **preguntas**",
+    },
+    {
+        "name": "Personas",
+        "description": "Operaciones de **personas**",
+    },
+    {
+        "name": "Calificaciones",
+        "description": "Operaciones con **calificaciones**"
+    }
+]
+
+
+app = FastAPI(openapi_tags=tags_metadata)
 
 
 origins = [
@@ -83,15 +99,15 @@ async def shutdown():
     if not connection.is_closed():
         connection.close()
 
-# Error Handling
-# @app.exception_handler(RequestValidationError)
-# async def validation_exception_handler(request: Request, exc: RequestValidationError):
-#     return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST, content="Couldnt perform action")
+
 
 
 # PREGUNTAS
-# TODO: Response model
-@app.get("/pregunta/text", status_code = status.HTTP_200_OK)
+@app.get("/pregunta/text",
+        status_code = status.HTTP_200_OK,
+        tags=["Preguntas"],
+        summary="Obtener el texto de una pregunta"
+)
 async def show_texto(
     nombre: Optional[str] = Query(
         None,
@@ -132,7 +148,7 @@ async def show_texto(
 
 # JSONRESPONSE all methods
 # @app.get("/pregunta/show", response_model=PreguntaIn, status_code = status.HTTP_200_OK)
-@app.get("/pregunta/show", status_code = status.HTTP_200_OK)
+@app.get("/pregunta/show", status_code = status.HTTP_200_OK, tags=["Preguntas"])
 async def get_pregunta(
     id: Optional[int] = Query(
         None,
@@ -196,31 +212,8 @@ async def get_pregunta(
     return result
 
 
-@app.get("/pregunta/{id}/details")
-async def get_details():
-    return "hola"
-
-
-# Validar si nombre existe
-@app.put("/pregunta/{nombre}/visit", status_code = status.HTTP_200_OK)
-async def visit_pregunta(
-    nombre: str = Path(
-        ...,
-        title="Nombre de la pregunta",
-        description="Nombre de la pregunta a la cual agregarle una visita",
-        min_length = 1,
-        max_length = 80,
-        example = "Inicio"
-    )
-):
-    query = (Pregunta
-            .update({Pregunta.visitas: Pregunta.visitas + 1})
-            .where(Pregunta.nombre == nombre))
-    query.execute()
-    return "Actualizado"
-
 # Example of body request?
-@app.post("/pregunta/create", status_code = status.HTTP_201_CREATED)
+@app.post("/pregunta/create", status_code = status.HTTP_201_CREATED, tags=["Preguntas"])
 async def create_pregunta(pregunta: PreguntaIn):
     query = Pregunta.get_or_none(Pregunta.nombre == pregunta.padre)
     if (query != None):
@@ -263,8 +256,27 @@ async def create_pregunta(pregunta: PreguntaIn):
         return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST, content="Padre no existe")
 
 
+# Validar si nombre existe
+@app.put("/pregunta/{nombre}/visit", status_code = status.HTTP_200_OK, tags=["Preguntas"])
+async def visit_pregunta(
+    nombre: str = Path(
+        ...,
+        title="Nombre de la pregunta",
+        description="Nombre de la pregunta a la cual agregarle una visita",
+        min_length = 1,
+        max_length = 80,
+        example = "Inicio"
+    )
+):
+    query = (Pregunta
+            .update({Pregunta.visitas: Pregunta.visitas + 1})
+            .where(Pregunta.nombre == nombre))
+    query.execute()
+    return "Actualizado"
+
+
 # Validar si id existe
-@app.put("/pregunta/update/{id}", status_code = status.HTTP_200_OK)
+@app.put("/pregunta/update/{id}", status_code = status.HTTP_200_OK, tags=["Preguntas"])
 async def update_pregunta(
     id: int = Path(
         ...,
@@ -297,7 +309,7 @@ async def update_pregunta(
 
 
 # TODO: TestCase: Mover el padre de una pregunta a uno de sus hijos
-@app.put("/pregunta/move/{id}", status_code = status.HTTP_200_OK)
+@app.put("/pregunta/move/{id}", status_code = status.HTTP_200_OK, tags=["Preguntas"])
 async def move_pregunta(
     id: int = Path(
         ...,
@@ -385,7 +397,7 @@ async def move_pregunta(
         return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST, content="Padre no existe")
 
 
-@app.delete("/pregunta/{id}/delete", status_code = status.HTTP_200_OK)
+@app.delete("/pregunta/{id}/delete", status_code = status.HTTP_200_OK, tags=["Preguntas"])
 async def delete_pregunta(
     id: int = Path(
         ...,
@@ -433,7 +445,7 @@ async def delete_pregunta(
 # PERSONAS
 # TODO: Feature: Buscar por fecha
 # TODO: Response model of personaIn
-@app.get("/persona/show", status_code = status.HTTP_200_OK)
+@app.get("/persona/show", status_code = status.HTTP_200_OK, tags=["Personas"])
 async def get_persona(
     name: Optional[str] = Query(
         None,
@@ -466,7 +478,8 @@ async def get_persona(
     result = [model_to_dict(item) for item in query]
     return result
 
-@app.post("/persona/create", response_model = PersonaOut, status_code = status.HTTP_201_CREATED)
+
+@app.post("/persona/create", response_model = PersonaOut, status_code = status.HTTP_201_CREATED, tags=["Personas"])
 def create_persona(
     persona: PersonaIn = Body(
         ...,
@@ -482,7 +495,7 @@ def create_persona(
     return persona
 
 
-@app.put("/persona/update/{id}", status_code = status.HTTP_200_OK)
+@app.put("/persona/update/{id}", status_code = status.HTTP_200_OK, tags=["Personas"])
 async def update_persona(
     id: int = Path(
         ...,
@@ -514,7 +527,7 @@ async def update_persona(
     return "Actualizado"
 
 
-@app.delete("/persona/delete/{id}", response_model = PersonaOut, status_code = status.HTTP_200_OK)
+@app.delete("/persona/delete/{id}", response_model = PersonaOut, status_code = status.HTTP_200_OK, tags=["Personas"])
 async def delete_persona(
     id: int = Path(
         ...,
@@ -534,8 +547,10 @@ async def delete_persona(
 
 
 
+
+
 # CALIFICACIONES
-@app.get("/calificacion/show", status_code = status.HTTP_200_OK)
+@app.get("/calificacion/show", status_code = status.HTTP_200_OK, tags=["Calificaciones"])
 async def get_calificacion(
     dateBegin: Optional[date] = Query(
         None,
@@ -568,7 +583,7 @@ async def get_calificacion(
     return result
 
 
-@app.post("/calificacion/create", status_code = status.HTTP_201_CREATED)
+@app.post("/calificacion/create", status_code = status.HTTP_201_CREATED, tags=["Calificaciones"])
 async def calificar_chatbot(userCal: CalificacionIn = Body(
         ...,
         title="Body Request",
@@ -582,7 +597,7 @@ async def calificar_chatbot(userCal: CalificacionIn = Body(
     return "Gracias por calificarnos"
 
 
-@app.delete("/calificacion/delete/{id}", status_code = status.HTTP_200_OK)
+@app.delete("/calificacion/delete/{id}", status_code = status.HTTP_200_OK, tags=["Calificaciones"])
 async def delete_calificacion(
     id: int = Path
 ):
@@ -597,16 +612,28 @@ async def delete_calificacion(
 
 
 
+
+# Error Handling
 # @app.exception_handler(RequestValidationError)
+# async def validation_exception_handler(request: Request, exc: RequestValidationError):
+#     return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST, content="No se pudo realizar la acción")
+
 # return PlainTextResponse(str(exc), status_code=400)
+# @app.exception_handler(RequestValidationError)
 # return JSONResponse(
 #     status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
 #     content=jsonable_encoder({
-#             # 'code': "status_code=400"
+#             'code': "status_code=400"
 #             "detail": exc.errors(),
 #             "body": exc.body,
-# #             "your_additional_errors": {"Will be": "Inside", "This":" Error message"}
+#             "your_additional_errors": {"Will be": "Inside", "This":" Error message"}
 #              }),
 # )
 
+# @app.exception_handler(RequestValidationError)
+# async def validation_exception_handler(request: Request, exc: RequestValidationError):
+#     return JSONResponse(
+#         status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+#         content=jsonable_encoder({"detail": exc.errors(), "body": exc.body}),
+#     )
 # app.add_exception_handler(PersonaException, persona_exception_handler)
