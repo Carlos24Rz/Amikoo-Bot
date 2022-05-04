@@ -1,3 +1,13 @@
+<?php
+  session_start();
+
+  if (!isset($_SESSION["username"])) {
+    header("location: index.php");
+    exit();
+  }
+
+?>
+
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -20,36 +30,9 @@
     <title>Chatbot</title>
   </head>
   <body>
-    <header class="header">
-      <div class="logo-box">
-        <a href="#">
-          <img
-            class="logo-crud"
-            loading="lazy"
-            src="../../img/naatik-header.png"
-            alt="Logo Naatik"
-          />
-        </a>
-        <p class="title-header-crud">Naatik chatbot CRUD</p>
-      </div>
-
-      <nav class="nav">
-        <ul class="nav-list">
-          <li><a class="nav-link" href="./crudPreguntas.html">Preguntas</a></li>
-          <li><a class="nav-link" href="./crudPersonas.html">Personas</a></li>
-          <li>
-            <a class="nav-link" href="./crudCalificaciones.html"
-              >Calificaciones</a
-            >
-          </li>
-        </ul>
-      </nav>
-
-      <button class="btn-mobile-nav">
-        <i class="icon-mobile-nav fa-solid fa-bars" name="menu-outline"></i>
-        <i class="icon-mobile-nav fa-solid fa-xmark" name="close-outline"></i>
-      </button>
-    </header>
+    <?php
+      include_once 'includes/header.php';
+    ?>
 
     <main>
       <section class="section-search">
