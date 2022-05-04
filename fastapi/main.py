@@ -237,10 +237,10 @@ async def create_pregunta(pregunta: PreguntaIn):
                                  .update({Pregunta.is_final: False})
                                  .where(Pregunta.id == query))
                         update.execute()
-                        return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST, content="Pregunta creada y actualizada")
+                        return "Pregunta creada"
                     except:
                         transaction.rollback()
-                        return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST, content="Failure")
+                        return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST, content="Ha ocurrido un error")
 
             else:
                 newPregunta = Pregunta.create(
