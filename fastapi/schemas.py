@@ -25,7 +25,7 @@ class PreguntaIn(BaseModel):
     texto: str = Field(
         ...,
         min_length = 1,
-        max_length = 600
+        max_length = 800
     )
 
 class PreguntaUpdate(BaseModel):
@@ -43,7 +43,7 @@ class PreguntaUpdate(BaseModel):
     texto: Optional[str] = Field(
         None,
         min_length = 1,
-        max_length = 600
+        max_length = 800
     )
 
 class PreguntaPadre(BaseModel):
