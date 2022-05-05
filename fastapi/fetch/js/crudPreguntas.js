@@ -90,6 +90,7 @@ btnUser.addEventListener("click", function () {
   });
 });
 
+// Cuando se le da enter
 inputPregunta.addEventListener("keyup", function (event) {
   // Number 13 is the "Enter" key on the keyboard
   if (event.keyCode === 13) {
@@ -99,12 +100,14 @@ inputPregunta.addEventListener("keyup", function (event) {
   }
 });
 
+// Boton de todas las preguntas
 btnAllPreguntas.addEventListener("click", function () {
   insertHtmlPreguntas(URL).then(() => {
     initializeButtons();
   });
 });
 
+// Boton de limpiar
 btnClear.addEventListener("click", function () {
   containerTable.innerHTML = "";
 });
@@ -129,25 +132,30 @@ const htmlModalCreate = function (title) {
 
         <div class="modal-content">
             <div class="modal-row-input">
-            <label for="padre-input">Ingresa padre</label>
-            <input id="padre-input" type="text" placeholder="Nosotros" />
+              <label for="padre-input">Ingresa padre</label>
+              <input id="padre-input" type="text" placeholder="Nosotros" />
             </div>
             <div class="modal-row-input">
-            <label for="nombre-pregunta-input">Ingresa nombre</label>
-            <input
-                id="nombre-pregunta-input"
-                type="text"
-                placeholder="Nuestra app"
-            />
+              <label for="nombre-pregunta-input">Ingresa nombre</label>
+              <input
+                  id="nombre-pregunta-input"
+                  type="text"
+                  placeholder="Nuestra app"
+              />
             </div>
             <div class="modal-row-input">
-            <label for="emoji-input">Ingresa emoji</label>
-            <input id="emoji-input" type="text" placeholder=":)" />
+              <label for="emoji-input">Ingresa emoji</label>
+              <input id="emoji-input" type="text" placeholder=":)" />
             </div>
-            <div class="modal-row-input">
-            <label for="texto-input">Ingresa texto</label>
-            <input id="texto-input" type="text" placeholder="Esta pregunta..." />
+            <div class="modal-row-input modal-row-input--textarea">
+              <label for="texto-input">Ingresa texto</label>
+              <textarea
+                id="texto-input"
+                placeholder="(Menos de 100 palabras)"
+              ></textarea>
             </div>
+
+            
         </div>
 
         <footer class="modal-actions">
@@ -173,13 +181,37 @@ btnNewPregunta.addEventListener("click", function () {
   initializeButtonsCreate();
 });
 
+const htmlMessageError = function (text) {
+  return `
+  
+    <div class="modal-row-input modal-row-input--msg modal-row-input--msg--error"> 
+      <p>${text}</p>
+    </div>
+  
+  `;
+};
+
+const htmlMessageNoError = function (text) {
+  return `
+  
+    <div class="modal-row-input modal-row-input--msg modal-row-input--msg--noerror"> 
+      <p>${text}</p>
+    </div>
+  
+  `;
+};
+
+const removeModalBackDrop = function () {
+  const modal = document.querySelector(".modal");
+  const backdrop = document.querySelector(".backdrop");
+  modal.remove();
+  backdrop.remove();
+};
+
 const initializeButtonsCreate = function () {
   const btnCancelar = document.querySelector("#btn-modal-cancelar");
   btnCancelar.addEventListener("click", function () {
-    const modal = document.querySelector(".modal");
-    const backdrop = document.querySelector(".backdrop");
-    modal.remove();
-    backdrop.remove();
+    removeModalBackDrop();
   });
 
   const btnCrear = document.querySelector("#btn-modal-crear");
@@ -194,13 +226,38 @@ const initializeButtonsCreate = function () {
       emoji: emojiValue,
       texto: textoValue,
     };
-    console.log(objPregunta);
-    putPreguntaDB(objPregunta);
+
+    console.log(objPregunta.texto.toString());
+    console.log(objPregunta.texto.trim());
+    postPreguntaDB(objPregunta)
+      .then((res) => res.json())
+      .then((data) => {
+        const lastMsg = document.querySelector(".modal-row-input--msg");
+        if (lastMsg != null) {
+          lastMsg.remove();
+        }
+
+        const modalContent = document.querySelector(".modal-content");
+        console.log(data);
+        if (data != "Pregunta creada") {
+          console.log(data);
+          console.log("first");
+          modalContent.insertAdjacentHTML("beforeend", htmlMessageError(data));
+        } else {
+          modalContent.insertAdjacentHTML(
+            "beforeend",
+            htmlMessageNoError(data)
+          );
+          setTimeout(() => {
+            removeModalBackDrop();
+          }, 2000);
+        }
+      });
   });
 };
 
 const URLPOSTPREGUNTA = `${activeURL}/pregunta/create`;
-const putPreguntaDB = async function (pregunta) {
+const postPreguntaDB = async function (pregunta) {
   const options = {
     method: "POST",
     headers: {
@@ -213,6 +270,9 @@ const putPreguntaDB = async function (pregunta) {
   return fetch(URLPOSTPREGUNTA, options);
 };
 
+//
+//
+//
 //
 //
 //
@@ -274,29 +334,79 @@ const initializeButtonsUpdate = function () {
 
   btnCancelar.addEventListener("click", function () {
     console.log("Click");
-    const modal = document.querySelector(".modal");
-    const backdrop = document.querySelector(".backdrop");
-    modal.remove();
-    backdrop.remove();
+    removeModalBackDrop();
   });
 
   // Aqui va lo que se debe actualizar
-  // const btnCrear = document.querySelector("#btn-modal-crear");
+  const btnActualizar = document.querySelector("#btn-modal-actualizar");
+  btnActualizar.addEventListener("click", function () {
+    const idValue = document.querySelector("#id-input").value;
+    const padreValue = document.querySelector("#padre-input").value;
+    const nombreValue = document.querySelector("#nombre-pregunta-input").value;
+    const emojiValue = document.querySelector("#emoji-input").value;
+    const textoValue = document.querySelector("#texto-input").value;
+    const objPregunta = {
+      id: idValue,
+      // padre: padreValue,
+      nombre: nombreValue,
+      emoji: emojiValue,
+      texto: textoValue,
+    };
+    console.log(objPregunta);
+    putPreguntaDB(objPregunta);
+  });
+
   // btnCrear.addEventListener("click", function () {
-  //   const padreValue = document.querySelector("#padre-input").value;
-  //   const nombreValue = document.querySelector("#nombre-pregunta-input").value;
-  //   const emojiValue = document.querySelector("#emoji-input").value;
-  //   const textoValue = document.querySelector("#texto-input").value;
-  //   const objPregunta = {
-  //     padre: padreValue,
-  //     nombre: nombreValue,
-  //     emoji: emojiValue,
-  //     texto: textoValue,
-  //   };
-  //   console.log(objPregunta);
-  //   putPreguntaDB(objPregunta);
+  // const padreValue = document.querySelector("#padre-input").value;
+  // const nombreValue = document.querySelector("#nombre-pregunta-input").value;
+  // const emojiValue = document.querySelector("#emoji-input").value;
+  // const textoValue = document.querySelector("#texto-input").value;
+  // const objPregunta = {
+  //   padre: padreValue,
+  //   nombre: nombreValue,
+  //   emoji: emojiValue,
+  //   texto: textoValue,
+  // };
+  // console.log(objPregunta);
+  // postPreguntaDB(objPregunta);
   // });
 };
+
+const URLPUTPREGUNTABODY = function (id) {
+  return `${activeURL}/pregunta/${id}/update/`;
+};
+
+const putPreguntaDB = async function (pregunta) {
+  console.log("pregunta: ");
+  console.log(pregunta);
+  const options = {
+    method: "PUT",
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(pregunta),
+  };
+
+  return fetch(`${URLPUTPREGUNTABODY(pregunta.id)}`, options);
+};
+
+const URLPUTPREGUNTAPADRE = `${activeURL}/pregunta/update/`; // va el id al final
+
+// const putPreguntaPadreDB = async function (pregunta) {
+//   console.log("pregunta: ");
+//   console.log(pregunta);
+//   const options = {
+//     method: "PUT",
+//     headers: {
+//       Accept: "application/json",
+//       "Content-Type": "application/json",
+//     },
+//     body: JSON.stringify(pregunta),
+//   };
+
+//   return fetch(`${URLPUTPREGUNTA}${pregunta.id}`, options);
+// };
 
 //
 //
@@ -355,10 +465,7 @@ const initializeButtonsDelete = function () {
 
   btnCancelar.addEventListener("click", function () {
     console.log("Click");
-    const modal = document.querySelector(".modal");
-    const backdrop = document.querySelector(".backdrop");
-    modal.remove();
-    backdrop.remove();
+    removeModalBackDrop();
   });
 
   // Aqui va lo que se debe actualizar
@@ -375,6 +482,6 @@ const initializeButtonsDelete = function () {
   //     texto: textoValue,
   //   };
   //   console.log(objPregunta);
-  //   putPreguntaDB(objPregunta);
+  //   postPreguntaDB(objPregunta);
   // });
 };
