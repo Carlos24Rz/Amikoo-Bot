@@ -36,7 +36,11 @@
       <nav class="nav">
         <ul class="nav-list">
           <li><a class="nav-link" href="./crudPreguntas.html">Preguntas</a></li>
-          <li><a class="nav-link" href="./crudPersonas.html">Personas</a></li>
+          <li>
+            <a class="nav-link nav-link-current" href="./crudPersonas.html"
+              >Personas</a
+            >
+          </li>
           <li>
             <a class="nav-link" href="./crudCalificaciones.html"
               >Calificaciones</a
@@ -55,16 +59,26 @@
       <section class="section-search">
         <div class="search-box">
           <div class="btn-search btn-search--user">
-            <input id="user-input" class="" type="text" name=""
-            placeholder="Search by user"">
+            <input
+              id="user-input"
+              class=""
+              type="text"
+              name=""
+              placeholder="Buscar por nombre"
+            />
             <button id="btn-user">
               <i class="fa-solid fa-magnifying-glass"></i>
             </button>
           </div>
 
           <div class="btn-search btn-search--email">
-            <input id="email-input" class="" type="text" name=""
-            placeholder="Search by email"">
+            <input
+              id="email-input"
+              class=""
+              type="text"
+              name=""
+              placeholder="Buscar por correo"
+            />
             <button id="btn-email">
               <i class="fa-solid fa-magnifying-glass"></i>
             </button>
@@ -75,7 +89,7 @@
           </div>
 
           <div class="container-btn-extra">
-            <button class="btn-clear">Clear</button>
+            <button class="btn-clear">Limpiar</button>
           </div>
         </div>
       </section>
@@ -94,83 +108,6 @@
         </div>
       </section>
     </main>
-
-    <!--  -->
-    <!--
-
-      sdsd
-      ds
-      ds
-      ds
-      ds
-      ds
-      ds
-      ds
-      -->
-    <!--  -->
-    <!--  -->
-
-    <div class="examples">
-      <button type="button" class="btn btn-primary mr-4" id="clearText">
-        Clear
-      </button>
-      <button type="button" class="btn btn-danger mr-4" id="getText">
-        Get Text
-      </button>
-      <button
-        type="button"
-        class="btn btn-danger mr-4 grid-button"
-        id="getBoton"
-      >
-        Test
-      </button>
-      <div class="request" id="Preguntas">
-        <p>Get FastAPI Test</p>
-        <input
-          type="text"
-          class="inputFast"
-          id="getUserName"
-          placeholder="User"
-        />
-        <input
-          type="text"
-          class="inputFast"
-          id="getUserEmail"
-          placeholder="Email"
-        />
-        <button type="button" class="btn btn-danger mr-4" id="getUsers">
-          Get Users
-        </button>
-      </div>
-      <!-- <button type="button" class="btn btn-danger mr-4" id="getPosts">Get Post</button> -->
-    </div>
-
-    <h1 class="">Personas</h1>
-
-    <div class="grid-container">
-      <div class="grid-row">
-        <div class="grid-item grid-id">Id</div>
-        <div class="grid-item grid-name">Nombre</div>
-        <div class="grid-item grid-email">Correo</div>
-        <div class="grid-item grid-time">Tiempo</div>
-        <div class="grid-item grid-description">Descripcion</div>
-        <div class="grid-item grid-button-box">Botones</div>
-      </div>
-      <!-- <div class="grid-row">
-      <div class="grid-item grid-id">1</div>
-      <div class="grid-item grid-name">Juan</div>
-      <div class="grid-item grid-email">juanito200@gmail.com</div>
-      <div class="grid-item grid-time">2022-04-21T18:09:44</div>
-      <div class="grid-item grid-description">Como se hace ...</div>
-      <div class="grid-item grid-button-box">
-        <button type="button" class="btn btn-warning">Update</button>
-        <button type="button" class="btn btn-danger">Delete</button>
-      </div>
-    </div> -->
-      <div id="grid-output"></div>
-    </div>
-
-    <div id="output"></div>
 
     <script src="./js/crudPersonas.js"></script>
   </body>

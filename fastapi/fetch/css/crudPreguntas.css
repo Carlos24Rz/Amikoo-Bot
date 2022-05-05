@@ -41,6 +41,7 @@ body {
   font-weight: 400;
   color: #555;
   overflow-x: hidden;
+  background-color: var(--main-bg-color);
 }
 
 .container {
@@ -61,6 +62,7 @@ body {
   --green-color: #4f9d69;
   --secundary-color: #004b66;
   --secundary-color-light: #006e96;
+  --current-page-color: #ade9ff;
 }
 
 /**************************/
@@ -125,6 +127,11 @@ body {
   position: relative;
 
   z-index: 9;
+}
+
+.nav-link-current {
+  font-weight: 600;
+  color: var(--current-page-color);
 }
 
 .nav-link:hover,
@@ -354,6 +361,9 @@ body {
 }
 
 .grid-item--texto {
+  text-align: justify;
+  line-height: 1.4;
+  padding-right: 2%;
   width: 35%;
 }
 
@@ -376,6 +386,7 @@ body {
 
 .btn-update,
 .btn-delete {
+  font-weight: 500;
   cursor: pointer;
   border-radius: 1.2rem;
   outline: none;
@@ -555,4 +566,11 @@ body {
 
 .modal-actions #btn-modal-cancelar {
   background-color: var(--red-color);
+}
+
+/* Error en el placeholder */
+
+.error-input-form::placeholder {
+  color: red;
+  font-size: 1.2rem;
 }
