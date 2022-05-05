@@ -1,6 +1,6 @@
 
-<img src="/img/Logo-header.svg" alt="drawing" width="100"/>
-<img src="/img/Logo-text.png" alt="drawing" width="300"/>
+<img src="/img/Logo-header.svg" alt="Logo" width="100"/>
+<img src="/img/Logo-text.png" alt="Amikoo-Bot" width="300"/>
 
 <br></br>
 Amikoo-Bot es un rule-based chatbot implementado en Pyton
