@@ -335,6 +335,7 @@ const removeModalBackDrop = function () {
 
 // Lista de mensajes correctos que no son errores
 const listMsgCorrect = [
+  "Pregunta creada",
   "Movida y actualizado el nuevo padre",
   "Movida",
   "Movida y actualizado el padre anterior",
@@ -349,6 +350,7 @@ const listMsgReload = [
   "Eliminada",
   "Persona eliminada",
   "Calificacion eliminada",
+  "Pregunta creada",
 ];
 
 /*
@@ -412,10 +414,15 @@ const initializeButtonsCreate = function () {
   const btnCrear = document.querySelector("#btn-modal-crear");
   btnCrear.addEventListener("click", function () {
     // Se guardan los valores de los input
-    const padreValue = document.querySelector("#padre-input").value;
-    const nombreValue = document.querySelector("#nombre-pregunta-input").value;
-    const emojiValue = document.querySelector("#emoji-input").value;
-    const textoValue = document.querySelector("#texto-input").value;
+    const inputPadre = document.querySelector("#padre-input");
+    const inputNombre = document.querySelector("#nombre-pregunta-input");
+    const inputEmoji = document.querySelector("#emoji-input");
+    const inputTexto = document.querySelector("#texto-input");
+
+    const padreValue = inputPadre.value;
+    const nombreValue = inputNombre.value;
+    const emojiValue = inputEmoji.value;
+    const textoValue = inputTexto.value;
 
     const errorPadre = "Error al ingresar el padre. Intenta de nuevo";
     const errorNombre = "Error al ingresar el nombre. Intenta de nuevo";
@@ -424,30 +431,109 @@ const initializeButtonsCreate = function () {
 
     let isError = false;
 
-    // Verificacion de los tres datos dados por el usuario
-    // if (!checkName(name)) {
-    //   const placeholderName = document.querySelector("#input-name");
-    //   placeholderName.placeholder = errorName;
-    //   placeholderName.classList.add("error-input-form");
-    //   isError = true;
-    //   e.target[0].value = "";
-    // }
+    // Se verifica las respuestas antes de enviarlas a la base de datos
+    if (!checkPadreValue(nombreValue)) {
+      const placeholderPadre = document.querySelector("#padre-input");
+      placeholderPadre.placeholder = errorPadre;
+      placeholderPadre.classList.add("error-input-form");
+      isError = true;
+      inputPadre.value = "";
+    }
 
-    const objPregunta = {
-      padre: padreValue,
-      nombre: nombreValue,
-      emoji: emojiValue,
-      texto: textoValue,
-    };
+    if (!checkName(padreValue)) {
+      const placeholderName = document.querySelector("#nombre-pregunta-input");
+      placeholderName.placeholder = errorNombre;
+      placeholderName.classList.add("error-input-form");
+      isError = true;
+      inputNombre.value = "";
+    }
 
-    // Se publica la pregunta en la DB
-    postPreguntaDB(objPregunta)
-      .then((res) => res.json())
-      .then((data) => {
-        // Se muestra el mensaje generado por el postPreguntaDB()
-        showMsg(data);
-      });
+    if (!checkEmoji(emojiValue)) {
+      const placeholderEmoji = document.querySelector("#emoji-input");
+      inputEmoji.value = "";
+      placeholderEmoji.placeholder = errorEmoji;
+      placeholderEmoji.classList.add("error-input-form");
+      isError = true;
+    }
+
+    if (!checkText(textoValue)) {
+      const placeholderText = document.querySelector("#texto-input");
+      placeholderText.placeholder = errorTexto;
+      placeholderText.classList.add("error-input-form");
+      isError = true;
+      inputTexto.value = "";
+    }
+
+    // En caso de que no haya error en los inputs
+    if (!isError) {
+      const objPregunta = {
+        padre: padreValue,
+        nombre: nombreValue,
+        emoji: emojiValue,
+        texto: textoValue,
+      };
+
+      // Se publica la pregunta en la DB
+      postPreguntaDB(objPregunta)
+        .then((res) => res.json())
+        .then((data) => {
+          // Se muestra el mensaje generado por el postPreguntaDB()
+          showMsg(data);
+        });
+    }
   });
+};
+
+/*
+ * Verificar nombre del padre para crear pregunta
+ * @param  {string}   name    Nombre a revisar
+ * @return {bool}     ----    Depende si name cumple la regex
+ */
+const checkPadreValue = (name) => {
+  const re = new RegExp(/^[A-Za-z][A-Za-z0-9\,\. ]+$/);
+  return re.test(name);
+};
+
+/*
+ * Verificar nombre de la pregunta para crear pregunta
+ * @param  {string}   name    Nombre a revisar
+ * @return {bool}     ----    Depende si name cumple la regex
+ */
+const checkName = (name) => {
+  const re = new RegExp(/^[a-zA-Z\u00C0-\u024F\u1E00-\u1EFF]/);
+  return re.test(name);
+};
+
+/*
+ * Verificar tamaño emoji
+ * @param  {string}   name    Nombre a revisar
+ * @return {bool}     ----    Depende si name cumple la regex
+ */
+const checkEmoji = (msg) => {
+  const maxChars = 3;
+  const numChars = msg.trim().split("").length;
+
+  if (numChars < maxChars && numChars > 0) {
+    return true;
+  } else {
+    return false;
+  }
+};
+
+/*
+ * Verificar texto de la pregunta
+ * @param  {string}   name    texto a revisar
+ * @return {bool}     ----    Depende si name cumple la regex
+ */
+const checkText = (msg) => {
+  const maxWords = 150;
+  const numWords = msg.trim().split(" ").length;
+
+  if (numWords < maxWords && numWords >= 1 && msg.trim().split(" ")[0] !== "") {
+    return true;
+  } else {
+    return false;
+  }
 };
 
 const URLPOSTPREGUNTA = `${activeURL}/pregunta/create`; // url para publicar la pregunta

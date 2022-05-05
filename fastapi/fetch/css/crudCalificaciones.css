@@ -528,3 +528,9 @@ body {
 .modal-actions #btn-modal-cancelar {
   background-color: var(--red-color);
 }
+
+/* Error en el placeholder */
+
+.error-input-form::placeholder {
+  color: red;
+}
