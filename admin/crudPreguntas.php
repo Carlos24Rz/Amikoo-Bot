@@ -1,3 +1,12 @@
+<?php
+  session_start();
+
+  if (!isset($_SESSION["username"])) {
+    header("location: index.php");
+    exit();
+  }
+
+?>
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -16,7 +25,7 @@
       src="https://kit.fontawesome.com/96bb550736.js"
       crossorigin="anonymous"
     ></script>
-    <link href="./css/crudPersonas.css" rel="stylesheet" />
+    <link href="./css/crudPreguntas.css" rel="stylesheet" />
     <title>Chatbot</title>
   </head>
   <body>
@@ -26,7 +35,7 @@
           <img
             class="logo-crud"
             loading="lazy"
-            src="../../img/naatik-header.png"
+            src="img/naatik-header.png"
             alt="Logo Naatik"
           />
         </a>
@@ -35,17 +44,10 @@
 
       <nav class="nav">
         <ul class="nav-list">
-          <li><a class="nav-link" href="./crudPreguntas.html">Preguntas</a></li>
-          <li>
-            <a class="nav-link nav-link-current" href="./crudPersonas.html"
-              >Personas</a
-            >
-          </li>
-          <li>
-            <a class="nav-link" href="./crudCalificaciones.html"
-              >Calificaciones</a
-            >
-          </li>
+          <li><a class="nav-link nav-link-current" href="./crudPreguntas.php">Preguntas</a></li>
+          <li><a class="nav-link" href="./crudPersonas.php">Personas</a></li>
+          <li><a class="nav-link" href="./crudCalificaciones.php">Calificaciones</a></li>
+          <li><a class="nav-link" href="includes/logout.inc.php">Log out</a></li>
         </ul>
       </nav>
 
@@ -58,34 +60,26 @@
     <main>
       <section class="section-search">
         <div class="search-box">
-          <div class="btn-search btn-search--user">
-            <input
-              id="user-input"
-              class=""
-              type="text"
-              name=""
-              placeholder="Buscar por nombre"
-            />
-            <button id="btn-user">
-              <i class="fa-solid fa-magnifying-glass"></i>
+          <div class="container-btn-extra">
+            <button class="btn-crear-nueva-pregunta">
+              Crear nueva pregunta
             </button>
           </div>
-
-          <div class="btn-search btn-search--email">
+          <div class="btn-search">
             <input
-              id="email-input"
+              id="nombre-input"
               class=""
               type="text"
               name=""
-              placeholder="Buscar por correo"
+              placeholder="Buscar por nombre de pregunta"
             />
-            <button id="btn-email">
+            <button id="btn-nombre">
               <i class="fa-solid fa-magnifying-glass"></i>
             </button>
           </div>
 
           <div class="container-btn-extra">
-            <button class="btn-all-users">Todas las personas</button>
+            <button class="btn-all-preguntas">Todas las preguntas</button>
           </div>
 
           <div class="container-btn-extra">
@@ -98,10 +92,12 @@
         <div class="container-table">
           <div class="grid-row grid-row--header">
             <div class="grid-item grid-item--id">Id</div>
+            <div class="grid-item grid-item--padre-id">Padre id</div>
             <div class="grid-item grid-item--nombre">Nombre</div>
-            <div class="grid-item grid-item--correo">Correo</div>
-            <div class="grid-item grid-item--fecha">Tiempo</div>
-            <div class="grid-item grid-item--descripcion">Descripcion</div>
+            <div class="grid-item grid-item--emoji">Emoji</div>
+            <div class="grid-item grid-item--texto">Texto</div>
+            <div class="grid-item grid-item--visitas">Visitas</div>
+            <div class="grid-item grid-item--is-final">Is final</div>
             <div class="grid-item grid-item--botones">Botones</div>
           </div>
           <div class="container-database-info"></div>
@@ -109,6 +105,6 @@
       </section>
     </main>
 
-    <script src="./js/crudPersonas.js"></script>
+    <script src="./js/crudPreguntas.js"></script>
   </body>
 </html>

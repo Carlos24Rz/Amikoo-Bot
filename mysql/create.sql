@@ -30,3 +30,10 @@ CREATE TABLE calificacion(
   calificacion INT NOT NULL,
   fecha DATETIME NOT NULL
 );
+
+(
+CREATE TABLE login(
+  id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+  username varchar(50) NOT NULL,
+  password varchar(255) NOT NULL
+);

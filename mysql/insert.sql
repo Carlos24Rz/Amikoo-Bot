@@ -1,3 +1,5 @@
+INSERT INTO login (username, password) VALUES ("root", "$2y$10$2.e8rv8AaTNE7mamJQt5g.h2S20RyG5aSJ9YoFXO2NsUmMclyebxq");
+
 INSERT INTO pregunta (padre_id, nombre, emoji, texto, visitas, is_final) VALUES
 (null,	"Inicio",	"😎",	"Para empezar selecciona una de las siguientes opciones",	0,	false),
   (1,	"Nosotros",	"😎",	"En Naatik  aplicamos la Inteligencia Artificial con un toque de ingenio y creavidad para tus soluciones tecnológicas",	0,	false),
