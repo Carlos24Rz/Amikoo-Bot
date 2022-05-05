@@ -3,12 +3,13 @@
 <img src="/img/Logo-text.png" alt="Amikoo-Bot" width="300"/>
 
 <br></br>
-Amikoo-Bot es un rule-based chatbot implementado en Pyton
+Amikoo-Bot es un rule-based chatbot implementado en Pyton utilizando el web framework [FastAPI][1]
 
 ## Requisitos
 **Servidor**
 - Sistema Operativo basado en Linux ***(Se recomienda Ubuntu 20.04)***
 - Servidor Web ***(Se recomienda NGINX 1.18+)***
+
 
 **Cliente**
 - Conexión a internet
@@ -110,3 +111,7 @@ Sustituir ***linea 56***
 Por
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`app = FastAPI(openapi_tags=tags_metadata)
 openapi_tags=tags_metadata)`
+
+
+
+[1]: https://fastapi.tiangolo.com/ "FastAPI"
