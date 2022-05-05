@@ -551,7 +551,7 @@ async def update_persona(
     return "Actualizado"
 
 
-@app.delete("/persona/delete/{id}", response_model = PersonaOut, status_code = status.HTTP_200_OK, tags=["Personas"])
+@app.delete("/persona/delete/{id}", status_code = status.HTTP_200_OK, tags=["Personas"])
 async def delete_persona(
     id: int = Path(
         ...,
@@ -565,7 +565,7 @@ async def delete_persona(
         query = (Persona.delete()
                 .where(Persona.id == id))
         query.execute()
-        return personaExists.__data__
+        return "Persona eliminada"
     else:
         return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST, content="Persona no existe")
 
