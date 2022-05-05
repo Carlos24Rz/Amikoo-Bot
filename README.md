@@ -14,9 +14,8 @@ Amikoo-Bot es un rule-based chatbot implementado en Pyton utilizando el web fram
 - Conexión a internet
 - Navegador ***(Recomendado Google Chrome, Firefox)***
 
-----
-# Instalación
-## Python
+## Instalación
+* ### Python
 Instalar Python3
 ```bash
 $ sudo apt-get install python3
@@ -30,24 +29,60 @@ Instalar Python venv
 $ sudo apt install python3.8-venv
 ```
 
-## MySQL
+* ### MySQL
+Instalar MySQL
 ```bash
 $ sudo apt install mysql-server
 ```
 
-## NGINX
+* ### Servidor
+  * #### NGINX
 ```bash
 $ sudo apt install nginx
+```
+  * #### PHP
+Instalar php-fpm
+```bash
+$ sudo apt install php-fpm
+```
+Instalar php-mysql
+```bash
+$ sudo apt-get install php-mysql
 ```
 
 
 ------------------
 # Configuración
+## Nginx y Php
+Clonar el proyecto `Chatbot` a la carpeta `/var/www/html`.
 
-## NGINX
-Clonar el proyecto `Chatbot` a la carpeta `/var/www/html`
-
-# Config de nginx
+Crear y editar `/etc/nginx/sites-enabled/fastapi_nginx`
+```
+server {
+  listen 8080;
+  server_name [IP PUBLICA];
+  location / {
+    proxy_pass htpp://127.0.0.1:8000;
+  }
+}
+```
+Editar y descomentar de `/etc/php/7.4/fpm/php.ini`
+```
+ configuraciones
+  max_execution_time = 300
+  memory_limit = 256M
+  post_max_size = 32M
+  upload_max_filesize = 32M
+  max_input_time = 300
+  date.timezone = America/Chicago
+```
+Editar y descomentar de `/etc/nginx/sites-available/default`
+```
+location ~ \.php$ {
+  include snippets/fastcgi-php.conf;
+  fastcgi_pass unix:/var/run/php/php7.4-fpm.sock;
+}
+```
 
 ## MySQL
 Crear usuario
