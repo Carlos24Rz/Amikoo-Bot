@@ -54,8 +54,6 @@ const htmlChatbotOptions = (text, is_final, prevQuery, ...options) => {
     .map((option) => `<p class="chatbot-option">${option}</p>`)
     .join("");
 
-  console.log(prevQuery);
-
   // Se verifica cuando agregar la opcion de regresar a la pregunta anterior
   if (prevQuery != "Inicio" && htmlOptions != "" && is_final == false) {
     htmlOptions += `<p class="chatbot-option chatbot-option--return">Pregunta anterior ◀</p>`;
@@ -217,6 +215,8 @@ const htmlChatbotLoading = () => {
 const chatbotBox = document.querySelector(".chatbot-box");
 const chatbotChat = document.querySelector(".chatbot-chat");
 
+const msgRestartChatbot = "Comenzar de nuevo 🏠";
+
 /*
  * Insertar un cuadro de texto del chatbot
  * @param  {string} text      Texto a mostrar
@@ -305,7 +305,6 @@ const addVisitDB = async function (pregunta) {
  */
 const insertHtmlUserInput = function (text) {
   chatbotChat.insertAdjacentHTML("beforeend", htmlUserInput(text));
-  // console.log("NOMBRE: ", text);
 
   updateScrollBar();
 };
@@ -394,13 +393,10 @@ const prepareHtmlOptionsDB = async function (
   prevOption = false
 ) {
   // Anadir una visita a la pregunta
-  await addVisitDB(query)
-    .then((res) => res.json())
-    .then((data) => console.log(data));
+  await addVisitDB(query);
 
   // Esta serie de if's es para cuando se llega a una respuesta final y se muestran las ultimas opciones
-  if (query == "Si") {
-    console.log("ENTEEEER");
+  if (query == "Sí") {
     blockLastChatbotOptions();
 
     blockChatboFace();
@@ -421,21 +417,20 @@ const prepareHtmlOptionsDB = async function (
 
       formReviewSent = true;
     } else {
+      // Reiniciar chatbot
       blockChatboFace();
-      insertHtmlChatbotOptions("", true, "", "Reiniciar chatbot 🎈");
+      insertHtmlChatbotOptions("", true, "", msgRestartChatbot);
       updateChatbotFace();
     }
     return;
   }
 
-  if (query == "Hacer otra pregunta" || query == "Reiniciar chatbot") {
-    console.log("Reiniciar chatbot");
+  if (query == "Hacer otra pregunta" || query == "Comenzar de nuevo") {
     prepareHtmlOptionsDB();
     return;
   }
 
   if (query == "Solicitar información adicional") {
-    console.log("Reiniciar chatbot");
     blockChatboFace();
     blockLastChatbotOptions();
     insertHtmlFormContact();
@@ -485,7 +480,6 @@ const prepareHtmlOptionsDB = async function (
 
   // En caso de que se haya seleccionala opcion de "Contacto" se muestra el formulario
   if (dataQnParent[0].texto == "mostrarFormulario()") {
-    console.log("SIUUUUUUUUU");
     blockChatboFace();
     insertHtmlFormContact();
     updateChatbotFace();
@@ -518,9 +512,9 @@ const prepareHtmlOptionsDB = async function (
         true,
         "",
         ...[
-          "Si 🎈",
-          "Hacer otra pregunta 🎈",
-          "Solicitar información adicional 🎈",
+          "Sí 😃",
+          "Hacer otra pregunta ❓",
+          "Solicitar información adicional 📧",
         ]
       );
       updateChatbotFace();
@@ -659,7 +653,7 @@ const activeFormReview = function () {
         .then((response) => response.json())
         .then((data) => {
           blockChatboFace();
-          insertHtmlChatbotOptions(data, true, "", "Reiniciar chatbot 🎈");
+          insertHtmlChatbotOptions(data, true, "", msgRestartChatbot);
           updateChatbotFace();
           removeLoader();
 
@@ -768,16 +762,17 @@ const activeFormContact = function () {
             insertHtmlChatbotText(
               `Muchas gracias, ${data.nombre}. Hemos recibido tus datos`
             );
+            changeEyesHappy();
             updateChatbotFace();
 
             blockChatboFace();
-            insertHtmlChatbotOptions("", true, "", "Reiniciar chatbot 🎈");
+            insertHtmlChatbotOptions("", true, "", msgRestartChatbot);
             updateChatbotFace();
             removeLoader();
           })
           .catch((err) => {
             blockChatboFace();
-            insertHtmlChatbotText("Ocurrio un error");
+            insertHtmlChatbotText("Ocurrió un error");
             changeEyesSad();
             updateChatbotFace();
             removeLoader();

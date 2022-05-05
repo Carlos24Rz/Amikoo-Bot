@@ -218,7 +218,7 @@ const insertHtmlModalDelete = async function (id) {
   const html = htmlModalDelete();
   bodyEl.insertAdjacentHTML("beforeend", htmlBackdrop);
   bodyEl.insertAdjacentHTML("beforeend", html);
-  initializeButtonsDelete(query);
+  initializeButtonsDelete(id);
 };
 
 // url para borrar una calificacion que debe ser po id
@@ -263,6 +263,24 @@ const initializeButtonsDelete = function (id) {
   });
 };
 
+// Lista de mensajes correctos que no son errores
+const listMsgCorrect = [
+  "Movida y actualizado el nuevo padre",
+  "Movida",
+  "Movida y actualizado el padre anterior",
+  "Actualizada",
+  "Eliminada",
+  "Persona eliminada",
+  "Calificacion eliminada",
+];
+
+// Lista de mensajes correctos para refrescar la pagina
+const listMsgReload = [
+  "Eliminada",
+  "Persona eliminada",
+  "Calificacion eliminada",
+];
+
 /*
  * Mostrar el mensaje generado por una promesa
  * @param  {string}     data           Info generada por la promesa como respuesta
@@ -278,15 +296,7 @@ const showMsg = function (data, removeModal = true) {
 
   const modalContent = document.querySelector(".modal-content");
   // Hay error en el data y se debe mostrar el htmlMessageError
-  if (
-    data != "Movida y actualizado el nuevo padre" &&
-    data != "Movida" &&
-    data != "Movida y actualizado el padre anterior" &&
-    data != "Actualizada" &&
-    data != "Eliminada" &&
-    data != "Persona eliminada" &&
-    data != "Calificacion eliminada"
-  ) {
+  if (!listMsgCorrect.includes(data)) {
     modalContent.insertAdjacentHTML("beforeend", htmlMessageError(data));
   }
   // No hay error en el data y se debe mostrar el htmlMessageNoError
@@ -296,6 +306,10 @@ const showMsg = function (data, removeModal = true) {
     if (removeModal == true) {
       setTimeout(() => {
         removeModalBackDrop();
+
+        if (listMsgReload.includes(data)) {
+          location.reload();
+        }
       }, 2000);
     }
   }

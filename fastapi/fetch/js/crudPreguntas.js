@@ -180,7 +180,7 @@ const htmlModalDelete = function (pregunta) {
             id="texto-input"
             placeholder=""
             disabled
-          ></textarea>
+          >${pregunta.texto}</textarea>
         </div>
     </div>
 
@@ -226,11 +226,11 @@ const URL = `${activeURL}/pregunta/show?`; // url para mostrar las preguntas
 const URLPREGUNTA = `${activeURL}/pregunta/show?nombre=`; // url para buscar una pregunta en base a su nombre
 
 const containerTable = document.querySelector(".container-database-info"); // Container en donde se insertan las rows con personas
-const inputPregunta = document.querySelector("#nombre-input");
-const btnUser = document.querySelector("#btn-nombre");
+const inputPregunta = document.querySelector("#nombre-input"); // input para buscar por pregunta
+const btnUser = document.querySelector("#btn-nombre"); // boton para buscar la pregunta
 
-const btnAllPreguntas = document.querySelector(".btn-all-preguntas");
-const btnClear = document.querySelector(".btn-clear");
+const btnAllPreguntas = document.querySelector(".btn-all-preguntas"); // boton para buscar todas las preguntas
+const btnClear = document.querySelector(".btn-clear"); // boton para limpiar las preguntas en pantalla
 
 /*
  * Obtener datos de la base de datos
@@ -333,6 +333,24 @@ const removeModalBackDrop = function () {
   backdrop.remove();
 };
 
+// Lista de mensajes correctos que no son errores
+const listMsgCorrect = [
+  "Movida y actualizado el nuevo padre",
+  "Movida",
+  "Movida y actualizado el padre anterior",
+  "Actualizada",
+  "Eliminada",
+  "Persona eliminada",
+  "Calificacion eliminada",
+];
+
+// Lista de mensajes correctos para refrescar la pagina
+const listMsgReload = [
+  "Eliminada",
+  "Persona eliminada",
+  "Calificacion eliminada",
+];
+
 /*
  * Mostrar el mensaje generado por una promesa
  * @param  {string}     data           Info generada por la promesa como respuesta
@@ -347,26 +365,21 @@ const showMsg = function (data, removeModal = true) {
   }
 
   const modalContent = document.querySelector(".modal-content");
-
   // Hay error en el data y se debe mostrar el htmlMessageError
-  if (
-    data != "Pregunta creada" &&
-    data != "Movida y actualizado el nuevo padre" &&
-    data != "Movida" &&
-    data != "Movida y actualizado el padre anterior" &&
-    data != "Actualizada" &&
-    data != "Eliminada"
-  ) {
+  if (!listMsgCorrect.includes(data)) {
     modalContent.insertAdjacentHTML("beforeend", htmlMessageError(data));
   }
   // No hay error en el data y se debe mostrar el htmlMessageNoError
   else {
     modalContent.insertAdjacentHTML("beforeend", htmlMessageNoError(data));
-
     // Se verifica si se remueve la modal window o no
     if (removeModal == true) {
       setTimeout(() => {
         removeModalBackDrop();
+
+        if (listMsgReload.includes(data)) {
+          location.reload();
+        }
       }, 2000);
     }
   }
@@ -403,6 +416,23 @@ const initializeButtonsCreate = function () {
     const nombreValue = document.querySelector("#nombre-pregunta-input").value;
     const emojiValue = document.querySelector("#emoji-input").value;
     const textoValue = document.querySelector("#texto-input").value;
+
+    const errorPadre = "Error al ingresar el padre. Intenta de nuevo";
+    const errorNombre = "Error al ingresar el nombre. Intenta de nuevo";
+    const errorEmoji = "Error al ingresa el emoji. Intenta de nuevo";
+    const errorTexto = "Error al ingresa el texto. Intenta de nuevo";
+
+    let isError = false;
+
+    // Verificacion de los tres datos dados por el usuario
+    // if (!checkName(name)) {
+    //   const placeholderName = document.querySelector("#input-name");
+    //   placeholderName.placeholder = errorName;
+    //   placeholderName.classList.add("error-input-form");
+    //   isError = true;
+    //   e.target[0].value = "";
+    // }
+
     const objPregunta = {
       padre: padreValue,
       nombre: nombreValue,
