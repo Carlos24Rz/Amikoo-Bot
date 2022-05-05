@@ -345,10 +345,10 @@ async def move_pregunta(
                              .where(Pregunta.id == id))
                     old_update = (Pregunta
                              .update({Pregunta.is_final: True})
-                             .where(Pregunta.id == id))
+                             .where(Pregunta.id == old_padre.id))
                     new_update = (Pregunta
                              .update({Pregunta.is_final: False})
-                             .where(Pregunta.id == id))
+                             .where(Pregunta.id == new_padre.id))
                     move.execute()
                     old_update.execute()
                     new_update.execute()
@@ -365,7 +365,7 @@ async def move_pregunta(
                              .where(Pregunta.id == id))
                     old_update = (Pregunta
                              .update({Pregunta.is_final: True})
-                             .where(Pregunta.id == id))
+                             .where(Pregunta.id == old_padre.id))
                     move.execute()
                     old_update.execute()
                     return "Movida y actualizado el padre anterior"
@@ -381,7 +381,7 @@ async def move_pregunta(
                              .where(Pregunta.id == id))
                     new_update = (Pregunta
                              .update({Pregunta.is_final: False})
-                             .where(Pregunta.id == id))
+                             .where(Pregunta.id == new_padre.id))
                     move.execute()
                     new_update.execute()
                     return "Movida y actualizado el nuevo padre"
@@ -389,10 +389,10 @@ async def move_pregunta(
                     transaction.rollback()
                     return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST, content="Ha ocurrido un error")
         else:
-            query = (Pregunta
+            move = (Pregunta
                      .update({Pregunta.padre_id: new_padre})
                      .where(Pregunta.id == id))
-            query.execute()
+            move.execute()
             return "Movida"
     else:
         return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST, content="Padre no existe")
