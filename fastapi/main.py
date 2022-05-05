@@ -35,7 +35,7 @@ from datetime import datetime
 from datetime import date
 from typing import Optional
 import json
-
+from peewee import *
 
 tags_metadata = [
     {
@@ -208,6 +208,29 @@ async def get_pregunta(
                 )
     else:
         query = Pregunta.select()
+
+    result = [model_to_dict(item) for item in query]
+    return result
+
+
+@app.get("/pregunta/{nombre}/details", status_code = status.HTTP_200_OK, tags=["Preguntas"])
+async def get_pregunta(
+    nombre: str = Path(
+        ...,
+        title="Nombre de la pregunta",
+        description="Nombre de la pregunta de la cual obtener sus datos",
+        min_length = 1,
+        max_length = 80,
+        example = "Inicio"
+    )
+):
+    Parent = Pregunta.alias()
+    query = (Pregunta.select(Pregunta.id, Parent.nombre.alias('padre_id'), Pregunta.nombre, Pregunta.emoji, Pregunta.texto, Pregunta.visitas, Pregunta.is_final)
+            .join(Parent, JOIN.LEFT_OUTER,
+            on=(Pregunta.padre_id == Parent.id))
+            .where(Pregunta.nombre == nombre)
+            .objects()
+            )
 
     result = [model_to_dict(item) for item in query]
     return result
