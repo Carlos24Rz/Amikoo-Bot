@@ -54,6 +54,7 @@ tags_metadata = [
 
 
 app = FastAPI(openapi_tags=tags_metadata)
+# app = FastAPI(openapi_url=None, openapi_tags=tags_metadata)
 
 
 origins = [
@@ -276,7 +277,7 @@ async def visit_pregunta(
 
 
 # Validar si id existe
-@app.put("/pregunta/update/{id}", status_code = status.HTTP_200_OK, tags=["Preguntas"])
+@app.put("/pregunta/{id}/update", status_code = status.HTTP_200_OK, tags=["Preguntas"])
 async def update_pregunta(
     id: int = Path(
         ...,
@@ -309,7 +310,7 @@ async def update_pregunta(
 
 
 # TODO: TestCase: Mover el padre de una pregunta a uno de sus hijos
-@app.put("/pregunta/move/{id}", status_code = status.HTTP_200_OK, tags=["Preguntas"])
+@app.put("/pregunta/{id}/move", status_code = status.HTTP_200_OK, tags=["Preguntas"])
 async def move_pregunta(
     id: int = Path(
         ...,
