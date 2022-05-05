@@ -180,7 +180,7 @@ const insertHtmlPersonasByCorreo = async function (url) {
 };
 
 /*
- * Por cada pregunta agregada, se le habilita su boton de borrar la pregunta
+ * Por cada persona agregada, se le habilita su boton de borrar la pregunta
  */
 const initializeButtons = function () {
   document.querySelectorAll(".grid-button-delete").forEach(function (elem) {
@@ -317,7 +317,7 @@ const initializeButtonsDelete = function (id) {
  * Mostrar el mensaje generado por una promesa
  * @param  {string}     data           Info generada por la promesa como respuesta
  * @param  {bool}       removeModal    Se quita el modal window o no
- * @return {Promise}  ---         Fetch de la url para publicar la pregunta y sus opciones
+ * @return {Promise}  ---         Fetch de la url
  */
 const showMsg = function (data, removeModal = true) {
   const lastMsg = document.querySelector(".modal-row-input--msg");
@@ -329,7 +329,6 @@ const showMsg = function (data, removeModal = true) {
   const modalContent = document.querySelector(".modal-content");
 
   // Hay error en el data y se debe mostrar el htmlMessageError
-
   if (
     data != "Movida y actualizado el nuevo padre" &&
     data != "Movida" &&
