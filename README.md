@@ -44,6 +44,7 @@ mysql> grant all privileges on <b>[DATABASE]</b>.* to <b>[USER]</b>@'localhost';
 mysql> flush privileges;</code></pre>
 Crear tablas e insertar información
 ```sql
+mysql> use [DATABASE]
 mysql> source mysql/create.sql
 mysql> source mysql/insert.sql
 ```
