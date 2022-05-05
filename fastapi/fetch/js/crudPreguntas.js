@@ -225,7 +225,7 @@ const htmlMessageNoError = function (text) {
 const URL = `${activeURL}/pregunta/show?`; // url para mostrar las preguntas
 const URLPREGUNTA = `${activeURL}/pregunta/show?nombre=`; // url para buscar una pregunta en base a su nombre
 
-const containerTable = document.querySelector(".container-database-info");
+const containerTable = document.querySelector(".container-database-info"); // Container en donde se insertan las rows con personas
 const inputPregunta = document.querySelector("#nombre-input");
 const btnUser = document.querySelector("#btn-nombre");
 
