@@ -98,6 +98,11 @@ const htmlModalCreate = function (title) {
     `;
 };
 
+/*
+ * Obtener modal window cuando se actualice una pregunta
+ * @param  {string} text    Pregunta a actualizar
+ * @return {string} ---     Modal window html con los datos de la pregunta a actualizar
+ */
 const htmlModalUpdate = function (pregunta) {
   return `
   <div class="modal">
@@ -143,335 +148,10 @@ const htmlModalUpdate = function (pregunta) {
 };
 
 /*
- * Obtener modal window cuando se cree una pregunta
- * @param  {string} text    Titulo a mostrar en el modal
- * @return {string} ---     Modal window html
+ * Obtener modal window cuando se borre una pregunta
+ * @param  {string} text    Pregunta a borrar
+ * @return {string} ---     Modal window html con los datos de la pregunta a borrar
  */
-const htmlMessageError = function (text) {
-  return `
-  
-    <div class="modal-row-input modal-row-input--msg modal-row-input--msg--error"> 
-      <p>${text}</p>
-    </div>
-  
-  `;
-};
-
-const htmlMessageNoError = function (text) {
-  return `
-  
-    <div class="modal-row-input modal-row-input--msg modal-row-input--msg--noerror"> 
-      <p>${text}</p>
-    </div>
-  
-  `;
-};
-
-const URL = `${activeURL}/pregunta/show?`;
-const URLPREGUNTA = `${activeURL}/pregunta/show?nombre=`;
-const inputPregunta = document.querySelector("#nombre-input");
-const btnUser = document.querySelector("#btn-nombre");
-const containerTable = document.querySelector(".container-database-info");
-
-const btnAllPreguntas = document.querySelector(".btn-all-preguntas");
-const btnClear = document.querySelector(".btn-clear");
-
-const getDataDB = async function (url, query = "") {
-  // query == "" ? (query = JSON.stringify(query)) : query;
-
-  const data = await fetch(`${url}${query}`)
-    .then((response) => response.json())
-    .then((data) => data)
-    .catch((err) => err);
-
-  console.log(data);
-  return data;
-};
-
-const insertHtmlPreguntas = async function (url) {
-  const nombreValue = inputPregunta.value;
-
-  await getDataDB(url, nombreValue).then((preguntas) => {
-    containerTable.innerHTML = "";
-    if (preguntas.length <= 0) {
-      containerTable.insertAdjacentHTML("beforeend", htmlNoPreguntas());
-    } else {
-      containerTable.insertAdjacentHTML(
-        "beforeend",
-        htmlPreguntas(...preguntas)
-      );
-    }
-  });
-};
-
-const initializeButtons = function () {
-  document.querySelectorAll(".grid-button-update").forEach(function (elem) {
-    elem.addEventListener("click", function (event) {
-      console.log("Update: " + event.target.value);
-      insertHtmlModalUpdate(event.target.value);
-    });
-  });
-  document.querySelectorAll(".grid-button-delete").forEach(function (elem) {
-    elem.addEventListener("click", function (event) {
-      console.log("Delete: " + event.target.value);
-      insertHtmlModalDelete(event.target.value);
-    });
-  });
-};
-
-// Para buscar por nombre pregunta
-btnUser.addEventListener("click", function () {
-  insertHtmlPreguntas(URLPREGUNTA).then(() => {
-    initializeButtons();
-  });
-});
-
-// Cuando se le da enter
-inputPregunta.addEventListener("keyup", function (event) {
-  // Number 13 is the "Enter" key on the keyboard
-  if (event.keyCode === 13) {
-    insertHtmlPreguntas(URLPREGUNTA).then(() => {
-      initializeButtons();
-    });
-  }
-});
-
-// Boton de todas las preguntas
-btnAllPreguntas.addEventListener("click", function () {
-  insertHtmlPreguntas(URL).then(() => {
-    initializeButtons();
-  });
-});
-
-// Boton de limpiar
-btnClear.addEventListener("click", function () {
-  containerTable.innerHTML = "";
-});
-
-//
-//
-//
-//
-//
-//
-const bodyEl = document.body;
-console.log(bodyEl);
-
-const insertHtmlModalCreate = function (title) {
-  const html = htmlModalCreate(title);
-  bodyEl.insertAdjacentHTML("beforeend", htmlBackdrop);
-  bodyEl.insertAdjacentHTML("beforeend", html);
-};
-
-// insertHtmlModalCreate("Mi titulo", "Mi contenido");
-
-const btnNewPregunta = document.querySelector(".btn-crear-nueva-pregunta");
-
-btnNewPregunta.addEventListener("click", function () {
-  insertHtmlModalCreate("Crear nueva pregunta");
-  initializeButtonsCreate();
-});
-
-const removeModalBackDrop = function () {
-  const modal = document.querySelector(".modal");
-  const backdrop = document.querySelector(".backdrop");
-  modal.remove();
-  backdrop.remove();
-};
-
-const initializeButtonsCreate = function () {
-  const btnCancelar = document.querySelector("#btn-modal-cancelar");
-  btnCancelar.addEventListener("click", function () {
-    removeModalBackDrop();
-  });
-
-  const btnCrear = document.querySelector("#btn-modal-crear");
-  btnCrear.addEventListener("click", function () {
-    const padreValue = document.querySelector("#padre-input").value;
-    const nombreValue = document.querySelector("#nombre-pregunta-input").value;
-    const emojiValue = document.querySelector("#emoji-input").value;
-    const textoValue = document.querySelector("#texto-input").value;
-    const objPregunta = {
-      padre: padreValue,
-      nombre: nombreValue,
-      emoji: emojiValue,
-      texto: textoValue,
-    };
-
-    console.log(objPregunta.texto.toString());
-    console.log(objPregunta.texto.trim());
-    postPreguntaDB(objPregunta)
-      .then((res) => res.json())
-      .then((data) => {
-        const lastMsg = document.querySelector(".modal-row-input--msg");
-        if (lastMsg != null) {
-          lastMsg.remove();
-        }
-
-        const modalContent = document.querySelector(".modal-content");
-        console.log(data);
-        if (data != "Pregunta creada") {
-          console.log(data);
-          console.log("first");
-          modalContent.insertAdjacentHTML("beforeend", htmlMessageError(data));
-        } else {
-          modalContent.insertAdjacentHTML(
-            "beforeend",
-            htmlMessageNoError(data)
-          );
-          setTimeout(() => {
-            removeModalBackDrop();
-          }, 2000);
-        }
-      });
-  });
-};
-
-const URLPOSTPREGUNTA = `${activeURL}/pregunta/create`;
-const postPreguntaDB = async function (pregunta) {
-  const options = {
-    method: "POST",
-    headers: {
-      Accept: "application/json",
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(pregunta),
-  };
-
-  return fetch(URLPOSTPREGUNTA, options);
-};
-
-//
-//
-//
-//
-//
-//
-//
-// const URLUPDATEPREGUNTA = `${activeURL}/pregunta/show?nombre=`;
-// http://127.0.0.1:8000/pregunta/Nosotros%20con%20inicio/details
-const URLUPDATEPREGUNTA = function (nombre) {
-  console.log("NOMBRE: ", nombre);
-  const url = `${activeURL}/pregunta/${nombre}/details`;
-  console.log("URL: ", url);
-  return url;
-};
-
-const insertHtmlModalUpdate = async function (query) {
-  console.log("QUERY: ", query);
-  const pregunta = await getDataDB(URLUPDATEPREGUNTA(query));
-
-  const html = htmlModalUpdate(pregunta[0]);
-  bodyEl.insertAdjacentHTML("beforeend", htmlBackdrop);
-  bodyEl.insertAdjacentHTML("beforeend", html);
-  initializeButtonsUpdate();
-};
-
-const initializeButtonsUpdate = function () {
-  console.log("CLICKKKKKKK");
-  const btnCancelar = document.querySelector("#btn-modal-cancelar");
-
-  btnCancelar.addEventListener("click", function () {
-    console.log("Click");
-    removeModalBackDrop();
-  });
-
-  // Aqui va lo que se debe actualizar
-  const btnActualizar = document.querySelector("#btn-modal-actualizar");
-  btnActualizar.addEventListener("click", function () {
-    const idValue = document.querySelector("#id-input").value;
-    const padreValue = document.querySelector("#padre-input").value;
-    const nombreValue = document.querySelector("#nombre-pregunta-input").value;
-    const emojiValue = document.querySelector("#emoji-input").value;
-    const textoValue = document.querySelector("#texto-input").value;
-    const objPregunta = {
-      id: idValue,
-      padre: padreValue,
-      nombre: nombreValue,
-      emoji: emojiValue,
-      texto: textoValue,
-    };
-    console.log(objPregunta);
-
-    putPreguntaBodyDB(objPregunta).then((res) =>
-      res.json().then((data) => showMsg(data, false))
-    );
-
-    putPreguntaPadreDB(objPregunta).then((res) =>
-      res.json().then((data) => showMsg(data))
-    );
-  });
-};
-
-const showMsg = function (data, removeModal = true) {
-  const lastMsg = document.querySelector(".modal-row-input--msg");
-  if (lastMsg != null) {
-    lastMsg.remove();
-  }
-
-  const modalContent = document.querySelector(".modal-content");
-  console.log(data);
-  if (
-    data != "Movida y actualizado el nuevo padre" &&
-    data != "Movida" &&
-    data != "Movida y actualizado el padre anterior" &&
-    data != "Actualizada" &&
-    data != "Eliminada"
-  ) {
-    modalContent.insertAdjacentHTML("beforeend", htmlMessageError(data));
-  } else {
-    modalContent.insertAdjacentHTML("beforeend", htmlMessageNoError(data));
-    if (removeModal == true) {
-      setTimeout(() => {
-        removeModalBackDrop();
-      }, 2000);
-    }
-  }
-};
-
-const URLPUTPREGUNTABODY = function (id) {
-  return `${activeURL}/pregunta/${id}/update/`;
-};
-
-const putPreguntaBodyDB = async function (pregunta) {
-  console.log("pregunta: ");
-  console.log(pregunta);
-  const options = {
-    method: "PUT",
-    headers: {
-      Accept: "application/json",
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(pregunta),
-  };
-
-  return fetch(`${URLPUTPREGUNTABODY(pregunta.id)}`, options);
-};
-
-//  "Movida y actualizado ambos padres" "Movida"
-
-const URLPUTPREGUNTAPADRE = function (id) {
-  return `${activeURL}/pregunta/${id}/move/`;
-};
-
-const putPreguntaPadreDB = async function (pregunta) {
-  const options = {
-    method: "PUT",
-    headers: {
-      Accept: "application/json",
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(pregunta),
-  };
-
-  return fetch(`${URLPUTPREGUNTAPADRE(pregunta.id)}`, options);
-};
-
-//
-//
-//
-//
-
 const htmlModalDelete = function (pregunta) {
   return `
   <div class="modal">
@@ -512,13 +192,383 @@ const htmlModalDelete = function (pregunta) {
       `;
 };
 
-const insertHtmlModalDelete = async function (query) {
-  console.log("QUERY");
-  console.log(query);
+/*
+ * Mostrar mensaje de error en el modal window
+ * @param  {string} text    Error a mostrar
+ * @return {string} ---     Html con el error
+ */
+const htmlMessageError = function (text) {
+  return `
+  
+    <div class="modal-row-input modal-row-input--msg modal-row-input--msg--error"> 
+      <p>${text}</p>
+    </div>
+  
+  `;
+};
+
+/*
+ * Mostrar mensaje de no error en el modal window
+ * @param  {string} text    Mensaje a mostrar
+ * @return {string} ---     Html con el mensaje
+ */
+const htmlMessageNoError = function (text) {
+  return `
+  
+    <div class="modal-row-input modal-row-input--msg modal-row-input--msg--noerror"> 
+      <p>${text}</p>
+    </div>
+  
+  `;
+};
+
+const URL = `${activeURL}/pregunta/show?`; // url para mostrar las preguntas
+const URLPREGUNTA = `${activeURL}/pregunta/show?nombre=`; // url para buscar una pregunta en base a su nombre
+
+const containerTable = document.querySelector(".container-database-info");
+const inputPregunta = document.querySelector("#nombre-input");
+const btnUser = document.querySelector("#btn-nombre");
+
+const btnAllPreguntas = document.querySelector(".btn-all-preguntas");
+const btnClear = document.querySelector(".btn-clear");
+
+/*
+ * Obtener datos de la base de datos
+ * @param  {string} url   Url para hacerle fetch
+ * @param  {string} query Valor para concaternarlo a la url y completarla
+ * @return {string} data  Informacion obtenida del fetch a la url completa
+ */
+const getDataDB = async function (url, query = "") {
+  const data = await fetch(`${url}${query}`)
+    .then((response) => response.json())
+    .then((data) => data)
+    .catch((err) => err);
+
+  return data;
+};
+
+/*
+ * Insertar las preguntas en la pagina
+ * @param  {string} url   Url para hacerle fetch
+ */
+const insertHtmlPreguntas = async function (url) {
+  const nombreValue = inputPregunta.value;
+
+  await getDataDB(url, nombreValue).then((preguntas) => {
+    containerTable.innerHTML = "";
+    // Si no tenemos preguntas
+    if (preguntas.length <= 0) {
+      containerTable.insertAdjacentHTML("beforeend", htmlNoPreguntas());
+    }
+    // Si tenemos preguntas
+    else {
+      containerTable.insertAdjacentHTML(
+        "beforeend",
+        htmlPreguntas(...preguntas)
+      );
+    }
+  });
+};
+
+/*
+ * Por cada pregunta agregada, se le habilitan sus correspondientes botones
+ */
+const initializeButtons = function () {
+  document.querySelectorAll(".grid-button-update").forEach(function (elem) {
+    elem.addEventListener("click", function (event) {
+      insertHtmlModalUpdate(event.target.value);
+    });
+  });
+  document.querySelectorAll(".grid-button-delete").forEach(function (elem) {
+    elem.addEventListener("click", function (event) {
+      insertHtmlModalDelete(event.target.value);
+    });
+  });
+};
+
+// Para buscar por nombre de pregunta
+btnUser.addEventListener("click", function () {
+  insertHtmlPreguntas(URLPREGUNTA).then(() => {
+    initializeButtons();
+  });
+});
+
+// Cuando se le da enter al input de pregunta
+inputPregunta.addEventListener("keyup", function (event) {
+  // Number 13 is the "Enter" key on the keyboard
+  if (event.keyCode === 13) {
+    insertHtmlPreguntas(URLPREGUNTA).then(() => {
+      initializeButtons();
+    });
+  }
+});
+
+// Cuando se le da click al boton de todas las preguntas
+btnAllPreguntas.addEventListener("click", function () {
+  insertHtmlPreguntas(URL).then(() => {
+    initializeButtons();
+  });
+});
+
+// Cuando se le da click al boton de limpiar las preguntas
+btnClear.addEventListener("click", function () {
+  containerTable.innerHTML = "";
+});
+
+const btnNewPregunta = document.querySelector(".btn-crear-nueva-pregunta");
+
+// Boton para crear una nueva pregunta
+btnNewPregunta.addEventListener("click", function () {
+  insertHtmlModalCreate("Crear nueva pregunta");
+  initializeButtonsCreate();
+});
+
+/*
+ * Remover el backdrop y la window modal
+ */
+const removeModalBackDrop = function () {
+  const modal = document.querySelector(".modal");
+  const backdrop = document.querySelector(".backdrop");
+  modal.remove();
+  backdrop.remove();
+};
+
+/*
+ * Mostrar el mensaje generado por una promesa
+ * @param  {string}     data           Info generada por la promesa como respuesta
+ * @param  {bool}       removeModal    Se quita el modal window o no
+ * @return {Promise}  ---         Fetch de la url para publicar la pregunta y sus opciones
+ */
+const showMsg = function (data, removeModal = true) {
+  const lastMsg = document.querySelector(".modal-row-input--msg");
+  // Si hay un mensaje (error/noerror) en la ventana se elimina
+  if (lastMsg != null) {
+    lastMsg.remove();
+  }
+
+  const modalContent = document.querySelector(".modal-content");
+
+  // Hay error en el data y se debe mostrar el htmlMessageError
+  if (
+    data != "Pregunta creada" &&
+    data != "Movida y actualizado el nuevo padre" &&
+    data != "Movida" &&
+    data != "Movida y actualizado el padre anterior" &&
+    data != "Actualizada" &&
+    data != "Eliminada"
+  ) {
+    modalContent.insertAdjacentHTML("beforeend", htmlMessageError(data));
+  }
+  // No hay error en el data y se debe mostrar el htmlMessageNoError
+  else {
+    modalContent.insertAdjacentHTML("beforeend", htmlMessageNoError(data));
+
+    // Se verifica si se remueve la modal window o no
+    if (removeModal == true) {
+      setTimeout(() => {
+        removeModalBackDrop();
+      }, 2000);
+    }
+  }
+};
+
+// En el body se insertaran el backdrop y el modal window
+const bodyEl = document.body;
+
+/*
+ * Insertar la modal window para crear una pregunta
+ * @param  {string} title   Titulo para poner en el modal window
+ */
+const insertHtmlModalCreate = function (title) {
+  const html = htmlModalCreate(title);
+  bodyEl.insertAdjacentHTML("beforeend", htmlBackdrop);
+  bodyEl.insertAdjacentHTML("beforeend", html);
+};
+
+/*
+ * Cuando se crea um modal window, se inicializan los botones de la ventana
+ */
+const initializeButtonsCreate = function () {
+  // Boton para cancelar la ventana
+  const btnCancelar = document.querySelector("#btn-modal-cancelar");
+  btnCancelar.addEventListener("click", function () {
+    removeModalBackDrop();
+  });
+
+  // Boton para creear la pregunta
+  const btnCrear = document.querySelector("#btn-modal-crear");
+  btnCrear.addEventListener("click", function () {
+    // Se guardan los valores de los input
+    const padreValue = document.querySelector("#padre-input").value;
+    const nombreValue = document.querySelector("#nombre-pregunta-input").value;
+    const emojiValue = document.querySelector("#emoji-input").value;
+    const textoValue = document.querySelector("#texto-input").value;
+    const objPregunta = {
+      padre: padreValue,
+      nombre: nombreValue,
+      emoji: emojiValue,
+      texto: textoValue,
+    };
+
+    // Se publica la pregunta en la DB
+    postPreguntaDB(objPregunta)
+      .then((res) => res.json())
+      .then((data) => {
+        // Se muestra el mensaje generado por el postPreguntaDB()
+        showMsg(data);
+      });
+  });
+};
+
+const URLPOSTPREGUNTA = `${activeURL}/pregunta/create`; // url para publicar la pregunta
+
+/*
+ * Publicar la pregunta en la base de datos
+ * @param  {obj}      pregunta    Pregunta a guardar
+ * @return {Promise}  ---         Fetch de la url para publicar la pregunta y sus opciones
+ */
+const postPreguntaDB = async function (pregunta) {
+  const options = {
+    method: "POST",
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(pregunta),
+  };
+
+  return fetch(URLPOSTPREGUNTA, options);
+};
+
+//
+//
+//
+//
+//
+//
+//
+
+/*
+ * Publicar la pregunta en la base de datos
+ * @param  {obj}      pregunta    Pregunta a guardar
+ * @return {Promise}  ---         Fetch de la url para publicar la pregunta y sus opciones
+ */
+const URLUPDATEPREGUNTA = function (nombre) {
+  const url = `${activeURL}/pregunta/${nombre}/details`;
+  return url;
+};
+
+/*
+ * Insertar la modal window para actualizar una pregunta
+ * @param  {string} query   Nombre de la pregunta a actualizar
+ */
+const insertHtmlModalUpdate = async function (query) {
   const pregunta = await getDataDB(URLUPDATEPREGUNTA(query));
 
-  console.log("PREGUNTA");
-  console.log(pregunta);
+  const html = htmlModalUpdate(pregunta[0]);
+  bodyEl.insertAdjacentHTML("beforeend", htmlBackdrop);
+  bodyEl.insertAdjacentHTML("beforeend", html);
+  initializeButtonsUpdate();
+};
+
+/*
+ * Cuando se crea um modal window, se inicializan los botones de la ventana
+ */
+const initializeButtonsUpdate = function () {
+  // Boton para cerrar el modal window
+  const btnCancelar = document.querySelector("#btn-modal-cancelar");
+  btnCancelar.addEventListener("click", function () {
+    console.log("Click");
+    removeModalBackDrop();
+  });
+
+  // Boton para actualizar la pregunta
+  const btnActualizar = document.querySelector("#btn-modal-actualizar");
+
+  btnActualizar.addEventListener("click", function () {
+    // Se guarda la pregunta que se debe actualizar
+    const idValue = document.querySelector("#id-input").value;
+    const padreValue = document.querySelector("#padre-input").value;
+    const nombreValue = document.querySelector("#nombre-pregunta-input").value;
+    const emojiValue = document.querySelector("#emoji-input").value;
+    const textoValue = document.querySelector("#texto-input").value;
+    const objPregunta = {
+      id: idValue,
+      padre: padreValue,
+      nombre: nombreValue,
+      emoji: emojiValue,
+      texto: textoValue,
+    };
+
+    // Se publica la actualizacion del cuerpo (nombre, emoji, texto) de la pregunta en la DB
+    putPreguntaBodyDB(objPregunta).then(
+      (res) => res.json().then((data) => showMsg(data, false)) // Al final se muestra la respuesta de la promesa
+    );
+
+    // Se publica la actualizacion de padre de la pregunta en la DB
+    putPreguntaPadreDB(objPregunta).then(
+      (res) => res.json().then((data) => showMsg(data)) // Al final se muestra la respuesta de la promesa
+    );
+  });
+};
+
+// url para actualizar la pregunta (nombre, emoji, texto) a base del id
+const URLPUTPREGUNTABODY = function (id) {
+  return `${activeURL}/pregunta/${id}/update/`;
+};
+
+/*
+ * Publicar la el cuerpo de la pregunta en la base de datos
+ * @param  {obj}      pregunta    Pregunta a actualizar
+ * @return {Promise}  ---         Fetch de la url para actualizar la pregunta (cuerpo)
+ */
+const putPreguntaBodyDB = async function (pregunta) {
+  const options = {
+    method: "PUT",
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(pregunta),
+  };
+
+  return fetch(`${URLPUTPREGUNTABODY(pregunta.id)}`, options);
+};
+
+// url para actualizar el padre de la pregunta a base del id
+const URLPUTPREGUNTAPADRE = function (id) {
+  return `${activeURL}/pregunta/${id}/move/`;
+};
+
+/*
+ * Publicar el nuevo padre de la pregunta en la base de datos
+ * @param  {obj}      pregunta    Pregunta a actualizar
+ * @return {Promise}  ---         Fetch de la url para actualizar la pregunta (padre)
+ */
+const putPreguntaPadreDB = async function (pregunta) {
+  const options = {
+    method: "PUT",
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(pregunta),
+  };
+
+  return fetch(`${URLPUTPREGUNTAPADRE(pregunta.id)}`, options);
+};
+
+//
+//
+//
+//
+
+/*
+ * Insertar la modal window para borrar una pregunta
+ * @param  {string} query   Pregunta a borrar
+ */
+const insertHtmlModalDelete = async function (query) {
+  const pregunta = await getDataDB(URLUPDATEPREGUNTA(query));
 
   const html = htmlModalDelete(pregunta[0]);
   bodyEl.insertAdjacentHTML("beforeend", htmlBackdrop);
@@ -526,10 +576,16 @@ const insertHtmlModalDelete = async function (query) {
   initializeButtonsDelete();
 };
 
+// url para borrar la pregunta
 const URLDELETEPREGUNTA = function (id) {
   return `${activeURL}/pregunta/${id}/delete`;
 };
 
+/*
+ * Borrar la pregunta por id de la base de datos
+ * @param  {int}      id    Pregunta a borrar
+ * @return {Promise}  ---   Fetch de la url para borrar la pregunta
+ */
 const deletPreguntaDB = async function (id) {
   const options = {
     method: "DELETE",
@@ -541,23 +597,22 @@ const deletPreguntaDB = async function (id) {
   return fetch(URLDELETEPREGUNTA(id), options);
 };
 
+/*
+ * Cuando se crea um modal window, se inicializan los botones de la ventana
+ */
 const initializeButtonsDelete = function () {
-  console.log("CLICKKKKKKK");
   const btnCancelar = document.querySelector("#btn-modal-cancelar");
 
   btnCancelar.addEventListener("click", function () {
-    console.log("Click");
     removeModalBackDrop();
   });
 
   const btnBorrar = document.querySelector("#btn-modal-borrar");
   btnBorrar.addEventListener("click", function () {
     const idValue = document.querySelector("#id-input").value;
-    console.log(idValue);
     deletPreguntaDB(idValue)
       .then((res) => res.json())
       .then((data) => {
-        console.log(data);
         showMsg(data);
       });
   });
