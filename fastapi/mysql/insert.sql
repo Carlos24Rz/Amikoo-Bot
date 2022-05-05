@@ -11,7 +11,7 @@ INSERT INTO pregunta (padre_id, nombre, emoji, texto, visitas, is_final) VALUES
   (2,	"Visión",	"👀",	"Tenemos como visión ser una empresa líder en el campo de desarrollo tecnologico, formada por profesionales, creativos, innovadores con una mirada a la transformación digital de las empresas.",	0,	true),
   (2,	"Valores",	"❤"	,"Valoramos la sencillez, honestidad, ética, responsabilidad, compromiso social y equidad.",	0,	true),
   (2,	"Colaboradores",	"🤝",	"Conoce a todos nuestros colaboradores:",	0,	false),
-  (8,	"Nombre de la empresa",	"🏭",	" El nombre completo de la empresa es Naatik A.I. Solutions, Sociedad Anónima Promotora de Inversión de Capital Variable (SAPI de C.V.). ",	0,	true),
+  (8,	"Nombre de la empresa",	"🏭",	"El nombre completo de la empresa es Naatik A.I. Solutions, Sociedad Anónima Promotora de Inversión de Capital Variable (SAPI de C.V.). ",	0,	true),
   (8,	"Qué significa Naatik",	"🤔",	"Naatik es una expresión en maya que significa comprensión. Se escogió como lema de la empresa sobre comprensión de soluciones inteligentes para las empresas e industrias.",	0,	true),
   (8,	"Historia",	"🧐",	"Se formó por acuerdo de los dos socios principales: José Álvarez Icaza Longoria (Pepe) y Pablo Héctor Ibargüengoytia González (Pablo). La unión de talentos de los dos y la coyuntura de la tecnología de la inteligencia artificial en las empresas descubrió un área de oportunidad.",	0,	true),
   (8,	"Claves de registro nacionales",	"📝",	"Naatik cuenta con registro como federal de causante y como empresea científica y tecnológica:\nRFC: AS200723T10\nRENIECYT: 2000846",	0,	true),

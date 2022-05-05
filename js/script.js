@@ -55,6 +55,7 @@ const htmlChatbotOptions = (text, is_final, prevQuery, ...options) => {
     .join("");
 
   console.log(prevQuery);
+
   // Se verifica cuando agregar la opcion de regresar a la pregunta anterior
   if (prevQuery != "Inicio" && htmlOptions != "" && is_final == false) {
     htmlOptions += `<p class="chatbot-option chatbot-option--return">Pregunta anterior ◀</p>`;
@@ -283,12 +284,28 @@ const insertHtmlChatbotOptions = function (
   updateScrollBar();
 };
 
+// http://127.0.0.1:8000/pregunta/Inicio/visit
+const URLADDVISIT = function (pregunta) {
+  return `${activeURL}/pregunta/${pregunta}/visit`;
+};
+
+const addVisitDB = async function (pregunta) {
+  const options = {
+    method: "PUT",
+  };
+
+  // return fetch(URLPOSTCALIFICACION, options);
+
+  return fetch(URLADDVISIT(pregunta), options);
+};
+
 /*
  * Insertar un cuadro de texto del usuario
  * @param  {string} text      Texto a mostrar
  */
 const insertHtmlUserInput = function (text) {
   chatbotChat.insertAdjacentHTML("beforeend", htmlUserInput(text));
+  // console.log("NOMBRE: ", text);
 
   updateScrollBar();
 };
@@ -376,6 +393,11 @@ const prepareHtmlOptionsDB = async function (
   query = "Inicio",
   prevOption = false
 ) {
+  // Anadir una visita a la pregunta
+  await addVisitDB(query)
+    .then((res) => res.json())
+    .then((data) => console.log(data));
+
   // Esta serie de if's es para cuando se llega a una respuesta final y se muestran las ultimas opciones
   if (query == "Si") {
     console.log("ENTEEEER");

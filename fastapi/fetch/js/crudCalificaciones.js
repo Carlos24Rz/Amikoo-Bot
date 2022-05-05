@@ -10,7 +10,6 @@ const htmlCalificaciones = function (...calificaciones) {
       <div class="grid-item grid-item--calificacion">${calificacion.calificacion}</div>
       <div class="grid-item grid-item--fecha">${calificacion.fecha}</div>
       <div class="grid-item grid-item--botones">
-        <button type="button" class="btn-update grid-button-update" value="${calificacion.id}">Update</button>
         <button type="button" class="btn-delete grid-button-delete" value="${calificacion.id}">Delete</button>
       </div>
     </div>`
@@ -76,14 +75,10 @@ btnSubmit.addEventListener("click", function () {
 });
 
 const initializeButtons = function () {
-  document.querySelectorAll(".grid-button-update").forEach(function (elem) {
-    elem.addEventListener("click", function (event) {
-      console.log("Update: " + event.target.value);
-    });
-  });
   document.querySelectorAll(".grid-button-delete").forEach(function (elem) {
     elem.addEventListener("click", function (event) {
       console.log("Delete: " + event.target.value);
+      insertHtmlModalDelete(event.target.value);
     });
   });
 };
@@ -97,3 +92,139 @@ btnAllCalificaciones.addEventListener("click", function () {
 btnClear.addEventListener("click", function () {
   containerTable.innerHTML = "";
 });
+
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+const bodyEl = document.body;
+console.log(bodyEl);
+
+const htmlBackdrop = `
+    <div class="backdrop"> </div>
+`;
+
+const removeModalBackDrop = function () {
+  const modal = document.querySelector(".modal");
+  const backdrop = document.querySelector(".backdrop");
+  modal.remove();
+  backdrop.remove();
+};
+
+const htmlModalDelete = function () {
+  return `
+  <div class="modal">
+    <header class="modal-header"><h2>¿Deseas borrar esta calificacion?</h2></header>
+
+    <div class="modal-content">
+    </div>
+    
+    <footer class="modal-actions">
+        <button id="btn-modal-cancelar">Cancelar</button>
+        <button id="btn-modal-borrar">Borrar</button>
+    </footer>
+    </div>
+      `;
+};
+
+const insertHtmlModalDelete = async function (query) {
+  console.log("QUERY");
+  console.log(query);
+
+  const html = htmlModalDelete();
+  console.log(html);
+  bodyEl.insertAdjacentHTML("beforeend", htmlBackdrop);
+  bodyEl.insertAdjacentHTML("beforeend", html);
+  initializeButtonsDelete(query);
+};
+
+const URLDELETECALIFICACION = function (id) {
+  return `${activeURL}/calificacion/delete/${id}`;
+};
+
+const deletPreguntaDB = async function (id) {
+  const options = {
+    method: "DELETE",
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+    },
+  };
+  return fetch(URLDELETECALIFICACION(id), options);
+};
+
+const initializeButtonsDelete = function (id) {
+  console.log("CLICKKKKKKK");
+  const btnCancelar = document.querySelector("#btn-modal-cancelar");
+
+  btnCancelar.addEventListener("click", function () {
+    console.log("Click");
+    removeModalBackDrop();
+  });
+
+  const btnBorrar = document.querySelector("#btn-modal-borrar");
+  btnBorrar.addEventListener("click", function () {
+    deletPreguntaDB(id)
+      .then((res) => res.json())
+      .then((data) => {
+        console.log(data);
+        showMsg(data);
+      });
+  });
+};
+
+const htmlMessageError = function (text) {
+  return `
+  
+    <div class="modal-row-input modal-row-input--msg modal-row-input--msg--error"> 
+      <p>${text}</p>
+    </div>
+  
+  `;
+};
+
+const htmlMessageNoError = function (text) {
+  return `
+  
+    <div class="modal-row-input modal-row-input--msg modal-row-input--msg--noerror"> 
+      <p>${text}</p>
+    </div>
+  
+  `;
+};
+
+const showMsg = function (data, removeModal = true) {
+  const lastMsg = document.querySelector(".modal-row-input--msg");
+  if (lastMsg != null) {
+    lastMsg.remove();
+  }
+
+  const modalContent = document.querySelector(".modal-content");
+  console.log(data);
+  if (
+    data != "Movida y actualizado el nuevo padre" &&
+    data != "Movida" &&
+    data != "Movida y actualizado el padre anterior" &&
+    data != "Actualizada" &&
+    data != "Eliminada" &&
+    data != "Persona eliminada" &&
+    data != "Calificacion eliminada"
+  ) {
+    modalContent.insertAdjacentHTML("beforeend", htmlMessageError(data));
+  } else {
+    modalContent.insertAdjacentHTML("beforeend", htmlMessageNoError(data));
+    if (removeModal == true) {
+      setTimeout(() => {
+        removeModalBackDrop();
+      }, 2000);
+    }
+  }
+};

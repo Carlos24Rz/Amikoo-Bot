@@ -12,7 +12,6 @@ const htmlPersonas = function (...personas) {
     <div class="grid-item grid-item--fecha">${persona.fecha}</div>
     <div class="grid-item grid-item--descripcion">${persona.descripcion}</div>
     <div class="grid-item grid-item--botones">
-      <button type="button" class="btn-update grid-button-update" value="${persona.id}">Update</button>
       <button type="button" class="btn-delete grid-button-delete" value="${persona.id}">Delete</button>
     </div>
   </div>`
@@ -40,8 +39,14 @@ const containerTable = document.querySelector(".container-database-info");
 const btnAllUsers = document.querySelector(".btn-all-users");
 const btnClear = document.querySelector(".btn-clear");
 
-const getDataDB = async function (url, query) {
-  query == "" ? (query = "NONAMEDETECTED") : query;
+const getDataDB = async function (url, query, by = "user") {
+  if (by == "user") {
+    query == "" ? (query = "NONAMEDETECTED") : query;
+  }
+  if (by == "mail") {
+    query == "" ? (query = "NOEMAILDETECTED@hotmail.com") : query;
+  }
+
   console.log(query);
   console.log(url);
 
@@ -73,7 +78,7 @@ const insertHtmlPersonasByCorreo = async function (url) {
   const userValue = inputCorreo.value;
 
   containerTable.innerHTML = "";
-  await getDataDB(url, userValue).then((personas) => {
+  await getDataDB(url, userValue, "mail").then((personas) => {
     if (personas.length <= 0) {
       containerTable.insertAdjacentHTML("beforeend", htmlNoPersonas());
     } else {
@@ -83,14 +88,10 @@ const insertHtmlPersonasByCorreo = async function (url) {
 };
 
 const initializeButtons = function () {
-  document.querySelectorAll(".grid-button-update").forEach(function (elem) {
-    elem.addEventListener("click", function (event) {
-      console.log("Update: " + event.target.value);
-    });
-  });
   document.querySelectorAll(".grid-button-delete").forEach(function (elem) {
     elem.addEventListener("click", function (event) {
       console.log("Delete: " + event.target.value);
+      insertHtmlModalDelete(event.target.value);
     });
   });
 };
@@ -149,90 +150,125 @@ btnClear.addEventListener("click", function () {
 //
 //
 //
-// OLD CODE
+const bodyEl = document.body;
+console.log(bodyEl);
 
-document.getElementById("clearText").addEventListener("click", clearText);
+const htmlBackdrop = `
+    <div class="backdrop"> </div>
+`;
 
-document.getElementById("getText").addEventListener("click", getText);
+const removeModalBackDrop = function () {
+  const modal = document.querySelector(".modal");
+  const backdrop = document.querySelector(".backdrop");
+  modal.remove();
+  backdrop.remove();
+};
 
-// document
-//   .getElementById("getBoton")
-//   .addEventListener("click", initializeButtons);
+const htmlModalDelete = function () {
+  return `
+  <div class="modal">
+    <header class="modal-header"><h2>¿Deseas borrar esta persona?</h2></header>
 
-// FIX: Make this function callback as a promise
-document.getElementById("getUsers").addEventListener("click", () => {
-  getUsers();
-  // initializeButtons();
-});
+    <div class="modal-content">
+    </div>
+    
+    <footer class="modal-actions">
+        <button id="btn-modal-cancelar">Cancelar</button>
+        <button id="btn-modal-borrar">Borrar</button>
+    </footer>
+    </div>
+      `;
+};
 
-// TODO TODO TODO TODO TODO
+const insertHtmlModalDelete = async function (query) {
+  console.log("QUERY");
+  console.log(query);
 
-// function initializeButtons() {
-//   document.querySelectorAll(".grid-button-update").forEach(function (elem) {
-//     elem.addEventListener("click", function (event) {
-//       console.log("Update: " + event.target.value);
-//     });
-//   });
-//   document.querySelectorAll(".grid-button-delete").forEach(function (elem) {
-//     elem.addEventListener("click", function (event) {
-//       console.log("Delete: " + event.target.value);
-//     });
-//   });
-// }
+  const html = htmlModalDelete();
+  console.log(html);
+  bodyEl.insertAdjacentHTML("beforeend", htmlBackdrop);
+  bodyEl.insertAdjacentHTML("beforeend", html);
+  initializeButtonsDelete(query);
+};
 
-function clearText() {
-  document.getElementById("output").innerHTML = "";
-  document.getElementById("grid-output").innerHTML = "";
-  console.clear();
-}
+const URLDELETEPREGUNTA = function (id) {
+  return `${activeURL}/persona/delete/${id}`;
+};
 
-function getText() {
-  fetch("./files/sample.txt")
-    .then((response) => response.text())
-    .then((data) => {
-      document.getElementById("output").innerHTML = data;
-    })
-    .catch((err) => console.log(err));
-}
+const deletPreguntaDB = async function (id) {
+  const options = {
+    method: "DELETE",
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+    },
+  };
+  return fetch(URLDELETEPREGUNTA(id), options);
+};
 
-// getDataDB(URLNOMBRE, "Angel");
+const initializeButtonsDelete = function (id) {
+  console.log("CLICKKKKKKK");
+  const btnCancelar = document.querySelector("#btn-modal-cancelar");
 
-function getUsers() {
-  let user = document.getElementById("getUserName").value;
-  let email = document.getElementById("getUserEmail").value;
-  let url = "${activeURL}/persona/show";
-  if (user != "" || email != "") {
-    url = url.concat("?");
-    if (user != "") {
-      url = url.concat(`name=${user}&`);
-    }
-    if (email != "") {
-      url = url.concat(`correo=${email}&`);
-    }
+  btnCancelar.addEventListener("click", function () {
+    console.log("Click");
+    removeModalBackDrop();
+  });
+
+  const btnBorrar = document.querySelector("#btn-modal-borrar");
+  btnBorrar.addEventListener("click", function () {
+    deletPreguntaDB(id)
+      .then((res) => res.json())
+      .then((data) => {
+        console.log(data);
+        showMsg(data);
+      });
+  });
+};
+
+const htmlMessageError = function (text) {
+  return `
+  
+    <div class="modal-row-input modal-row-input--msg modal-row-input--msg--error"> 
+      <p>${text}</p>
+    </div>
+  
+  `;
+};
+
+const htmlMessageNoError = function (text) {
+  return `
+  
+    <div class="modal-row-input modal-row-input--msg modal-row-input--msg--noerror"> 
+      <p>${text}</p>
+    </div>
+  
+  `;
+};
+
+const showMsg = function (data, removeModal = true) {
+  const lastMsg = document.querySelector(".modal-row-input--msg");
+  if (lastMsg != null) {
+    lastMsg.remove();
   }
 
-  fetch(url, {
-    method: "GET",
-  })
-    .then((response) => response.json())
-    .then((data) => {
-      console.log(data);
-      let output = "";
-      data.forEach(function (persona) {
-        output += `
-      <div class="grid-row">
-        <div class="grid-item grid-id">${persona.id}</div>
-        <div class="grid-item grid-name">${persona.nombre}</div>
-        <div class="grid-item grid-email">${persona.correo}</div>
-        <div class="grid-item grid-time">${persona.fecha}</div>
-        <div class="grid-item grid-description">${persona.descripcion}</div>
-        <div class="grid-item grid-button-box">
-          <button type="button" class="btn btn-warning grid-button grid-button-update" value="${persona.id}">Update</button>
-          <button type="button" class="btn btn-danger grid-button grid-button-delete" value="${persona.id}">Delete</button>
-        </div>
-      </div>`;
-      });
-      document.getElementById("grid-output").innerHTML = output;
-    })
-    .catch((err) => console.log(err));
-}
+  const modalContent = document.querySelector(".modal-content");
+  console.log(data);
+  if (
+    data != "Movida y actualizado el nuevo padre" &&
+    data != "Movida" &&
+    data != "Movida y actualizado el padre anterior" &&
+    data != "Actualizada" &&
+    data != "Eliminada" &&
+    data != "Persona eliminada"
+  ) {
+    modalContent.insertAdjacentHTML("beforeend", htmlMessageError(data));
+  } else {
+    modalContent.insertAdjacentHTML("beforeend", htmlMessageNoError(data));
+    if (removeModal == true) {
+      setTimeout(() => {
+        removeModalBackDrop();
+      }, 2000);
+    }
+  }
+};
