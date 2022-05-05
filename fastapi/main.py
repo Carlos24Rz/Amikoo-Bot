@@ -625,8 +625,8 @@ async def calificar_chatbot(userCal: CalificacionIn = Body(
 async def delete_calificacion(
     id: int = Path
 ):
-    preguntaExists = Pregunta.get_or_none(Pregunta.id == id)
-    if (preguntaExists):
+    calificacionExists = Calificacion.get_or_none(Calificacion.id == id)
+    if (calificacionExists):
         query = (Calificacion.delete()
                 .where(Calificacion.id == id))
         query.execute()
