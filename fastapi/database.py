@@ -19,7 +19,7 @@ class Pregunta(Model):
     padre_id = IntegerField()
     nombre = CharField(max_length=80)
     emoji = CharField(max_length=3)
-    texto = CharField(max_length=600)
+    texto = CharField(max_length=800)
     visitas = IntegerField(default=0)
     is_final = BooleanField(default=False)
 
