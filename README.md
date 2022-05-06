@@ -15,6 +15,10 @@ Amikoo-Bot es un rule-based chatbot implementado en Pyton utilizando el web fram
 - Navegador ***(Recomendado Google Chrome, Firefox)***
 
 ## Instalación
+```bash
+$ sudo apt-get update
+```
+
 * ### Python
 Instalar Python3
 ```bash
@@ -27,6 +31,10 @@ $ sudo apt install python3-pip
 Instalar Python venv
 ```bash
 $ sudo apt install python3.8-venv
+```
+Instalar gunicorn
+```bash
+$ sudo apt install gunicorn
 ```
 
 * ### MySQL
@@ -66,7 +74,7 @@ server {
   }
 }
 ```
-Editar y descomentar de `/etc/php/7.4/fpm/php.ini`
+Editar y descomentar de `/etc/php/7.4/fpm/php.ini` las siguientes lineas
 ```
   max_execution_time = 300
   max_input_time = 300
@@ -75,12 +83,16 @@ Editar y descomentar de `/etc/php/7.4/fpm/php.ini`
   upload_max_filesize = 32M
   date.timezone = America/Chicago
 ```
-Editar y descomentar de `/etc/nginx/sites-available/default`
+Editar y descomentar de `/etc/nginx/sites-available/default` las lineas
 ```
 location ~ \.php$ {
   include snippets/fastcgi-php.conf;
   fastcgi_pass unix:/var/run/php/php7.4-fpm.sock;
 }
+```
+Reiniciar Nginx
+```bash
+$ sudo systemctl reload nginx
 ```
 
 ## MySQL
@@ -100,7 +112,7 @@ mysql> source mysql/insert.sql;
 ```
 
 ## Python
-Crear un ambiente virtual
+Crear un ambiente virtual en la carpeta `Chatbot/app`
 ```bash
 $ python3 -m venv venv
 ```
@@ -122,20 +134,18 @@ password='[PASSWORD]'
 Para que el chatbot funcione correctamente, es necesario modificar la variable `activeURL` de los archivos `JavaScript`.
 
 Modificar la variable `activeURL` por la IP (***IP pública***) y el puerto (por default ***8080***) sobre el cual la API está ejecutándose.
-## Php
-Modificar las credenciales del archivo `/var/www/html/chatbot/admin/includes/dbh.inc.php`
-
 
 ```js
 const activeURL = "http://54.164.250.82/:8080";
 ```
 Ubicada en los archivos
 - `Chatbot/script.js`
-- `Chatbot/crud/js/crudCalificaciones.js`
-- `Chatbot/crud/js/crudPersonas.js`
-- `Chatbot/crud/js/crudPreguntas.js`
+- `Chatbot/admin/js/crudCalificaciones.js`
+- `Chatbot/admin/js/crudPersonas.js`
+- `Chatbot/admin/js/crudPreguntas.js`
 
-
+## Php
+Modificar las credenciales del archivo `/var/www/html/chatbot/admin/includes/dbh.inc.php`
 
 
 # Ejecución
