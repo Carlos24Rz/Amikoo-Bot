@@ -53,8 +53,8 @@ tags_metadata = [
 ]
 
 
-app = FastAPI(openapi_tags=tags_metadata)
-# app = FastAPI(openapi_url=None, openapi_tags=tags_metadata)
+# app = FastAPI(openapi_tags=tags_metadata)
+app = FastAPI(openapi_url=None, openapi_tags=tags_metadata)
 
 
 origins = [
@@ -332,7 +332,6 @@ async def update_pregunta(
     return "Actualizada"
 
 
-# TODO: TestCase: Mover el padre de una pregunta a uno de sus hijos
 @app.put("/pregunta/{id}/move", status_code = status.HTTP_200_OK, tags=["Preguntas"])
 async def move_pregunta(
     id: int = Path(
@@ -467,8 +466,6 @@ async def delete_pregunta(
 
 
 # PERSONAS
-# TODO: Feature: Buscar por fecha
-# TODO: Response model of personaIn
 @app.get("/persona/show", status_code = status.HTTP_200_OK, tags=["Personas"])
 async def get_persona(
     name: Optional[str] = Query(
