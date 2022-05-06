@@ -220,6 +220,14 @@ Por
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`app = FastAPI(openapi_tags=tags_metadata)
 openapi_tags=tags_metadata)`
 
+# Sugerencias
+## Manejo de procesos
+
+Es recomendable utilizar alguna herramienta externa como para correr la API en arranque y para manejar reinicios automáticos en caso de fallas, como: Docker o Kubernetes
+
+## Motor de procesamiento de lenguaje natural
+
+Para implementar el NLP, habrá que crear el método en el archivo `app/main.py` y realizar el fetch desde el archivo `chatbot/js/script.js` para enviar la respuesta al archivo `chatbot/index.html`
 
 
 [1]: https://fastapi.tiangolo.com/ "FastAPI"
