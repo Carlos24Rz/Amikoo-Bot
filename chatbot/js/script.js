@@ -1,3 +1,6 @@
+const activeURL = "http://34.230.152.92:8080";
+// const activeURL = "http://34.230.152.92:8080";
+
 //////////////////////////////
 // HTML TEMPLATES
 //////////////////////////////
@@ -352,9 +355,6 @@ const blockLastChatbotOptions = function () {
 
 const TIMELOADER = 1;
 const MSGEROR = "Ha ocurrido un error";
-
-const activeURL = "http://34.230.152.92:8080";
-// const activeURL = "http://34.230.152.92:8080";
 
 const URL = `${activeURL}/pregunta/show?parent=`;
 
