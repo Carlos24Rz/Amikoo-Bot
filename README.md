@@ -3,7 +3,7 @@
 <img src="/img/Logo-text.png" alt="drawing" width="300"/>
 
 <br></br>
-Amikoo-Bot es un rule-based chatbot implementado en Pyton utilizando el web framework [FastAPI][1]
+Amikoo-Bot es un rule-based chatbot implementado en Python utilizando el web framework [FastAPI][1]
 
 # Requisitos
 **Servidor**
