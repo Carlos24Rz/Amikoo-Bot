@@ -2,6 +2,8 @@
 node_modules/
 package-lock.json 
 
+app/__pycache__/
+
 # fastapi
 fastapi/log.txt
 fastapi/__pycache__/
@@ -11,6 +13,7 @@ fastapi/test.py
 fastapi/todo.MD
 fastapi/venv/
 fastapi/config.py
+
 
 # Compilation
 *.o
