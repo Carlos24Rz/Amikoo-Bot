@@ -1,0 +1,526 @@
+* {
+  font-family: "Mulish", sans-serif;
+}
+
+.frente {
+  background-color: #16618f;
+  height: 25px;
+}
+/* nav */
+
+a {
+  color: rgb(255, 255, 255) !important;
+  text-decoration: none !important;
+
+  transition: all 0.2s;
+}
+
+a:hover {
+  color: #034d82 !important;
+  text-decoration: underline !important;
+}
+
+a.button {
+  color: #034d82 !important;
+}
+
+select {
+  color: #121314;
+}
+
+.divisor {
+  font-size: 15px !important;
+  display: inline;
+  margin-left: 2% !important;
+  font-weight: normal !important;
+}
+
+.upper-nav-block {
+  padding: 0.5%;
+  margin-left: 62%;
+}
+
+a.nav-items-upper {
+  padding-left: 7%;
+}
+
+.main-nav {
+  padding-top: 2%;
+  margin-left: 50%;
+  color: #ffffff;
+}
+
+a.nav-items {
+  font-size: large;
+  padding-left: 2%;
+}
+
+p:not(.header p, .nosotros p) {
+  text-align: justify;
+}
+
+::-webkit-scrollbar {
+  display: none;
+}
+
+/* ------ HEADER NAATIK -------- */
+
+.header .col-sm-6 {
+  display: block;
+}
+
+.header .col-sm-6 img {
+  margin-left: 12%;
+  margin-top: 10%;
+}
+
+.header button {
+  margin-top: 10%;
+  margin-bottom: 10%;
+  margin-left: 10%;
+  background-color: #ffffff !important;
+  border-color: #ffffff !important;
+  color: #00a8db;
+  height: 50px;
+  width: 180px;
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.container button {
+  margin-bottom: 3%;
+  /* margin-left: 10%; */
+  background-color: #ffffff !important;
+  border-color: #ffffff !important;
+  color: #00a8db;
+  height: 50px;
+  width: 180px;
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.header {
+  background: linear-gradient(to bottom left, #27c0ef, #cfdee6);
+}
+
+h1 {
+  font-size: 100px !important;
+  font-weight: bold !important;
+}
+
+.header p {
+  font-size: 60px;
+  width: 70%;
+  font-weight: bold;
+}
+
+h1,
+.header p {
+  margin-top: 10%;
+  margin-left: 10%;
+  color: #ffffff;
+}
+
+/* ------- FIN HEADER NAATIK -------- */
+
+/* ------- NOSOTROS ----------*/
+
+.nos1 {
+  padding: 0;
+  width: 50%;
+  float: left;
+}
+
+.nos2 {
+  width: 50%;
+  float: right;
+}
+
+#aboutus {
+  width: 75%;
+  margin-left: 15%;
+  margin-top: 10%;
+}
+
+.nosotros h2,
+.necesitas h2 {
+  margin-top: 30%;
+  font-size: 40px;
+  font-weight: bold;
+  color: #034d82;
+}
+
+.nosotros p {
+  width: 80%;
+  color: #90a3b4;
+  font-size: 18px;
+  line-height: 40px;
+  margin-top: 5%;
+  margin-bottom: 8%;
+}
+
+.nosotros a {
+  font-weight: bold;
+  color: #04aadd;
+  font-size: 18px;
+}
+/* ------- FIN NOSOTROS ----------*/
+
+/* --- NAATIK TIENE LO QUE NECESITAS ----- */
+
+.necesitas h2 {
+  margin-top: 10%;
+  margin-left: 10%;
+  line-height: 50px;
+}
+
+.nec1 {
+  width: 45%;
+  float: left;
+  margin-bottom: 4%;
+  /* border: 1px solid red; */
+}
+
+.nec1 p {
+  margin-left: 10%;
+  width: 80%;
+  color: #90a3b4;
+  font-size: 18px;
+  line-height: 40px;
+  margin-top: 5%;
+  margin-bottom: 5%;
+}
+
+.nec1 li {
+  margin-left: 10%;
+  width: 80%;
+  color: #90a3b4;
+  font-size: 18px;
+  line-height: 40px;
+  margin-top: 1%;
+  list-style-image: url("../img/listado_necesitas.svg");
+}
+
+.nec2 {
+  margin-top: 6%;
+  width: 55%;
+  float: right;
+}
+
+.nec2 img {
+  width: 100%;
+}
+
+/* ul {
+  margin-bottom: 50px;
+} */
+
+.necesitas a {
+  font-weight: bold;
+  color: #04aadd;
+  font-size: 18px;
+  margin-left: 10%;
+}
+
+/* --- INICIA PARTE LEO ---- */
+
+.sectores {
+  background: #effbff;
+  font-family: "Mulish", sans-serif;
+  text-align: center;
+}
+
+.sectores p {
+  margin: 3%;
+  font-size: large;
+  width: 90%;
+}
+
+.sectores .tar {
+  font-family: "Mulish", sans-serif;
+  font-weight: 700;
+  font-size: 20px;
+  line-height: 32px;
+  color: #034d82;
+  letter-spacing: 0.2px;
+  text-align: center;
+}
+
+.sectores .titulo {
+  font-family: "Mulish", sans-serif;
+  font-weight: 700;
+  font-size: 36px;
+  line-height: 52px;
+  text-align: center;
+  letter-spacing: 0.3px;
+  color: #034d82;
+}
+
+.sectores .lorems {
+  color: #8ea9c1;
+  text-align: justify;
+}
+
+.sectores .card {
+  background: #ffffff;
+  font-size: 14px;
+  border-radius: 10%;
+  width: 23%;
+  height: 300px;
+  margin-top: 2%;
+  padding: 1%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.sectores img {
+  width: 35%;
+  height: auto;
+  margin-top: 5%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.sec {
+  background: #effbff;
+  font-family: "Mulish", sans-serif;
+  text-align: center;
+}
+
+.sec button {
+  margin: 2%;
+  margin-left: auto;
+  margin-right: auto;
+  background-color: #00a8db !important;
+  border-color: #00a8db !important;
+  color: #ffffff;
+  height: 50px;
+  width: 180px;
+  font-size: 14px;
+  font-weight: bold;
+}
+
+/* carousel */
+.marco {
+  display: flex;
+}
+
+.exp {
+  margin-left: 15%;
+}
+
+.marco p {
+  font-size: medium;
+}
+
+/* --- TERMINA PARTE LEO --- */
+
+/* --- 30 AÑOS DE EXPERIENCIA ---- */
+
+.exp1 {
+  width: 55%;
+  /* border: 1px solid red; */
+}
+
+.exp1 h2 {
+  margin-top: 5%;
+  font-size: 30px;
+  color: #034d82;
+  line-height: 50px;
+  margin-left: 6%;
+  margin-right: 8%;
+  text-align: justify;
+}
+
+.exp1 p {
+  margin-left: 6%;
+  width: 80%;
+  color: #90a3b4;
+  font-size: 18px;
+  line-height: 40px;
+  margin-top: 5%;
+  margin-bottom: 5%;
+}
+
+.exp2 {
+  margin-bottom: 2%;
+}
+
+.exp2 h2 {
+  margin-top: 5%;
+  font-size: 80px;
+  color: #034d82;
+  margin-left: 5%;
+  height: 20px;
+  font-style: italic;
+}
+
+.stars {
+  margin-top: 10%;
+  color: #faad13;
+  font-size: 25px !important;
+}
+
+.slide > p:not(.stars) {
+  color: #90a3b4;
+  font-size: 18px;
+  line-height: 40px;
+  margin-bottom: 3%;
+  /* margin-left: 2%; */
+  /* border: 1px solid blue; */
+  display: inline-block;
+}
+
+.perfil img {
+  border-radius: 50%;
+  width: 15%;
+  float: left;
+  margin-right: 3%;
+}
+
+.perfil h3 {
+  color: #034d82;
+  font-weight: bold;
+  padding-top: 1%;
+}
+
+.position {
+  color: #90a3b4;
+  /* border: 1px solid red; */
+  width: 90%;
+  font-weight: bold;
+}
+
+/* --- FIN 30 AÑOS ---- */
+
+/* Cards */
+#cards {
+  background: #121314;
+  box-sizing: border-box;
+}
+
+/* body > ul {
+    position: absolute;
+    top: 50%;
+    width: 800px;
+    height: 200px; 
+    left: 50%;
+    margin-left: -400px;
+    margin-top: -130px;
+}
+
+ul > li {
+    width: 25%;
+    list-style-type: none;
+    position: absolute;
+    top: 0;
+    padding: 20px;
+    height: 200px; 
+    opacity: 0;
+    padding-top: 40px;
+    text-align: center;
+    transition: 1s opacity; 
+} */
+
+.active {
+  opacity: 1;
+}
+
+#cards p {
+  font-family: "Mulish", sans-serif;
+  font-size: 13px;
+  color: #646566;
+  line-height: 1.5em;
+}
+
+#cards strong {
+  color: #646566;
+  font-weight: 700;
+  font-size: 60px;
+  line-height: 100px;
+}
+
+/* Sobre nosotros */
+
+/* Footer */
+/*Todos los estilos dentro del footer*/
+.fix {
+  clear: both;
+}
+
+footer p {
+  font-size: medium;
+}
+
+footer .rights {
+  margin-bottom: 20%;
+}
+
+footer a {
+  font-size: medium;
+}
+
+footer th {
+  font-size: medium;
+}
+
+footer {
+  margin-top: 60px;
+  background-color: #000000;
+  color: #ffffff;
+  height: 300px;
+  padding: 30px;
+}
+
+.footer-content {
+  width: 100%;
+}
+
+td.footer-social {
+  vertical-align: top;
+  padding-left: 50px;
+  line-height: 50px;
+}
+
+#face-button,
+#twitter-button,
+#youtube-button {
+  background-color: transparent;
+  border-radius: 30px;
+  width: 42px;
+  height: 40px;
+  border: none;
+}
+
+td.footer-menu {
+  vertical-align: top;
+}
+
+.footer-menu-table {
+  line-height: 40px;
+  width: 100%;
+  text-align: center;
+}
+
+.rights {
+  margin-top: 15px;
+  text-align: center;
+  font-size: medium;
+  font-weight: bold;
+}
+
+th {
+  text-align: center;
+}
+
+/* Correciones para nuestro chatbot */
+.chatbot-options {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.chatbot-options-text {
+  font-family: "Inter", sans-serif;
+}

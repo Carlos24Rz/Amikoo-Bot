@@ -1,0 +1,10 @@
+fastapi==0.75.0
+peewee==3.14.10
+mysql-connector-python==8.0.28
+pydantic==1.9.0
+starlette==0.17.1
+simplejson==3.16.0
+uvicorn==0.17.6
+virtualenv==20.13.3
+PyMySQL==1.0.2
+
