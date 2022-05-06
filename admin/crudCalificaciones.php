@@ -44,9 +44,9 @@
 
       <nav class="nav">
         <ul class="nav-list">
-          <li><a class="nav-link nav-link-current" href="./crudPreguntas.php">Preguntas</a></li>
+          <li><a class="nav-link" href="./crudPreguntas.php">Preguntas</a></li>
           <li><a class="nav-link" href="./crudPersonas.php">Personas</a></li>
-          <li><a class="nav-link" href="./crudCalificaciones.php">Calificaciones</a></li>
+          <li><a class="nav-link nav-link-current" href="./crudCalificaciones.php">Calificaciones</a></li>
           <li><a class="nav-link" href="includes/logout.inc.php">Log out</a></li>
         </ul>
       </nav>
