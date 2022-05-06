@@ -1,10 +1,12 @@
 from peewee import *
 from datetime import datetime
+from config import db
+from config import user
 from config import password
 
 database = MySQLDatabase(
-    'chatbot',
-    user='Tec',
+    db,
+    user=user,
     password=password,
     host='localhost',
     port=3306,

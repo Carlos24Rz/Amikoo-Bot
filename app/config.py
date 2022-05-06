@@ -1,1 +1,3 @@
-password = " tecPass.2274"
+db = "chatbot"
+user = "Tec"
+password = "tecPass"
