@@ -331,6 +331,7 @@ const insertHtmlChatbotFormReview = function () {
  */
 const insertHtmlFormContact = function () {
   blockChatboFace();
+  changeEyesHappy();
   chatbotChat.insertAdjacentHTML("beforeend", htmlChatbotFormContact());
   updateChatbotFace();
   updateScrollBar();
@@ -432,6 +433,13 @@ const prepareHtmlOptionsDB = async function (
 
   if (query == "Solicitar información adicional") {
     blockChatboFace();
+    insertHtmlChatbotText(
+      "Por favor, compártenos tus datos para contactarte más adelante."
+    );
+    changeEyesHappy();
+    updateChatbotFace();
+
+    blockChatboFace();
     blockLastChatbotOptions();
     insertHtmlFormContact();
     updateChatbotFace();
@@ -480,6 +488,12 @@ const prepareHtmlOptionsDB = async function (
 
   // En caso de que se haya seleccionala opcion de "Contacto" se muestra el formulario
   if (dataQnParent[0].texto == "mostrarFormulario()") {
+    blockChatboFace();
+    insertHtmlChatbotText(
+      "Por favor, compártenos tus datos para contactarte más adelante."
+    );
+    updateChatbotFace();
+
     blockChatboFace();
     insertHtmlFormContact();
     updateChatbotFace();
@@ -534,7 +548,8 @@ const updateScrollBar = function () {
 
 const chatbotFace = document.querySelector(".chatbot-face");
 const chatbotExit = document.querySelector(".chatbot-close-button");
-const msgWelcome = "Hola, este es un mensaje de bienvenida";
+const msgWelcome =
+  "Hola, soy Amikoo-bot y puedo resolver cualquier duda que tengas 😊";
 let flagChatbotOpen = false;
 /*
  * Mostrar y ocultar la cara del chatbot y la caja del chatbot
