@@ -38,7 +38,7 @@ $ sudo apt install mysql-server
 * ### Servidor
   * #### NGINX
 ```bash
-$ sudo apt install nginx
+$ sudo apt-get install nginx
 ```
   * #### PHP
 Instalar php-fpm
@@ -56,24 +56,23 @@ $ sudo apt-get install php-mysql
 ## Nginx y Php
 Clonar el proyecto `Chatbot` a la carpeta `/var/www/html`.
 
-Crear y editar `/etc/nginx/sites-enabled/fastapi_nginx`
+Crear y editar `/etc/nginx/sites-enabled/fastapi_nginx` y modificar **[IP PUBLICA]** con la IP del servidor
 ```
 server {
   listen 8080;
   server_name [IP PUBLICA];
   location / {
-    proxy_pass htpp://127.0.0.1:8000;
+    proxy_pass http://127.0.0.1:8000;
   }
 }
 ```
 Editar y descomentar de `/etc/php/7.4/fpm/php.ini`
 ```
- configuraciones
   max_execution_time = 300
+  max_input_time = 300
   memory_limit = 256M
   post_max_size = 32M
   upload_max_filesize = 32M
-  max_input_time = 300
   date.timezone = America/Chicago
 ```
 Editar y descomentar de `/etc/nginx/sites-available/default`
@@ -96,8 +95,8 @@ mysql> flush privileges;
 Estando en la carpeta `Chatbot` Crear tablas e insertar información
 ```sql
 mysql> use [DATABASE]
-mysql> source mysql/create.sql
-mysql> source mysql/insert.sql
+mysql> source mysql/create.sql;
+mysql> source mysql/insert.sql;
 ```
 
 ## Python
@@ -123,6 +122,9 @@ password='[PASSWORD]'
 Para que el chatbot funcione correctamente, es necesario modificar la variable `activeURL` de los archivos `JavaScript`.
 
 Modificar la variable `activeURL` por la IP (***IP pública***) y el puerto (por default ***8080***) sobre el cual la API está ejecutándose.
+## Php
+Modificar las credenciales del archivo `/var/www/html/chatbot/admin/includes/dbh.inc.php`
+
 
 ```js
 const activeURL = "http://54.164.250.82/:8080";
